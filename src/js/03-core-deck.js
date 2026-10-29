@@ -1342,8 +1342,8 @@
         if (semObjFrTab) semObjFrTab.classList.remove('hidden');
 
         const isAas = (modalState.program === 'aas' || currentProgram === 'aas');
-        tagEl.textContent = isAas ? "Technical English (LV122E) • Semester 2" : "General English (LV102E) • Semester 2";
-        titleEl.textContent = "Student Guide & Course Framework";
+        tagEl.textContent = isAas ? "LV122E • Technical English" : "LV102E • General English";
+        titleEl.textContent = "Student Guide & Objectives";
       } else if (isImmersionSession) {
         if (studentGuideTab) studentGuideTab.classList.add('hidden');
         if (semObjEnTab) semObjEnTab.classList.add('hidden');
