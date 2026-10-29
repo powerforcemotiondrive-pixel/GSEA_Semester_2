@@ -756,7 +756,7 @@
             "instructions": [
               "Step 1 (Contextualize - 8 mins): Read each collocation and its workplace example with your partner. Create an original sentence using \"clear customs\" and \"miss a connection\".",
               "Step 2 (Quiz Challenge - 8 mins): Complete the 4-question interactive practice challenge individually without looking at notes.",
-              "Step 3 (Peer Review - 4 mins): Compare answers with your partner, click \"Check Answer\", and analyze why the distractors are incorrect."
+              "Step 3 (Peer Review - 4 mins): Compare answers with your partner, click \"Check Answer\", and discuss why the other options are incorrect."
             ],
             "deliverable": "Achieve 4/4 on the practice quiz and record one new collocation in your personal study log.",
             "teacherNotes": "Encourage students to practice saying the collocations in full sentences. Focus on natural word partnerships (e.g. 'book in advance', 'clear customs').",
@@ -1624,7 +1624,7 @@
             "instructions": [
               "Step 1 (Rule Analysis - 5 mins): Review the 3 core grammar rules: Cause/Effect linkers, Double Comparatives, and Future Predictions with Modals.",
               "Step 2 (Challenge Practice - 8 mins): Work through the 4 interactive grammar challenge questions individually, selecting the grammatically precise connector.",
-              "Step 3 (Peer Check & Verification - 7 mins): Compare answers with your partner, click 'Check Answer & Explanation', and verify why the distractors fail."
+              "Step 3 (Peer Check & Verification - 7 mins): Compare answers with your partner, click 'Check Answer & Explanation', and verify why the other options are incorrect."
             ],
             "deliverable": "Spoken delivery of 2 transformed comparative sentences using the double comparative formula ('The more..., the more...').",
             "teacherNotes": "Highlight the inversion pattern in double comparatives ('The faster the train travels, the lower the per-seat energy consumption becomes'). Correct common error of using 'that' instead of 'as' with comparisons."
