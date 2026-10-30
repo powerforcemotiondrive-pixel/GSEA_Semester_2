@@ -870,7 +870,7 @@
         if (page.isImmersion || (page.tag && page.tag.includes("Immersion"))) {
           dockTitle.textContent = "English Immersion & Destinations";
         } else if (page.isObjectives || page.title === "Semester Objectives") {
-          dockTitle.textContent = "Semester 1 Learning Objectives";
+          dockTitle.textContent = "Semester 2 Objectives";
         } else if (page.isAdmin || currentIndex === 6) {
           dockTitle.textContent = "GSEA26A Administration Hub";
         } else if (page.detailsUrl || currentIndex === 5) {
