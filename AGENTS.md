@@ -119,9 +119,9 @@ Course administration (student lists, teacher assignments, weekly schedules, and
 - **Mandatory Dual-File Synchronization**: Whenever a session title is modified, refined, or retitled in any deck card, the corresponding calendar entries in both `src/js/11-admin-hub.js` and `admin.html` **must** be updated concurrently to match exactly.
 
 ### M. `Semester X Portfolio Summary` Automated Cohort Insights Protocol
-- **Trigger**: Whenever the user sends `Semester X Portfolio Summary` (with a CSV or spreadsheet attached or pasted), the assistant:
+- **Trigger**: Whenever the user sends `Semester 1 Portfolio Summary` (with a CSV or spreadsheet attached or pasted), the assistant:
   1. Writes the raw CSV into `data/portfolio-latest.csv` (which is permanently listed in `.gitignore` to protect student security codes and PII).
-  2. Runs `npm run portfolio:summary` (`node scripts/update-portfolio-summary.js && npm run package && npm run package:moodle`), which extracts top keywords, grammar pitfalls, student reflections, and FE readiness scores, updates `data/portfolio-summary-sX.json`, synchronizes `PORTFOLIO_SUMMARY_DATA` in `src/js/11-admin-hub.js`, and rebuilds all packages (`SCORM.zip`, `SCORM_MOODLE.zip`, `.iso`, `.dmg`).
+  2. Runs `npm run portfolio:summary` (`node scripts/update-portfolio-summary.js && npm run package && npm run package:moodle`), which extracts top keywords, grammar pitfalls, student reflections, and FE readiness scores, updates `data/portfolio-summary-s1.json`, synchronizes `PORTFOLIO_SUMMARY_DATA` in `src/js/11-admin-hub.js`, and rebuilds all packages (`SCORM.zip`, `SCORM_MOODLE.zip`, `.iso`, `.dmg`).
   3. Automatically executes `git commit` AND `git push origin main` in the same step.
 - **Curated High-Impact Synthesis (Anti-Bloat Invariant)**:
   - The Portfolio Summary tab must **always remain a concise, high-yield pedagogical summary**—it must NEVER become a bloated raw catalog of everything everyone wrote.
@@ -130,6 +130,10 @@ Course administration (student lists, teacher assignments, weekly schedules, and
   - **Grammar Traps**: Maximum of **3 to 4 high-frequency spoken traps or golden rules**, formatted with punchy ❌ Wrong vs ✅ Right comparisons.
   - **Cohort Reflections**: Maximum of **3 key strengths**, **3 growth areas**, and **1 actionable FE advice bullet point**.
   - **Track Tagging**: Every buzzword and grammar trap must carry a clean track tag (`track: "at"`, `track: "ag"`, or `track: "aas"`) to power the mobile-optimized, zero-clutter 3-way segmented filter bar (`🌐 All` • `✈️ AT` • `🗣️ AG`).
+
+### N. Photography Visuals Integrity & Image Asset Protection Invariant
+- **Protected Master Photography Assets**: All card visuals, especially `images/fe_progress_check.jpg` (Card 05 Formative Evaluation seminar photo) and `images/semester_objectives.jpg` (Card 08 Student Guide & Objectives classroom photo), are **permanent, high-resolution photography assets**.
+- **Strictly Forbidden Optimization Downgrades**: Never delete, compress down to flat clipart, or swap `.jpg` photo assets with legacy flat `.png` icons (`fe_progress_check.png`, `semester_objectives.png`) under the guise of build size reduction or package optimization. The legacy `.png` clipart files are purged from the repository and must never be reintroduced.
 
 ---
 
