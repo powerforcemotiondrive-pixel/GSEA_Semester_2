@@ -1800,6 +1800,8 @@
         renderRevisionTab(sessionData, theme);
       } else if (modalState.tab === 'materials') {
         renderMaterialsTab(sessionData, theme);
+      } else if (modalState.tab === 'notepad') {
+        renderNotepadTab(sessionData, theme);
       } else if (modalState.tab === 'toeic_guide') {
         renderToeicGuideTab(theme);
       } else if (modalState.tab === 'toeic') {
