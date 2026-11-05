@@ -165,14 +165,6 @@ Course administration (student lists, teacher assignments, weekly schedules, and
   `Session X Lesson Plan - [Topic Title] (2 Hours)` or `Session X Lesson Plan (2 Hours)`.
 - **Tri-Project Consistency**: This rule applies permanently across `GSEA_semester_1`, `GSEA_semester_2`, and `GSEA_semester_3`.
 
-### Q. Communicative Warm-Up: Weekly Aviation News & Student Spotlight (Permanent Invariant)
-- **Standardized Part 1 Architecture**: Part 1 (Activity 1: 00–15 mins) of every lesson across Semesters 2 and 3 must always begin with a communicative current-affairs icebreaker:
-  1. **Weekly Student Spotlight (2–3 mins)**: One designated student per session presents a brief 2-minute news story from the aviation world (or general news), followed by 1–2 peer questions.
-  2. **Aviation News Pair Discussion (6–8 mins)**: In pairs, students discuss 2 to 3 open, accessible conversational prompts connecting recent headlines, passenger trends, or airside events.
-  3. **Entry Spot-Check Diagnostic (4–5 mins)**: 4 accessible, confidence-building spot-check questions connecting the news to the lesson.
-- **Strict Prohibition of Meta/Heavy Academic Warm-ups**: Never open lessons with academic or overly technical meta-exercises (e.g. discussing the difficulty of reading 300-page official manuals). Warm-ups must remain accessible, low-stress, and focused on spontaneous spoken fluency.
-- **Semester Scope**: Applies permanently to GSEA Semester 2 and Semester 3 (leaving Semester 1 as-is for the moment).
-
 ---
 
 ## 2. Active Cohort Configuration (GSEA26A • 2026–2027)
