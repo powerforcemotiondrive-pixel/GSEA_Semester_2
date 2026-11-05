@@ -1,5 +1,5 @@
 /**
- * GSEA Semester 1 - General English & Technical English (AT)
+ * GSEA Semester 2 - General English & Technical English (AAS)
  * Complete Course Data Architecture
  * Author: Phil PARRIS (LH/LAN)
  */
@@ -142,7 +142,7 @@
       "1": {
         "session": 1,
         "objectives": {
-          "title": "Session 1 - Introduction & Travel Anecdotes Objectives",
+          "title": "Session 1 Objectives - Introduction & Travel Anecdotes",
           "summary": "By the end of this session, you will be able to share engaging personal travel stories using narrative past tenses, use essential travel collocations, discuss global mobility dilemmas, and handle travel disruption conversations politely.",
           "items": [
             {
@@ -984,7 +984,7 @@
       "2": {
         "session": 2,
         "objectives": {
-          "title": "Session 2 - The Evolution of Transport & Sustainable Mobility Objectives",
+          "title": "Session 2 Objectives - The Evolution of Transport & Sustainable Mobility",
           "summary": "By the end of this session, you will be able to analyze multi-modal transport infrastructure, express complex cause and effect relationships, apply TOEIC workplace strategies, and formulate modal-shift recommendations.",
           "items": [
             {
@@ -1760,7 +1760,7 @@
       "3": {
         "session": 3,
         "objectives": {
-          "title": "Session 3 - Overtourism Objectives",
+          "title": "Session 3 Objectives - Overtourism",
           "summary": "By the end of this session, you will be able to discuss mass tourism challenges with confidence, explain city regulations clearly, balance opposing viewpoints using contrast words, and take part in group debates.",
           "items": [
             {
@@ -2407,10 +2407,22 @@
               "peakSeason": "August • 120,000 visitors (Resident population: 24,000)",
               "situation": "A consecutive 14-month drought has reduced the island reservoir and freshwater aquifers to an alarming 18% capacity. Concurrently, luxury coastal resorts are consuming 800 liters of water per guest per day for private swimming pools, gardens, and cooling. Local households face strict rationing (capped at 90 liters per day). An emergency municipal summit has been convened to agree on binding water cuts and resolve a controversial proposal to extend the airport runway by 600 meters onto agricultural land to handle larger widebody tourist jets.",
               "keyMetrics": [
-                { "label": "Reservoir & Aquifers", "value": "18% capacity (Critical shortage)" },
-                { "label": "Tourist Consumption", "value": "800 L / guest / day" },
-                { "label": "Household Quota", "value": "Capped at 90 L / day" },
-                { "label": "Runway Proposal", "value": "+600m onto farmland" }
+                {
+                  "label": "Reservoir & Aquifers",
+                  "value": "18% capacity (Critical shortage)"
+                },
+                {
+                  "label": "Tourist Consumption",
+                  "value": "800 L / guest / day"
+                },
+                {
+                  "label": "Household Quota",
+                  "value": "Capped at 90 L / day"
+                },
+                {
+                  "label": "Runway Proposal",
+                  "value": "+600m onto farmland"
+                }
               ]
             },
             "roles": [
@@ -2535,7 +2547,7 @@
       "4": {
         "session": 4,
         "objectives": {
-          "title": "Session 4 - Ecotourism & Sustainable Destination Design Objectives",
+          "title": "Session 4 Objectives - Ecotourism & Sustainable Destination Design",
           "summary": "By the end of this session, you will be able to distinguish authentic ecotourism from greenwashing, structure mixed conditional sentences, apply formal connectors of purpose and condition, and pitch a sustainable destination design.",
           "items": [
             {
@@ -3372,7 +3384,7 @@
       "1": {
         "session": 1,
         "objectives": {
-          "title": "Session 1 - Extreme Weather Objectives",
+          "title": "Session 1 Objectives - Extreme Weather",
           "summary": "By the end of this session, you will be able to discuss extreme weather and climate impacts with confidence, use key vocabulary and grammar, and build the skills needed for your TOEIC test and Session 5 evaluation.",
           "items": [
             {
@@ -4043,7 +4055,7 @@
       "2": {
         "session": 2,
         "objectives": {
-          "title": "Session 2 - Sustainable Cities Objectives",
+          "title": "Session 2 Objectives - Sustainable Cities",
           "summary": "By the end of this session, you will be able to discuss sustainable cities with confidence, use key vocabulary and grammar, and build the skills needed for your TOEIC test and Session 5 evaluation.",
           "items": [
             {
@@ -4713,7 +4725,7 @@
       "3": {
         "session": 3,
         "objectives": {
-          "title": "Session 3 - Building and Supporting Arguments Objectives",
+          "title": "Session 3 Objectives - Building and Supporting Arguments",
           "summary": "By the end of this session, you will be able to build and support persuasive arguments with confidence, use key vocabulary and grammar, and build the skills needed for your TOEIC test and Session 5 evaluation.",
           "items": [
             {
@@ -5388,7 +5400,7 @@
       "4": {
         "session": 4,
         "objectives": {
-          "title": "Session 4 - Biodiversity in Urban Areas and Airports Objectives",
+          "title": "Session 4 Objectives - Biodiversity in Urban Areas and Airports",
           "summary": "By the end of this session, you will be able to discuss urban biodiversity and green infrastructure with confidence, use key vocabulary and grammar, and build the skills needed for your TOEIC test and Session 5 evaluation.",
           "items": [
             {
@@ -6196,7 +6208,7 @@
       "1": {
         "session": 1,
         "objectives": {
-          "title": "Session 1 - Artificial Intelligence Objectives",
+          "title": "Session 1 Objectives - Artificial Intelligence",
           "summary": "By the end of this session, you will be able to discuss artificial intelligence and automation in everyday life and workplaces with confidence, use key vocabulary and grammar, and build the skills needed for your TOEIC test and Session 5 evaluation.",
           "items": [
             {
@@ -6885,7 +6897,7 @@
       "2": {
         "session": 2,
         "objectives": {
-          "title": "Session 2 - Future of travel Objectives",
+          "title": "Session 2 Objectives - Future of travel",
           "summary": "By the end of this session, you will be able to discuss the future of travel with confidence, use key vocabulary and grammar, and build the skills needed for your TOEIC test and Session 5 evaluation.",
           "items": [
             {
@@ -7574,7 +7586,7 @@
       "3": {
         "session": 3,
         "objectives": {
-          "title": "Session 3 - Debate and Critical Thinking Objectives",
+          "title": "Session 3 Objectives - Debate and Critical Thinking",
           "summary": "By the end of this session, you will be able to engage in debates and critical discussions with confidence, use key vocabulary and grammar, and build the skills needed for your TOEIC test and Session 5 evaluation.",
           "items": [
             {
@@ -8263,7 +8275,7 @@
       "4": {
         "session": 4,
         "objectives": {
-          "title": "Session 4 - Biometrics and digital identity Objectives",
+          "title": "Session 4 Objectives - Biometrics and digital identity",
           "summary": "By the end of this session, you will be able to discuss biometrics and digital identity with confidence, use key vocabulary and grammar, and build the skills needed for your TOEIC test and Session 5 evaluation.",
           "items": [
             {
@@ -8952,7 +8964,6 @@
     }
   }
 };
-
   const aasData = {
   "1": {
     "id": 1,
@@ -9085,7 +9096,7 @@
       "1": {
         "session": 1,
         "objectives": {
-          "title": "Session 1 - Introduction & Aviation Survey Objectives",
+          "title": "Session 1 Objectives - Introduction & Aviation Survey",
           "summary": "By the end of this session, you will be able to discuss international aviation current events, express and defend professional opinions on commercial airline and aerodrome dilemmas, master regulatory modal verbs of obligation and permission, manage passenger service de-escalation under EU261 flight disruption rules, deliver a concise 60-second spoken consensus briefing, and consolidate key aviation vocabulary.",
           "items": [
             {
@@ -9384,11 +9395,26 @@
               "passengers": "142 passengers holding at the gate (including 28 with tight international long-haul connections)",
               "context": "The inbound aircraft arrived at Toulouse with an intermittent amber hydraulic warning light on the Green circuit. Line maintenance was dispatched to replace a hydraulic pressure relief valve. Technical sign-off (AOG release) was completed at 21h30. However, Paris-CDG air traffic flow management calculated that the flight would arrive after 23h30, risking a violation of the strict CDG night noise curfew penalties. A revised departure slot was assigned for 22h50, creating a total delay of 4 hours and 5 minutes. Gate 14 is overcrowded, tension is escalating, and several passengers are demanding cash and alternate routing.",
               "timeline": [
-                { "time": "18h15", "event": "Inbound aircraft touches down at TLS; crew logs intermittent Green hydraulic system pressure drop during taxi-in." },
-                { "time": "18h45", "event": "Scheduled departure time. Gate agent announces a provisional 45-minute delay for technical investigation." },
-                { "time": "19h30", "event": "Maintenance engineers request a replacement pressure relief valve from station hangar inventory." },
-                { "time": "21h30", "event": "Maintenance repairs signed off and certified airworthy. ATC warns that arrival at CDG risks violating the strict 23h30 night noise curfew." },
-                { "time": "21h45", "event": "ATC confirms revised departure slot for 22h50. 142 passengers assemble at Gate 14; business travelers demand immediate cash and hotel vouchers." }
+                {
+                  "time": "18h15",
+                  "event": "Inbound aircraft touches down at TLS; crew logs intermittent Green hydraulic system pressure drop during taxi-in."
+                },
+                {
+                  "time": "18h45",
+                  "event": "Scheduled departure time. Gate agent announces a provisional 45-minute delay for technical investigation."
+                },
+                {
+                  "time": "19h30",
+                  "event": "Maintenance engineers request a replacement pressure relief valve from station hangar inventory."
+                },
+                {
+                  "time": "21h30",
+                  "event": "Maintenance repairs signed off and certified airworthy. ATC warns that arrival at CDG risks violating the strict 23h30 night noise curfew."
+                },
+                {
+                  "time": "21h45",
+                  "event": "ATC confirms revised departure slot for 22h50. 142 passengers assemble at Gate 14; business travelers demand immediate cash and hotel vouchers."
+                }
               ],
               "regulations": {
                 "dutyOfCare": "Under EU261, delays exceeding 2 hours on flights under 1,500 km trigger an immediate statutory Duty of Care: complimentary meal and refreshment vouchers (€15), two free telephone calls or emails, and overnight hotel accommodation plus ground transfers if departure is rescheduled for the following day.",
@@ -9910,7 +9936,7 @@
       "2": {
         "session": 2,
         "objectives": {
-          "title": "Session 2 - Passenger Journey & Airfield Movement Objectives",
+          "title": "Session 2 Objectives - Passenger Journey & Airfield Movement",
           "summary": "By the end of this session, you will be able to discuss aviation news and review core vocabulary, map terminal facilitation from landside to airside, master prepositions of place and movement, coordinate airside intercept and de-escalation role-play, decode airfield ground markings, deliver a concise 60-second spoken briefing, and consolidate key aeronautical vocabulary.",
           "items": [
             {
@@ -10702,7 +10728,7 @@
       "3": {
         "session": 3,
         "objectives": {
-          "title": "Session 3 - Ground Operations & Turnaround Objectives",
+          "title": "Session 3 Objectives - Ground Operations & Turnaround",
           "summary": "By the end of this session, you will be able to discuss aviation current events, clearly describe airside vehicles and their functions, sequence turnaround operations using precise time linkers, explain ramp delays using formal cause-and-effect structures, collaborate in operational problem-solving as an aerodrome operations officer or AFISO, deliver a concise 60-second shift handover briefing, and consolidate key vocabulary.",
           "items": [
             {
@@ -11608,7 +11634,7 @@
       "4": {
         "session": 4,
         "objectives": {
-          "title": "Session 4 - Jobs in Aviation Objectives",
+          "title": "Session 4 Objectives - Jobs in Aviation",
           "summary": "By the end of this session, you will be able to distinguish and categorize aviation operational professions across landside, airside, flight operations, air traffic services, and civil aviation administration (TSEEAC), accurately articulate professional duties and jurisdictions using formal B2 structures, and collaborate effectively during operational handoffs.",
           "items": [
             {
@@ -12532,7 +12558,7 @@
       "1": {
         "session": 1,
         "objectives": {
-          "title": "Session 1 - Aerodynamics & Flight Principles Objectives",
+          "title": "Session 1 Objectives - Aerodynamics & Flight Principles",
           "summary": "By the end of this session, you will be able to explain the four fundamental forces of flight, describe the three aircraft axes and their corresponding control surfaces, use cause-and-effect conditionals accurately, and communicate aerodynamic flight scenarios with professional B2 fluency.",
           "items": [
             {
@@ -13178,7 +13204,7 @@
       "2": {
         "session": 2,
         "objectives": {
-          "title": "Session 2 - Aircraft Anatomy: Structure & Systems Objectives",
+          "title": "Session 2 Objectives - Aircraft Anatomy: Structure & Systems",
           "summary": "By the end of this session, you will be able to identify external and internal aircraft parts from diagrams, use spatial prepositions and functional descriptors accurately, conduct a simulated pre-flight exterior walkaround, and report mechanical defects in professional B2 English.",
           "items": [
             {
@@ -13854,7 +13880,7 @@
       "3": {
         "session": 3,
         "objectives": {
-          "title": "Session 3 - Commercial Aircraft & Airlines Objectives",
+          "title": "Session 3 Objectives - Commercial Aircraft & Airlines",
           "summary": "By the end of this session, you will be able to categorize commercial aircraft types, compare airliner specifications and manufacturer strategies (Airbus vs. Boeing), deploy comparative structures with confidence, and participate in an airline fleet selection committee simulation.",
           "items": [
             {
@@ -14472,7 +14498,7 @@
       "4": {
         "session": 4,
         "objectives": {
-          "title": "Session 4 - Significant Aviation Accidents & Aircraft Types Objectives",
+          "title": "Session 4 Objectives - Significant Aviation Accidents & Aircraft Types",
           "summary": "By the end of this session, you will be able to analyze landmark aviation accidents and the aircraft types involved, use past narrative tenses and sequencing linkers, conduct a 15-minute quick-fire group research sprint, and deliver a collaborative 5-minute accident briefing to classmates.",
           "items": [
             {
@@ -15187,7 +15213,7 @@
       "1": {
         "session": 1,
         "objectives": {
-          "title": "Session 1 - Health & Human Factors in Aviation Objectives",
+          "title": "Session 1 Objectives - Health & Human Factors in Aviation",
           "summary": "By the end of this session, you will be able to recognize and report in-flight medical emergencies, analyze pilot and controller fatigue using scientific human factors frameworks, apply the IMSAFE self-assessment model, execute a medical diversion decision protocol, and pronounce aeromedical vocabulary with accurate syllable stress.",
           "items": [
             {
@@ -15855,7 +15881,7 @@
       "2": {
         "session": 2,
         "objectives": {
-          "title": "Session 2 - Meteorology & Severe Weather in Commercial Aviation Objectives",
+          "title": "Session 2 Objectives - Meteorology & Severe Weather in Commercial Aviation",
           "summary": "By the end of this session, you will be able to evaluate the operational impacts of severe atmospheric hazards on commercial flight operations, decode complex METAR and TAF meteorological reports, explain the aerodynamic physics of microbursts and structural icing, analyze landmark weather accident case studies (Delta 191 & BA 009), and execute a terminal weather diversion routing under fuel constraints.",
           "items": [
             {
@@ -16532,7 +16558,7 @@
       "3": {
         "session": 3,
         "objectives": {
-          "title": "Session 3 - Aviation Safety vs. Security: Airport Protection & Aircraft Checks Objectives",
+          "title": "Session 3 Objectives - Aviation Safety vs. Security: Airport Protection & Aircraft Checks",
           "summary": "By the end of this session, you will be able to articulate the fundamental legal, operational, and literal distinction between Aviation Safety and Aviation Security, analyze the concentric security layers of international airports, conduct and explain a pre-flight exterior walkaround safety inspection, apply Minimum Equipment List (MEL) deferral rules, and lead a coordinated response to a dual-track safety and security incident.",
           "items": [
             {
@@ -17171,7 +17197,7 @@
       "4": {
         "session": 4,
         "objectives": {
-          "title": "Session 4 - Global Semester Review & 3-Team Aviation Quiz Objectives",
+          "title": "Session 4 Objectives - Global Semester Review & 3-Team Aviation Quiz",
           "summary": "By the end of this session, you will be able to summarize all core Semester 1 Technical English competencies across Aerodromes (Module 1), Aircraft & Aerodynamics (Module 2), and Health, Meteorology & Safety/Security (Module 3), compete successfully in a multi-round 3-team technical aviation quiz, and structure a high-scoring 10-12 minute Press Briefing on a major aviation current event for Formative Evaluation 3 (FE3).",
           "items": [
             {
