@@ -18,7 +18,8 @@
     "backup1": "node scripts/backup.js semester1",
     "backup2": "node scripts/backup.js semester2",
     "backup3": "node scripts/backup.js semester3",
-    "verify:links": "node scripts/verify-links.js"
+    "verify:links": "node scripts/verify-links.js",
+    "audit": "node scripts/audit-session.js"
   },
   "repository": {
     "type": "git",
