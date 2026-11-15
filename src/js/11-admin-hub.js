@@ -17,7 +17,7 @@
               Class Groups, Assigned Teachers &amp; Course Timetables
             </h3>
             <p class="text-xs sm:text-sm text-slate-600 mt-1 leading-relaxed">
-              Official promotion structure for the academic semester. The GSEA26A promotion is divided into <strong>Group A (10 students)</strong> and <strong>Group B (9 students)</strong> for all General English (LV101E) and Aeronautical English (LV121E) classroom sessions. For oral Formative Evaluations (FE1, FE2, FE3), students follow dynamic rotating pairings and trios across exactly 4 slots of 30 minutes (2 hours total).
+              Official promotion structure for the academic semester. The GSEA26A promotion is divided into <strong>Group A (10 students)</strong> and <strong>Group B (9 students)</strong> for all General English (LV102E) and Aeronautical English (LV122E) classroom sessions. For Formative Evaluations (FE1 &amp; FE2), sessions are conducted as 2-hour whole-class interactive evaluation workshops with all students participating together.
             </p>
           </div>
 
@@ -31,11 +31,11 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <!-- General English LV101E -->
+              <!-- General English LV102E -->
               <div class="border border-slate-200 rounded-xl p-4 bg-white shadow-2xs">
                 <div class="flex items-center justify-between pb-2 mb-3 border-b border-slate-100">
                   <div class="flex items-center gap-2">
-                    <span class="px-2 py-0.5 rounded text-white font-mono text-[11px] font-black" style="background-color: ${theme.primary};">LV101E</span>
+                    <span class="px-2 py-0.5 rounded text-white font-mono text-[11px] font-black" style="background-color: ${theme.primary};">LV102E</span>
                     <span class="text-xs font-bold text-slate-800">General English (AG)</span>
                   </div>
                   <span class="text-[11px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded">Fridays 08h00 – 10h00</span>
@@ -52,12 +52,12 @@
                 </div>
               </div>
 
-              <!-- Aeronautical English LV121E -->
+              <!-- Aeronautical English LV122E -->
               <div class="border border-slate-200 rounded-xl p-4 bg-white shadow-2xs">
                 <div class="flex items-center justify-between pb-2 mb-3 border-b border-slate-100">
                   <div class="flex items-center gap-2">
-                    <span class="px-2 py-0.5 rounded text-white font-mono text-[11px] font-black" style="background-color: ${theme.accent};">LV121E</span>
-                    <span class="text-xs font-bold text-slate-800">Technical English (AT)</span>
+                    <span class="px-2 py-0.5 rounded text-white font-mono text-[11px] font-black" style="background-color: ${theme.accent};">LV122E</span>
+                    <span class="text-xs font-bold text-slate-800">Technical English (AAS)</span>
                   </div>
                   <span class="text-[11px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded">Wednesdays 13h15 – 15h15</span>
                 </div>
@@ -95,13 +95,13 @@
             </div>
           </div>
 
-          <!-- Dynamic Rotation Callout Banner -->
+          <!-- In-Class Whole-Group Formative Evaluation Banner -->
           <div class="p-3.5 bg-amber-50/80 border border-amber-200 rounded-xl flex items-start gap-3 text-xs text-amber-950 shadow-2xs">
             <svg class="w-4 h-4 text-amber-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             <div class="space-y-1">
-              <span class="font-bold block">Dynamic Formative Evaluation (FE) Rotations:</span>
+              <span class="font-bold block">Whole-Class Formative Evaluations (FE1 in Week 4 &amp; FE2 in Week 8):</span>
               <p class="text-[11px] text-amber-900 leading-relaxed">
-                To ensure variety in group work and timeslot fairness, groups do <strong>not</strong> have fixed pairs or trios. Group A rotates across 2 pairs + 2 trios (4 slots = 2h), and Group B rotates across 3 pairs + 1 trio (4 slots = 2h). Every student experiences different peers and rotates between early and late slots across FE1 (W48), FE2 (W03), and FE3 (W08). Switch to the <strong>FE Tutorial Rotas</strong> tab to view your complete evaluation schedule.
+                Formative Evaluations in Semester 2 are full <strong>2-hour in-class communicative evaluation sessions</strong> conducted with the entire class together in your regular classroom with your assigned teacher. There are no individual 30-minute rotating slots. All students attend the full session for live press briefings (AG) and tactical listening evaluations (AAS).
               </p>
             </div>
           </div>
@@ -206,97 +206,69 @@
 
     const ADMIN_CALENDAR_SCHEDULES = {
       ag: {
-        code: "LV101E",
+        code: "LV102E",
         name: "General English (AG)",
         dayTime: "Fridays 08h00 – 10h00",
         faculty: "Geri MIDDLETON (Group A) & Penny WRIGHT (Group B)",
         modules: [
           {
             num: 1,
-            title: "Module 1: Travel, Transport & Society",
-            weeks: "Weeks 44 – 48",
+            title: "Module 1: Current Events: Media & Society",
+            weeks: "Weeks 1 – 4",
             headerBg: "#1e293b",
             sessions: [
-              { week: "W44", date: "Fri 30 Oct", title: "Session 1 — Introduction & Travel Anecdotes", tag: "Teaching Session", isFe: false },
-              { week: "W45", date: "Fri 06 Nov", title: "Session 2 — Evolution of Transport", tag: "Teaching Session", isFe: false },
-              { week: "W46", date: "Fri 13 Nov", title: "Session 3 — Overtourism", tag: "Teaching Session", isFe: false },
-              { week: "W47", date: "Fri 20 Nov", title: "Session 4 — Sustainable and Eco-tourism", tag: "Teaching Session • Prep FE1", isFe: false },
-              { week: "W48", date: "Fri 27 Nov", title: "FORMATIVE EVALUATION 1 (FE1) — Oral Tutorials", subtitle: "Fri 27 Nov • 30-min evaluation slots (Geri MIDDLETON / Penny WRIGHT)", tag: "Grade /20", isFe: true }
+              { week: "W01", date: "Fri 12 Feb", title: "Session 1 — Breaking News & Modern Media Landscape", tag: "Teaching Session", isFe: false },
+              { week: "W02", date: "Fri 19 Feb", title: "Session 2 — Global Economy & Social Issues in the News", tag: "Teaching Session", isFe: false },
+              { isHoliday: true, text: "❄️ Winter Vacation (No Classes)" },
+              { week: "W03", date: "Fri 12 Mar", title: "Session 3 — Climate, Science & Environmental Reporting", tag: "Teaching Session • Prep FE1", isFe: false },
+              { week: "W04", date: "Fri 19 Mar", title: "FORMATIVE EVALUATION 1 (FE1) — Live Press Briefing", subtitle: "Fri 19 Mar • 2-Hour Whole-Class Interactive Evaluation (Geri MIDDLETON / Penny WRIGHT)", tag: "Grade /20", isFe: true }
             ]
           },
           {
             num: 2,
-            title: "Module 2: Weather, Environment & Ecological Transition",
-            weeks: "Weeks 49 – Week 3",
+            title: "Module 2: Current Events: Global Issues & Debates",
+            weeks: "Weeks 5 – 8",
             headerBg: "#1b382b",
             sessions: [
-              { week: "W49", date: "Fri 04 Dec", title: "Session 1 — Extreme Weather & Atmospheric Hazards", tag: "Teaching Session", isFe: false },
-              { week: "W50", date: "Fri 11 Dec", title: "Session 2 — Sustainable Cities & Low-Emission Mobility", tag: "Teaching Session", isFe: false },
-              { isHoliday: true, text: "🎄 Weeks 51 & 52 — Christmas & Winter Vacation (No Classes)" },
-              { week: "W01", date: "Fri 08 Jan", title: "Session 3 — Building & Supporting Environmental Arguments", tag: "Teaching Session", isFe: false },
-              { week: "W02", date: "Fri 15 Jan", title: "Session 4 — Biodiversity in Urban Areas & Transport Hubs", tag: "Teaching Session • Prep FE2", isFe: false },
-              { week: "W03", date: "Fri 22 Jan", title: "FORMATIVE EVALUATION 2 (FE2) — Climate Resilience Redesign (Airport / City)", subtitle: "Fri 22 Jan • 30-min evaluation slots (Geri MIDDLETON / Penny WRIGHT)", tag: "Grade /20", isFe: true }
-            ]
-          },
-          {
-            num: 3,
-            title: "Module 3: Innovation, Society & Emerging Technologies",
-            weeks: "Weeks 4 – 8",
-            headerBg: "#1a2238",
-            sessions: [
-              { week: "W04", date: "Fri 29 Jan", title: "Session 1 — Everyday AI & Workplace Automation", tag: "Teaching Session", isFe: false },
-              { week: "W05", date: "Fri 05 Feb", title: "Session 2 — Future Mobility & Clean Energy Transport", tag: "Teaching Session", isFe: false },
-              { week: "W06", date: "Fri 12 Feb", title: "Session 3 — Technology Ethics & Automated Decisions in AI", tag: "Teaching Session", isFe: false },
-              { week: "W07", date: "Fri 19 Feb", title: "Session 4 — Biometrics, Digital IDs & Passenger Journey", tag: "Teaching Session • Prep FE3", isFe: false },
-              { week: "W08", date: "Fri 26 Feb", title: "FORMATIVE EVALUATION 3 (FE3) — Emerging Technology Presentation (Aviation / Non-Aviation)", subtitle: "Fri 26 Feb • 30-min evaluation slots (Geri MIDDLETON / Penny WRIGHT)", tag: "Grade /20", isFe: true },
+              { week: "W05", date: "Fri 26 Mar", title: "Session 5 — Geopolitics & International Diplomacy", tag: "Teaching Session", isFe: false },
+              { week: "W06", date: "Fri 02 Apr", title: "Session 6 — Artificial Intelligence & Tech Ethics in the News", tag: "Teaching Session", isFe: false },
+              { week: "W07", date: "Fri 09 Apr", title: "Session 7 — Culture, Tourism & Global Trends in the News", tag: "Teaching Session • Prep FE2", isFe: false },
+              { isHoliday: true, text: "🌸 Spring Vacation (No Classes)" },
+              { week: "W08", date: "Fri 30 Apr", title: "FORMATIVE EVALUATION 2 (FE2) — Editorial Panel & Debate", subtitle: "Fri 30 Apr • 2-Hour Whole-Class Interactive Evaluation (Geri MIDDLETON / Penny WRIGHT)", tag: "Grade /20", isFe: true }
             ]
           }
         ]
       },
       aas: {
-        code: "LV121E",
-        name: "Technical English (AT)",
+        code: "LV122E",
+        name: "Technical English (AAS)",
         dayTime: "Wednesdays 13h15 – 15h15",
         faculty: "Tracy NEILL (Group A) & Ally HEWETT (Group B)",
         modules: [
           {
             num: 1,
-            title: "Module 1: Aerodromes, Air Traffic & Surface Operations",
-            weeks: "Weeks 44 – 48",
+            title: "Module 1: Operational Listening: Surface & Terminal",
+            weeks: "Weeks 1 – 4",
             headerBg: "#1e293b",
             sessions: [
-              { week: "W44", date: "Wed 28 Oct", title: "Session 1 — Introduction & Aviation Survey", tag: "Teaching Session", isFe: false },
-              { week: "W45", date: "Wed 04 Nov", title: "Session 2 — Passenger Journey & Airfield Movement", tag: "Teaching Session", isFe: false },
-              { week: "W46", date: "Wed 11 Nov", title: "Session 3 — Ground Operations & Turnaround", tag: "Teaching Session", isFe: false },
-              { week: "W47", date: "Wed 18 Nov", title: "Session 4 — Jobs in Aviation", tag: "Teaching Session • Prep FE1", isFe: false },
-              { week: "W48", date: "Wed 25 Nov", title: "FORMATIVE EVALUATION 1 (FE1) — Oral Tutorials", subtitle: "Wed 25 Nov • 30-min evaluation slots (Tracy NEILL / Ally HEWETT)", tag: "Grade /20", isFe: true }
+              { week: "W01", date: "Wed 10 Feb", title: "Session 1 — ATIS Broadcasts & Airport Weather Decoding", tag: "Teaching Session", isFe: false },
+              { week: "W02", date: "Wed 17 Feb", title: "Session 2 — Ground Control, Pushback & Taxi Clearances", tag: "Teaching Session", isFe: false },
+              { isHoliday: true, text: "❄️ Winter Vacation (No Classes)" },
+              { week: "W03", date: "Wed 10 Mar", title: "Session 3 — AFIS & Uncontrolled Aerodrome Traffic Information", tag: "Teaching Session • Prep FE1", isFe: false },
+              { week: "W04", date: "Wed 17 Mar", title: "FORMATIVE EVALUATION 1 (FE1) — Aerodrome Listening Evaluation", subtitle: "Wed 17 Mar • 2-Hour Whole-Class Interactive Evaluation (Tracy NEILL / Ally HEWETT)", tag: "Grade /20", isFe: true }
             ]
           },
           {
             num: 2,
-            title: "Module 2: Aircraft & Aerodynamics",
-            weeks: "Weeks 49 – Week 3",
-            headerBg: "#1b382b",
+            title: "Module 2: Operational Listening: Control & En Route",
+            weeks: "Weeks 5 – 8",
+            headerBg: "#182b42",
             sessions: [
-              { week: "W49", date: "Wed 02 Dec", title: "Session 1 — Aerodynamics & Flight Principles", tag: "Teaching Session", isFe: false },
-              { week: "W50", date: "Wed 09 Dec", title: "Session 2 — Aircraft Anatomy: Structure & Systems", tag: "Teaching Session", isFe: false },
-              { isHoliday: true, text: "🎄 Weeks 51 & 52 — Christmas & Winter Vacation (No Classes)" },
-              { week: "W01", date: "Wed 06 Jan", title: "Session 3 — Commercial Aircraft & Airlines", tag: "Teaching Session", isFe: false },
-              { week: "W02", date: "Wed 13 Jan", title: "Session 4 — Significant Aviation Accidents & Aircraft Types", tag: "Teaching Session • Prep FE2", isFe: false },
-              { week: "W03", date: "Wed 20 Jan", title: "FORMATIVE EVALUATION 2 (FE2) — Aircraft & Airlines Profile", subtitle: "Wed 20 Jan • 30-min evaluation slots (Tracy NEILL / Ally HEWETT)", tag: "Grade /20", isFe: true }
-            ]
-          },
-          {
-            num: 3,
-            title: "Module 3: Health, Meteorology, Safety & Security",
-            weeks: "Weeks 4 – 8",
-            headerBg: "#1a2238",
-            sessions: [
-              { week: "W04", date: "Wed 27 Jan", title: "Session 1 — Health & Human Factors in Aviation", tag: "Teaching Session", isFe: false },
-              { week: "W05", date: "Wed 03 Feb", title: "Session 2 — Meteorology & Severe Weather in Aviation", tag: "Teaching Session", isFe: false },
-              { week: "W06", date: "Wed 10 Feb", title: "Session 3 — Aviation Safety vs. Security: Airport & Aircraft Checks", tag: "Teaching Session", isFe: false },
-              { week: "W07", date: "Wed 17 Feb", title: "Session 4 — Global Semester Review & 3-Team Quiz", tag: "Teaching Session • Prep FE3", isFe: false },
-              { week: "W08", date: "Wed 24 Feb", title: "FORMATIVE EVALUATION 3 (FE3) — Aviation Current Events & Press Briefing", subtitle: "Wed 24 Feb • 30-min evaluation slots (Tracy NEILL / Ally HEWETT)", tag: "Grade /20", isFe: true }
+              { week: "W05", date: "Wed 24 Mar", title: "Session 5 — Tower Control, Line-Up & Departure Clearances", tag: "Teaching Session", isFe: false },
+              { week: "W06", date: "Wed 31 Mar", title: "Session 6 — En Route & Area Control Clearances", tag: "Teaching Session", isFe: false },
+              { week: "W07", date: "Wed 07 Apr", title: "Session 7 — Approach Control, Arrivals & Non-Nominal Emergencies", tag: "Teaching Session • Prep FE2", isFe: false },
+              { isHoliday: true, text: "🌸 Spring Vacation (No Classes)" },
+              { week: "W08", date: "Wed 28 Apr", title: "FORMATIVE EVALUATION 2 (FE2) — En Route & Approach Listening Evaluation", subtitle: "Wed 28 Apr • 2-Hour Whole-Class Interactive Evaluation (Tracy NEILL / Ally HEWETT)", tag: "Grade /20", isFe: true }
             ]
           }
         ]
@@ -346,10 +318,10 @@
                 <span class="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Select Course Track Calendar:</span>
                 <div class="inline-flex rounded-lg border border-slate-200 p-0.5 bg-slate-50">
                   <button type="button" onclick="setAdminCalendarCourse('ag')" class="px-3.5 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer ${activeCalKey === 'ag' ? 'bg-slate-800 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'}">
-                    General English (AG • LV101E)
+                    General English (AG • LV102E)
                   </button>
                   <button type="button" onclick="setAdminCalendarCourse('aas')" class="px-3.5 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer ${activeCalKey === 'aas' ? 'bg-orange-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'}">
-                    Technical English (AT • LV121E)
+                    Technical English (AAS • LV122E)
                   </button>
                 </div>
               </div>
@@ -358,7 +330,7 @@
 
           <!-- Timeline Grid -->
           <div class="space-y-4">
-            <!-- Active Track Schedule & Faculty Banner -->
+            <!-- Active Track Schedule & Teacher Banner -->
             <div class="bg-slate-800 text-white p-3.5 sm:p-4 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs border border-slate-700/60">
               <div class="flex items-center gap-3">
                 <span class="px-2.5 py-1 rounded font-mono font-black text-xs ${activeCalKey === 'ag' ? 'bg-slate-700 text-amber-300 border border-amber-300/30' : 'bg-orange-700 text-amber-200 border border-amber-300/30'}">
@@ -369,12 +341,12 @@
                     ${calSched.name} — Weekly Schedule &amp; Milestones
                   </h3>
                   <p class="text-xs text-slate-300 mt-0.5">
-                    ${calSched.dayTime} • Faculty: ${calSched.faculty}
+                    ${calSched.dayTime} • Teaching Team: ${calSched.faculty}
                   </p>
                 </div>
               </div>
               <span class="self-start sm:self-auto px-2.5 py-1 rounded text-[11px] font-mono font-bold bg-white/10 text-slate-200 border border-white/15">
-                Weeks 44 – 08 • 3 Modules + 3 FEs
+                Weeks 1 – 8 • 2 Modules + 2 In-Class FEs
               </span>
             </div>
 
@@ -426,12 +398,12 @@
               </div>
             `).join('')}
 
-            <!-- Weeks 9–12 Wrap up -->
+            <!-- End of S2 Wrap up -->
             <div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-between text-xs text-slate-600">
               <span class="font-medium">
-                <strong>Weeks 9–12:</strong> Independent Portfolio Completion, TOEIC Verification &amp; Summative Examination Period.
+                <strong>End of Semester 2:</strong> 4-Week Intensive English Immersion Program (UK / Ireland), Portfolio Verification &amp; TOEIC Preparation.
               </span>
-              <span class="px-2.5 py-0.5 rounded text-[10px] font-bold bg-slate-200 text-slate-700 font-mono">End of S1</span>
+              <span class="px-2.5 py-0.5 rounded text-[10px] font-bold bg-slate-200 text-slate-700 font-mono">End of S2</span>
             </div>
           </div>
         </div>

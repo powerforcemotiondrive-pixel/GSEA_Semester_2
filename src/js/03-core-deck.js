@@ -946,14 +946,14 @@
         actionContainer.appendChild(createThemedCTA("Open Immersion Guide", "immersion_overview", "immersion.html"));
       } else if (page.isObjectives || page.title === "Semester Objectives" || page.title === "Student Guide & Objectives") {
         actionContainer.appendChild(createThemedCTA("Open Student Guide", "student_guide", ""));
-      } else if (page.isAdmin || currentIndex === 6) {
+      } else if (page.isAdmin) {
         actionContainer.appendChild(createThemedCTA("Open Resources", "admin_groups", "admin.html"));
-      } else if (currentIndex === 5) {
+      } else if (page.isMuted !== undefined || page.isDdrs) {
         actionContainer.appendChild(createThemedCTA("Open Resources", "ddrs", ""));
-      } else if (currentIndex === 4) {
+      } else if (page.isFe) {
         actionContainer.appendChild(createThemedCTA("Open Resources", "fe_guidelines", ""));
       } else {
-        // Sessions 1 to 4: In-deck modal workspace hub (single themed CTA to open resources drawer)
+        // Teaching Sessions: In-deck modal workspace hub (single themed CTA to open resources drawer)
         actionContainer.appendChild(createThemedCTA("Open Resources", "objectives", ""));
       }
 
@@ -1343,11 +1343,14 @@
       headerEl.style.borderColor = theme.primaryDark;
 
       const progConfig = PROGRAMS_CONFIG[modalState.program] || PROGRAMS_CONFIG.ag;
-      const isObjectivesSession = tabKey === 'student_guide' || tabKey.startsWith('sem_obj_') || modalState.tab === 'student_guide' || modalState.tab.startsWith('sem_obj_');
-      const isImmersionSession = !isObjectivesSession && (tabKey === 'immersion' || tabKey.startsWith('immersion_'));
-      const isAdminSession = !isObjectivesSession && !isImmersionSession && (modalState.sessionNum === 7 || tabKey.startsWith('admin_'));
-      const isFeSession = !isObjectivesSession && !isImmersionSession && !isAdminSession && (modalState.sessionNum === 5 || tabKey.startsWith('fe_'));
-      const isDdrsSession = !isObjectivesSession && !isImmersionSession && !isAdminSession && (tabKey === 'ddrs' || modalState.sessionNum === 6);
+      const activeMod = progConfig.modules[modalState.modNum - 1] || progConfig.modules[0];
+      const activePage = (activeMod && activeMod.pages && activeMod.pages[modalState.sessionNum - 1]) || {};
+
+      const isObjectivesSession = activePage.isObjectives || tabKey === 'student_guide' || tabKey.startsWith('sem_obj_') || modalState.tab === 'student_guide' || modalState.tab.startsWith('sem_obj_');
+      const isImmersionSession = activePage.isImmersion || (!isObjectivesSession && (tabKey === 'immersion' || tabKey.startsWith('immersion_')));
+      const isAdminSession = activePage.isAdmin || (!isObjectivesSession && !isImmersionSession && (tabKey.startsWith('admin_') || modalState.sessionNum === 6));
+      const isFeSession = activePage.isFe || (!isObjectivesSession && !isImmersionSession && !isAdminSession && (tabKey.startsWith('fe_') || modalState.sessionNum === 4));
+      const isDdrsSession = (activePage.isMuted !== undefined) || (!isObjectivesSession && !isImmersionSession && !isAdminSession && (tabKey === 'ddrs' || modalState.sessionNum === 5));
 
       const studentGuideTab = document.getElementById('modal-tab-student-guide');
       const semObjEnTab = document.getElementById('modal-tab-sem-obj-en');
@@ -1444,8 +1447,8 @@
         if (feObjectivesTab) feObjectivesTab.classList.remove('hidden');
         if (feCriteriaTab) feCriteriaTab.classList.remove('hidden');
 
-        tagEl.textContent = `${progConfig.code} Module ${modalState.modNum} • Session 5`;
-        titleEl.textContent = "Session 5 - Formative Evaluation";
+        tagEl.textContent = `${progConfig.code} Module ${modalState.modNum} • Formative Evaluation ${modalState.modNum}`;
+        titleEl.textContent = `Formative Evaluation ${modalState.modNum} — In-Class Whole-Group Evaluation`;
       } else if (isDdrsSession) {
         if (studentGuideTab) studentGuideTab.classList.add('hidden');
         if (semObjEnTab) semObjEnTab.classList.add('hidden');

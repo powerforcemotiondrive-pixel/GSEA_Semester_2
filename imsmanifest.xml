@@ -12,77 +12,53 @@
     <organization identifier="GSEA_ORG">
       <title>GSEA Semester 2 - Course Modules</title>
       <item identifier="ITEM_MOD1">
-        <title>Module 1: Travel &amp; Transport</title>
+        <title>Module 1: Current Events: Media &amp; Society</title>
         <item identifier="ITEM_M1_S1" identifierref="RESOURCE_1" parameters="#module1-card1">
-          <title>Session 1 - Introduction &amp; Travel Anecdotes</title>
+          <title>Session 1 - Breaking News &amp; Modern Media Landscape</title>
         </item>
         <item identifier="ITEM_M1_S2" identifierref="RESOURCE_1" parameters="#module1-card2">
-          <title>Session 2 - Evolution of Transport</title>
+          <title>Session 2 - Global Economy &amp; Social Issues in the News</title>
         </item>
         <item identifier="ITEM_M1_S3" identifierref="RESOURCE_1" parameters="#module1-card3">
-          <title>Session 3 - Overtourism</title>
+          <title>Session 3 - Climate, Science &amp; Environmental Reporting</title>
         </item>
         <item identifier="ITEM_M1_S4" identifierref="RESOURCE_1" parameters="#module1-card4">
-          <title>Session 4 - Sustainable and Eco-tourism</title>
+          <title>Session 4 - Formative Evaluation 1</title>
         </item>
         <item identifier="ITEM_M1_S5" identifierref="RESOURCE_1" parameters="#module1-card5">
-          <title>Session 5 - Formative Evaluation</title>
-        </item>
-        <item identifier="ITEM_M1_S6" identifierref="RESOURCE_1" parameters="#module1-card6">
           <title>Focus: DDRS Framework</title>
         </item>
-        <item identifier="ITEM_M1_S7" identifierref="RESOURCE_1" parameters="#module1-card7">
+        <item identifier="ITEM_M1_S6" identifierref="RESOURCE_1" parameters="#module1-card6">
           <title>Course Admin</title>
+        </item>
+        <item identifier="ITEM_M1_S7" identifierref="RESOURCE_1" parameters="#module1-card7">
+          <title>Student Guide &amp; Objectives</title>
         </item>
       </item>
       <item identifier="ITEM_MOD2">
-        <title>Module 2: Weather &amp; the Environment</title>
+        <title>Module 2: Current Events: Global Issues &amp; Debates</title>
         <item identifier="ITEM_M2_S1" identifierref="RESOURCE_1" parameters="#module2-card1">
-          <title>Session 1: Extreme Weather</title>
+          <title>Session 5 - Geopolitics &amp; International Diplomacy</title>
         </item>
         <item identifier="ITEM_M2_S2" identifierref="RESOURCE_1" parameters="#module2-card2">
-          <title>Session 2: Sustainable Cities</title>
+          <title>Session 6 - Artificial Intelligence &amp; Tech Ethics in the News</title>
         </item>
         <item identifier="ITEM_M2_S3" identifierref="RESOURCE_1" parameters="#module2-card3">
-          <title>Session 3: Building and Supporting Arguments</title>
+          <title>Session 7 - Culture, Tourism &amp; Global Trends in the News</title>
         </item>
         <item identifier="ITEM_M2_S4" identifierref="RESOURCE_1" parameters="#module2-card4">
-          <title>Session 4: Biodiversity in Urban Areas and Airports</title>
+          <title>Session 8 - Formative Evaluation 2</title>
         </item>
         <item identifier="ITEM_M2_S5" identifierref="RESOURCE_1" parameters="#module2-card5">
-          <title>Session 5 - Formative Evaluation</title>
+          <title>Focus: DDRS Framework</title>
         </item>
         <item identifier="ITEM_M2_S6" identifierref="RESOURCE_1" parameters="#module2-card6">
-          <title>Focus: DDRS Framework</title>
+          <title>Course Admin</title>
         </item>
         <item identifier="ITEM_M2_S7" identifierref="RESOURCE_1" parameters="#module2-card7">
-          <title>Course Admin</title>
+          <title>Student Guide &amp; Objectives</title>
         </item>
-      </item>
-      <item identifier="ITEM_MOD3">
-        <title>Module 3: New Technology</title>
-        <item identifier="ITEM_M3_S1" identifierref="RESOURCE_1" parameters="#module3-card1">
-          <title>Session 1: Artificial Intelligence</title>
-        </item>
-        <item identifier="ITEM_M3_S2" identifierref="RESOURCE_1" parameters="#module3-card2">
-          <title>Session 2: Future of travel</title>
-        </item>
-        <item identifier="ITEM_M3_S3" identifierref="RESOURCE_1" parameters="#module3-card3">
-          <title>Session 3: Debate and Critical Thinking</title>
-        </item>
-        <item identifier="ITEM_M3_S4" identifierref="RESOURCE_1" parameters="#module3-card4">
-          <title>Session 4: Biometrics and digital identity</title>
-        </item>
-        <item identifier="ITEM_M3_S5" identifierref="RESOURCE_1" parameters="#module3-card5">
-          <title>Session 5 - Formative Evaluation</title>
-        </item>
-        <item identifier="ITEM_M3_S6" identifierref="RESOURCE_1" parameters="#module3-card6">
-          <title>Focus: DDRS Framework</title>
-        </item>
-        <item identifier="ITEM_M3_S7" identifierref="RESOURCE_1" parameters="#module3-card7">
-          <title>Course Admin</title>
-        </item>
-        <item identifier="ITEM_M3_S8" identifierref="RESOURCE_1" parameters="#ag-module3-card8">
+        <item identifier="ITEM_M2_S8" identifierref="RESOURCE_1" parameters="#ag-module2-card8">
           <title>English Immersion (End of S2)</title>
         </item>
       </item>

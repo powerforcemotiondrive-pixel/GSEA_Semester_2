@@ -100,18 +100,6 @@
       const prog = (modalState && modalState.program) || currentProgram || 'ag';
       const isAg = prog === 'ag';
       if (isAg) {
-        if (modalState.modNum === 3) {
-          if (modalState.sessionNum === 1) {
-            renderAg3LessonContentTabSession1(sessionData, theme);
-          } else if (modalState.sessionNum === 2) {
-            renderAg3LessonContentTabSession2(sessionData, theme);
-          } else if (modalState.sessionNum === 4) {
-            renderAg3LessonContentTabSession4(sessionData, theme);
-          } else {
-            renderAg3LessonContentTabSession3(sessionData, theme);
-          }
-          return;
-        }
         if (modalState.modNum === 2) {
           if (modalState.sessionNum === 1) {
             renderAg2LessonContentTabSession1(sessionData, theme);
@@ -145,19 +133,6 @@
           renderAas2LessonContentTabSession3(sessionData, theme);
         } else if (modalState.sessionNum === 4) {
           renderAas2LessonContentTabSession4(sessionData, theme);
-        }
-        return;
-      }
-
-      if (modalState.modNum === 3) {
-        if (modalState.sessionNum === 1) {
-          renderAas3LessonContentTabSession1(sessionData, theme);
-        } else if (modalState.sessionNum === 2) {
-          renderAas3LessonContentTabSession2(sessionData, theme);
-        } else if (modalState.sessionNum === 3) {
-          renderAas3LessonContentTabSession3(sessionData, theme);
-        } else if (modalState.sessionNum === 4) {
-          renderAas3LessonContentTabSession4(sessionData, theme);
         }
         return;
       }
