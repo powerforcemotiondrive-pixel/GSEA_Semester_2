@@ -27,6 +27,7 @@ Course administration (student lists, teacher assignments, weekly schedules, and
     - `src/js/01-scorm-engine.js`: SCORM 1.2 runtime API
     - `src/js/02-config.js`: Course & program configuration
     - `src/js/03-core-deck.js`: Navigation, deck state, themes, and audio controllers
+    - `src/js/03b-vhf-radio-engine.js`: VHF radio audio engine (Web Audio API static + squelch clicks) & listening lab controller
     - `src/js/04-templates-dispatcher.js`: Lesson content & activity instruction dispatcher
     - `src/js/05a-templates-aas1.js`: Module 1 Aeronautical English lesson content (AAS Sessions 1–4)
     - `src/js/05b-templates-ag1.js`: Module 1 General English lesson content (AG Sessions 1–4)

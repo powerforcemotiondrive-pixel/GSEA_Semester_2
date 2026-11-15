@@ -3226,7 +3226,7 @@
           <div class="p-4 bg-slate-100 rounded-xl border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3">
             <div>
               <p class="text-xs font-bold text-slate-700">Ready to proceed to classroom activities?</p>
-              <p class="text-[11px] text-slate-500">${modalState.sessionNum === 1 ? 'Access the aviation news warm-up, speed-dating survey, modals practice, and EU261 role-play.' : (modalState.sessionNum === 2 ? 'Access the terminal flow map, spatial prepositions practice, apron access role-play, and guidance workshop.' : (modalState.sessionNum === 4 ? 'Access the aviation roles overview, roles & responsibilities practice, day-in-the-life simulations, and career dilemma debate.' : 'Access the interactive vehicle cards, turnaround clock, and role-play simulations.'))}</p>
+              <p class="text-[11px] text-slate-500">${(sessionData.objectives && sessionData.objectives.summary) ? sessionData.objectives.summary : 'Access the authentic audio listening drills, technical phraseology practice, and communicative pair simulations.'}</p>
             </div>
             <button onclick="switchModalTab('content')" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-xs font-bold text-white shadow-xs hover:shadow-md transition-all cursor-pointer" style="background-color: ${theme.primary};">
               <span>Open Lesson Content</span>
@@ -3353,6 +3353,440 @@
       document.body.style.overflow = "hidden";
     };
 
+    /* ==========================================================================
+       VHF RADIO AUDIO & LIVE TRAFFIC LISTENING ENGINE
+       Web Audio API (Bandpass VHF Static + Squelch Clicks) + SpeechSynthesis
+       100% Offline Self-Contained • Compatible with SCORM 1.2
+       ========================================================================== */
+
+    const RadioAudio = (() => {
+      let ctx = null;
+      let noiseNode = null;
+      let gainNode = null;
+      let activeExId = null;
+      let currentAudioEl = null;
+      let endTimer = null;
+      let voices = [];
+      const exercisesRegistry = {};
+
+      function ensureContext() {
+        if (!ctx) {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (AudioCtx) ctx = new AudioCtx();
+        }
+        if (ctx && ctx.state === "suspended") {
+          ctx.resume();
+        }
+      }
+
+      function playSquelchClick() {
+        try {
+          ensureContext();
+          if (!ctx) return;
+          const dur = 0.08;
+          const bufferSize = ctx.sampleRate * dur;
+          const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+          const data = buffer.getChannelData(0);
+          for (let i = 0; i < bufferSize; i++) {
+            data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.35));
+          }
+          const src = ctx.createBufferSource();
+          src.buffer = buffer;
+          const filter = ctx.createBiquadFilter();
+          filter.type = "bandpass";
+          filter.frequency.value = 1400;
+          const g = ctx.createGain();
+          g.gain.value = 0.14;
+          src.connect(filter).connect(g).connect(ctx.destination);
+          src.start();
+        } catch (e) {}
+      }
+
+      function startBackgroundStatic(level) {
+        if (level <= 0) return;
+        try {
+          ensureContext();
+          if (!ctx) return;
+          stopBackgroundStatic();
+          const bufferSize = ctx.sampleRate * 2;
+          const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+          const data = buffer.getChannelData(0);
+          for (let i = 0; i < bufferSize; i++) {
+            data[i] = Math.random() * 2 - 1;
+          }
+          noiseNode = ctx.createBufferSource();
+          noiseNode.buffer = buffer;
+          noiseNode.loop = true;
+
+          const filter = ctx.createBiquadFilter();
+          filter.type = "bandpass";
+          filter.frequency.value = 1350;
+          filter.Q.value = 1.4;
+
+          gainNode = ctx.createGain();
+          gainNode.gain.value = level;
+
+          noiseNode.connect(filter).connect(gainNode).connect(ctx.destination);
+          noiseNode.start();
+        } catch (e) {}
+      }
+
+      function stopBackgroundStatic() {
+        if (noiseNode) {
+          try { noiseNode.stop(); } catch (e) {}
+          noiseNode = null;
+        }
+      }
+
+      function clearDot() {
+        if (activeExId) {
+          const dot = document.getElementById("dot-" + activeExId);
+          if (dot) {
+            dot.classList.remove("bg-emerald-400", "animate-pulse");
+            dot.classList.add("bg-slate-400");
+          }
+          activeExId = null;
+        }
+      }
+
+      function loadVoices() {
+        if (!("speechSynthesis" in window)) return;
+        const all = window.speechSynthesis.getVoices();
+        voices = all.filter(v => v.lang && v.lang.toLowerCase().startsWith("en"));
+        if (voices.length === 0) voices = all;
+      }
+
+      function stopAll(skipCancel) {
+        if (endTimer) { clearTimeout(endTimer); endTimer = null; }
+        if (!skipCancel && "speechSynthesis" in window) {
+          window.speechSynthesis.cancel();
+        }
+        if (currentAudioEl) {
+          currentAudioEl.pause();
+          currentAudioEl.currentTime = 0;
+          currentAudioEl = null;
+        }
+        stopBackgroundStatic();
+        clearDot();
+      }
+
+      function finishGracefully() {
+        endTimer = setTimeout(() => {
+          playSquelchClick();
+          stopAll(true);
+        }, 260);
+      }
+
+      function play(exId, spokenText, customUrl) {
+        stopAll();
+        activeExId = exId;
+        const dot = document.getElementById("dot-" + exId);
+        if (dot) {
+          dot.classList.remove("bg-slate-400");
+          dot.classList.add("bg-emerald-400", "animate-pulse");
+        }
+
+        const noiseSelect = document.getElementById("vhf-noise-select-" + exId) || document.getElementById("vhf-noise-select");
+        const noiseLevel = noiseSelect ? parseFloat(noiseSelect.value || "0.035") : 0.035;
+        const rateSelect = document.getElementById("vhf-rate-select-" + exId) || document.getElementById("vhf-rate-select");
+        const rate = rateSelect ? parseFloat(rateSelect.value || "0.95") : 0.95;
+
+        playSquelchClick();
+
+        if (customUrl) {
+          currentAudioEl = new Audio(customUrl);
+          currentAudioEl.playbackRate = rate;
+          startBackgroundStatic(noiseLevel);
+          currentAudioEl.onended = finishGracefully;
+          currentAudioEl.play().catch(() => stopAll());
+          return;
+        }
+
+        const textToSpeak = spokenText || (exercisesRegistry[exId] && exercisesRegistry[exId].spoken) || "";
+        if (!textToSpeak) {
+          stopAll();
+          return;
+        }
+
+        if (!("speechSynthesis" in window)) {
+          alert("Speech Synthesis is unavailable in this browser.");
+          stopAll();
+          return;
+        }
+
+        const utter = new SpeechSynthesisUtterance(textToSpeak);
+        if (voices.length === 0) loadVoices();
+        const ukVoice = voices.find(v => v.lang && (v.lang.includes("GB") || v.lang.includes("en-US") || v.name.includes("UK") || v.name.includes("English")));
+        if (ukVoice) utter.voice = ukVoice;
+        else if (voices[0]) utter.voice = voices[0];
+
+        utter.rate = rate;
+        utter.pitch = 0.96;
+
+        utter.onstart = () => startBackgroundStatic(noiseLevel);
+        utter.onend = finishGracefully;
+        utter.onerror = () => stopAll();
+
+        window.speechSynthesis.speak(utter);
+      }
+
+      function normalizeAns(str) {
+        return (str || "")
+          .trim()
+          .toLowerCase()
+          .replace(/-/g, " ")
+          .replace(/,/g, ".")
+          .replace(/(\d)\.(\d{3})(?!\d)/g, (m, a, b) => (Number(a) < 10 ? a + b : m))
+          .replace(/[.?!]+$/g, "")
+          .replace(/\s+/g, " ");
+      }
+
+      function parseTemplate(ex) {
+        const parts = [];
+        const regex = /\{\{([^}]+)\}\}/g;
+        let lastIdx = 0;
+        let match;
+        let blankIndex = 0;
+        while ((match = regex.exec(ex.template)) !== null) {
+          if (match.index > lastIdx) {
+            parts.push({ type: "text", val: ex.template.slice(lastIdx, match.index) });
+          }
+          const [ansRaw, hint] = match[1].split("|");
+          const accepted = ansRaw.split("/").map(s => s.trim());
+          parts.push({ type: "blank", id: `${ex.id}_b${blankIndex}`, accepted, hint: hint || "..." });
+          blankIndex++;
+          lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < ex.template.length) {
+          parts.push({ type: "text", val: ex.template.slice(lastIdx) });
+        }
+        return parts;
+      }
+
+      function registerExercise(ex) {
+        if (!ex || !ex.id) return;
+        const parts = parseTemplate(ex);
+        const blankMap = {};
+        parts.filter(p => p.type === "blank").forEach(b => {
+          blankMap[b.id] = b.accepted;
+        });
+        exercisesRegistry[ex.id] = {
+          ...ex,
+          parts,
+          blankMap
+        };
+      }
+
+      function checkExercise(exId, acceptedAnswersMap) {
+        const ex = exercisesRegistry[exId];
+        const answersMap = acceptedAnswersMap || (ex && ex.blankMap) || {};
+        let correctCount = 0;
+        const totalCount = Object.keys(answersMap).length;
+        for (const [blankId, acceptedList] of Object.entries(answersMap)) {
+          const inp = document.getElementById(blankId);
+          if (!inp) continue;
+          const userVal = normalizeAns(inp.value);
+          const isOk = userVal && acceptedList.some(a => normalizeAns(a) === userVal);
+          inp.classList.remove("border-emerald-500", "bg-emerald-500/20", "text-emerald-700", "dark:text-emerald-300", "border-rose-500", "bg-rose-500/20", "text-rose-700", "dark:text-rose-300");
+          if (isOk) {
+            inp.classList.add("border-emerald-500", "bg-emerald-500/20", "text-emerald-700", "dark:text-emerald-300");
+            correctCount++;
+          } else {
+            inp.classList.add("border-rose-500", "bg-rose-500/20", "text-rose-700", "dark:text-rose-300");
+          }
+        }
+        const fb = document.getElementById("fb-" + exId);
+        if (fb) {
+          fb.textContent = `${correctCount} / ${totalCount} correct`;
+          fb.className = correctCount === totalCount 
+            ? "text-xs font-bold text-emerald-600 dark:text-emerald-400 font-mono" 
+            : "text-xs font-bold text-amber-600 dark:text-amber-400 font-mono";
+        }
+      }
+
+      function revealExercise(exId, acceptedAnswersMap) {
+        const ex = exercisesRegistry[exId];
+        const answersMap = acceptedAnswersMap || (ex && ex.blankMap) || {};
+        for (const [blankId, acceptedList] of Object.entries(answersMap)) {
+          const inp = document.getElementById(blankId);
+          if (!inp) continue;
+          inp.value = acceptedList[0];
+          inp.classList.remove("border-rose-500", "bg-rose-500/20", "text-rose-700", "dark:text-rose-300");
+          inp.classList.add("border-emerald-500", "bg-emerald-500/20", "text-emerald-700", "dark:text-emerald-300");
+        }
+        const fb = document.getElementById("fb-" + exId);
+        if (fb) {
+          fb.textContent = `${Object.keys(answersMap).length} / ${Object.keys(answersMap).length} revealed`;
+          fb.className = "text-xs font-bold text-emerald-600 dark:text-emerald-400 font-mono";
+        }
+      }
+
+      function toggleTranscript(exId) {
+        const el = document.getElementById("tr-" + exId);
+        const btn = document.getElementById("btn-tr-" + exId);
+        if (!el) return;
+        const isHidden = el.classList.contains("hidden");
+        if (isHidden) {
+          el.classList.remove("hidden");
+          if (btn) btn.innerHTML = `<span>Hide Radio Script</span> &uarr;`;
+        } else {
+          el.classList.add("hidden");
+          if (btn) btn.innerHTML = `<span>Show Radio Script</span> &rarr;`;
+        }
+      }
+
+      function selectMcq(exId, selectedIdx, correctIdx) {
+        const container = document.getElementById("mcq-" + exId);
+        if (!container) return;
+        const options = container.querySelectorAll(".mcq-option");
+        options.forEach((opt, idx) => {
+          opt.classList.remove("border-emerald-500", "bg-emerald-50", "border-rose-500", "bg-rose-50");
+          if (idx === correctIdx) {
+            opt.classList.add("border-emerald-500", "bg-emerald-50");
+          } else if (idx === selectedIdx) {
+            opt.classList.add("border-rose-500", "bg-rose-50");
+          }
+        });
+        const fb = document.getElementById("mcq-fb-" + exId);
+        if (fb) {
+          fb.textContent = selectedIdx === correctIdx ? "✓ Correct operational analysis." : "✗ Review the transmission: incorrect deduction.";
+          fb.className = selectedIdx === correctIdx ? "text-xs font-bold text-emerald-600" : "text-xs font-bold text-rose-600";
+        }
+      }
+
+      function renderDrill(ex) {
+        registerExercise(ex);
+        const parts = ex.parts || parseTemplate(ex);
+        const gapHtml = parts.map(p => {
+          if (p.type === "text") return `<span>${p.val}</span>`;
+          const width = Math.max(75, Math.min(180, (p.accepted[0].length + 2) * 10));
+          return `<input type="text" id="${p.id}" placeholder="${p.hint}" class="inline-block px-2 py-0.5 rounded border border-slate-300 bg-white text-slate-800 text-xs font-semibold focus:outline-hidden focus:border-blue-500 focus:ring-1 focus:ring-blue-400 font-mono text-center mx-1 transition-all" style="width: ${width}px;" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">`;
+        }).join("");
+
+        const mcqHtml = ex.mcq ? `
+          <div id="mcq-${ex.id}" class="p-3 bg-indigo-50/70 border border-indigo-200/80 rounded-xl space-y-2">
+            <div class="flex items-center gap-2 text-indigo-950 font-bold text-xs">
+              <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-indigo-200 text-indigo-800">Operational Check</span>
+              <span>${ex.mcq.q}</span>
+            </div>
+            <div class="grid grid-cols-1 gap-1.5 pt-1">
+              ${ex.mcq.opts.map((opt, idx) => `
+                <button type="button" onclick="RadioAudio.selectMcq('${ex.id}', ${idx}, ${ex.mcq.ans})" class="mcq-option text-left px-3 py-2 rounded-lg border border-indigo-200/90 bg-white hover:bg-indigo-100/50 text-xs font-medium text-slate-800 transition-all cursor-pointer flex items-center justify-between gap-2 shadow-2xs">
+                  <span class="flex items-center gap-2">
+                    <span class="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 font-bold text-[11px] inline-flex items-center justify-center shrink-0">${String.fromCharCode(65 + idx)}</span>
+                    <span>${opt}</span>
+                  </span>
+                  <span class="text-[11px] text-slate-400">Select</span>
+                </button>
+              `).join('')}
+            </div>
+            <div id="mcq-fb-${ex.id}" class="text-xs font-bold pt-1"></div>
+          </div>
+        ` : "";
+
+        return `
+          <div class="p-4 sm:p-5 bg-white border border-slate-200 rounded-xl shadow-xs space-y-4 text-left">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-slate-400 shrink-0" id="dot-${ex.id}"></span>
+                <h4 class="text-xs sm:text-sm font-black text-slate-900">${ex.title}</h4>
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[11px] font-mono font-bold bg-slate-900 text-cyan-400 border border-slate-700 shadow-2xs">
+                  <svg width="12" height="12" class="text-cyan-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                  ${ex.freq}
+                </span>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-between gap-2 p-2.5 bg-slate-900 rounded-lg border border-slate-800 text-slate-200">
+              <div class="flex items-center gap-2">
+                <button type="button" onclick="RadioAudio.play('${ex.id}')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white shadow-xs transition-all cursor-pointer">
+                  <svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                  <span>Play Transmission</span>
+                </button>
+                <button type="button" onclick="RadioAudio.stopAll()" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-all cursor-pointer">
+                  <svg width="12" height="12" fill="currentColor" viewBox="0 0 24 24"><path d="M6 6h12v12H6z"/></svg>
+                  <span>Stop</span>
+                </button>
+              </div>
+              <div class="flex items-center gap-2 text-[11px] text-slate-400">
+                <label class="flex items-center gap-1">
+                  <span>Static:</span>
+                  <select id="vhf-noise-select-${ex.id}" class="bg-slate-800 text-slate-200 border border-slate-700 rounded px-1.5 py-0.5 text-[11px] focus:outline-hidden">
+                    <option value="0.015">Low</option>
+                    <option value="0.035" selected>Standard</option>
+                    <option value="0.065">Heavy</option>
+                  </select>
+                </label>
+                <label class="flex items-center gap-1">
+                  <span>Speed:</span>
+                  <select id="vhf-rate-select-${ex.id}" class="bg-slate-800 text-slate-200 border border-slate-700 rounded px-1.5 py-0.5 text-[11px] focus:outline-hidden">
+                    <option value="0.85">0.85x</option>
+                    <option value="0.95" selected>1.0x</option>
+                    <option value="1.05">1.05x</option>
+                  </select>
+                </label>
+              </div>
+            </div>
+
+            <div class="p-3.5 bg-slate-50 border border-slate-200/90 rounded-xl leading-relaxed text-xs sm:text-sm text-slate-800 font-medium">
+              ${gapHtml}
+            </div>
+
+            <div class="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-slate-100">
+              <div class="flex flex-wrap items-center gap-2">
+                <button type="button" onclick="RadioAudio.checkExercise('${ex.id}')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 shadow-2xs transition-all cursor-pointer">
+                  <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                  <span>Check Answers</span>
+                </button>
+                <button type="button" onclick="RadioAudio.revealExercise('${ex.id}')" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-slate-700 bg-white border border-slate-300 hover:bg-slate-100 transition-all cursor-pointer shadow-2xs">
+                  <span>Reveal Answers</span>
+                </button>
+                <button type="button" id="btn-tr-${ex.id}" onclick="RadioAudio.toggleTranscript('${ex.id}')" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-slate-700 bg-white border border-slate-300 hover:bg-slate-100 transition-all cursor-pointer shadow-2xs">
+                  <span>Show Radio Script</span> &rarr;
+                </button>
+              </div>
+              <span id="fb-${ex.id}" class="text-xs font-bold font-mono"></span>
+            </div>
+
+            <div id="tr-${ex.id}" class="hidden p-3 bg-slate-900 border border-slate-800 text-cyan-300 font-mono text-xs rounded-lg space-y-1">
+              <div class="flex items-center gap-1.5 text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-1">
+                <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                <span>Verbatim Radio Transmission Transcript</span>
+              </div>
+              <p class="leading-relaxed text-slate-200">${ex.spoken}</p>
+            </div>
+
+            ${mcqHtml}
+          </div>
+        `;
+      }
+
+      if (typeof window !== "undefined") {
+        if ("speechSynthesis" in window) {
+          window.speechSynthesis.onvoiceschanged = loadVoices;
+        }
+        window.addEventListener("beforeunload", () => stopAll());
+      }
+
+      return {
+        loadVoices,
+        play,
+        stopAll,
+        checkExercise,
+        revealExercise,
+        toggleTranscript,
+        selectMcq,
+        parseTemplate,
+        registerExercise,
+        renderDrill
+      };
+    })();
+
+    if (typeof window !== "undefined") {
+      window.RadioAudio = RadioAudio;
+    }
     function renderActivityInstructions(act, theme) {
       if (!act) return "";
       const badges = Array.isArray(act.modeBadges) ? act.modeBadges : [];
@@ -4009,12 +4443,57 @@
       if (!bodyEl) return;
       const content = sessionData.lessonContent || {};
       const hero = content.hero || {};
-      const opening = content.openingSession || {};
-      const journey = content.terminalJourney || {};
-      const preps = content.prepositionsClinic || {};
-      const caseStudy = content.airsideCaseStudy || {};
-      const guidance = content.guidanceWorkshop || {};
-      const closing = content.closingReview || {};
+
+      const drills = [
+        {
+          id: "s2e1",
+          title: "Drill 2.1 — Toulouse Delivery (LFBO): Full IFR Route Clearance",
+          freq: "121.700 MHz",
+          template: "EasyJet {{4521|flight number}}, cleared to {{Geneva|destination}} via {{FISTO 6N/FISTO6N|SID}} departure, Runway {{32L/32 Left|runway}}. Initial climb {{5000|altitude}} feet. Squawk {{5314|4 digits}}. Report ready for {{pushback/push back|maneuver}} on Ground {{121.900/121.9|frequency}}.",
+          spoken: "EasyJet four five two one, cleared to Geneva via Fisto six November departure, runway three two left. Initial climb five thousand feet. Squawk five three one four. Report ready for pushback on Ground one two one decimal niner zero zero.",
+          mcq: {
+            q: "Which items MUST EasyJet 4521 read back in full?",
+            opts: ["Only the destination and frequency", "Route/SID, Runway, initial climb altitude, and squawk code", "Only 'Roger, EasyJet 4521'"],
+            ans: 1
+          }
+        },
+        {
+          id: "s2e2",
+          title: "Drill 2.2 — Ground Control: Pushback, Startup & Slot Delay (TSAT)",
+          freq: "121.900 MHz",
+          template: "Lufthansa 1083, negative pushback at this time due to {{slot|ATFM reason}}; your CTOT is {{1145|time}} UTC, TSAT {{1125|time}}. Expect {{5/five|number}} minute delay. Maintain listening watch; I will call you for {{startup/start up|engine action}} and pushback facing {{west|direction}}.",
+          spoken: "Lufthansa one zero eight three, negative pushback at this time due to slot; your CTOT is one one four five UTC, TSAT one one two five. Expect five minute delay. Maintain listening watch; I will call you for startup and pushback facing west.",
+          mcq: {
+            q: "What should Lufthansa 1083 do now?",
+            opts: ["Start engines immediately and wait on stand", "Wait on stand and monitor Ground until called at TSAT 1125", "Push back facing east without calling"],
+            ans: 1
+          }
+        },
+        {
+          id: "s2e3",
+          title: "Drill 2.3 — Complex Taxi Route & Mandatory Hold Short",
+          freq: "121.850 MHz",
+          template: "Speedbird {{348|callsign}}, taxi to holding point {{M1/Mike 1|point}} Runway {{27R/27 Right|runway}} via Taxiway {{November|letter}}, {{Sierra|letter}}, and {{Mike|letter}}. Give way to the {{Airbus A350/A350|aircraft}} passing left to right on November. {{Hold short|2 words}} of Runway 27R.",
+          spoken: "Speedbird three four eight, taxi to holding point Mike one, runway two seven right, via taxiway November, Sierra, and Mike. Give way to the Airbus A three five zero passing left to right on November. Hold short of runway two seven right.",
+          mcq: {
+            q: "Which taxiways must Speedbird 348 use in sequence?",
+            opts: ["Mike, Sierra, November", "November, Sierra, Mike", "Alpha, Bravo, Mike"],
+            ans: 1
+          }
+        },
+        {
+          id: "s2e4",
+          title: "Drill 2.4 — Conditional Runway Crossing (Ground / Tower)",
+          freq: "121.975 MHz",
+          template: "Air France {{1142|flight}}, {{behind|condition}} the departing Ryanair {{737/B737|aircraft type}} on Runway {{09L/09 Left|runway}}, cross Runway 09L via {{Kilo|taxiway}} {{behind|repeat word}}, and continue to Stand {{B12/Bravo 12|stand}}.",
+          spoken: "Air France one one four two, behind the departing Ryanair seven three seven on runway zero niner left, cross runway zero niner left via Kilo behind, and continue to stand Bravo one two.",
+          mcq: {
+            q: "Why does the controller state 'behind' at both the start and end of the clearance?",
+            opts: ["Standard ICAO rule to eliminate ambiguity in conditional clearances", "Because the aircraft is already behind the terminal", "To request the aircraft to reverse on Kilo"],
+            ans: 0
+          }
+        }
+      ];
 
       bodyEl.innerHTML = `
         <div class="space-y-6 printable-lesson-container">
@@ -4023,9 +4502,9 @@
             <div>
               <div class="flex items-center gap-2">
                 <span class="text-white text-[10px] font-black px-2 py-0.5 rounded shadow-xs" style="background-color: ${theme.primary};">DIGITAL WORKSHEET</span>
-                <span class="text-xs font-bold text-slate-700">AT Module 1 • Session 2</span>
+                <span class="text-xs font-bold text-slate-700">AAS Module 1 • Session 2</span>
               </div>
-              <h3 class="text-sm sm:text-base font-black text-slate-900 mt-1">Passenger Journey &amp; Airfield Movement</h3>
+              <h3 class="text-sm sm:text-base font-black text-slate-900 mt-1">Ground Control, Pushback &amp; Taxi Clearances</h3>
             </div>
             <button type="button" onclick="window.printLessonContent()" class="inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-300 shadow-xs transition-all cursor-pointer shrink-0">
               <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
@@ -4036,11 +4515,11 @@
           <!-- Hero Banner & Context -->
           <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs">
             <div class="relative">
-              <img src="${hero.image || 'images/aas_m1card2.jpg'}" alt="${hero.title || 'Passenger Journey & Airfield Movement'}" class="w-full h-48 sm:h-64 object-cover" onerror="this.src='images/aas_m1card2.jpg'">
+              <img src="${hero.image || 'images/aas_m1card2.jpg'}" alt="Ground Movement Control" class="w-full h-48 sm:h-64 object-cover" onerror="this.src='images/aas_m1card2.jpg'">
               <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent flex flex-col justify-end p-4 sm:p-5">
-                <span class="text-[11px] font-bold text-amber-300 uppercase tracking-wider">Terminal Architecture &amp; Aerodrome Markings</span>
-                <h3 class="text-lg sm:text-2xl font-black text-white mt-0.5">${hero.title || 'Passenger Journey & Airfield Movement'}</h3>
-                <p class="text-xs sm:text-sm text-slate-200 mt-1 line-clamp-2">${hero.subtitle || 'Terminal Facilitation, Spatial Prepositions & Airside Guidance Systems'}</p>
+                <span class="text-[11px] font-bold text-amber-300 uppercase tracking-wider">SURFACE &amp; TERMINAL COMMUNICATIONS • ATC RADIOTELEPHONY</span>
+                <h3 class="text-lg sm:text-2xl font-black text-white mt-0.5">${hero.title || 'Ground Control, Pushback &amp; Taxi Clearances'}</h3>
+                <p class="text-xs sm:text-sm text-slate-200 mt-1 line-clamp-2">${hero.subtitle || 'Clearance Delivery, Pushback Authorization, Complex Taxi Routes, Hold-Short &amp; Conditional Clearances'}</p>
               </div>
             </div>
             <div class="p-4 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-600">
@@ -4049,7 +4528,7 @@
                 <span class="bg-indigo-100 text-indigo-800 font-bold px-2 py-0.5 rounded">CEFR B2</span>
                 <span class="text-slate-400">&bull;</span>
                 <span class="font-bold text-slate-800">Role Context:</span>
-                <span class="text-slate-600">AFISO / Aerodrome Ground Operations &amp; Passenger Facilitation</span>
+                <span class="text-slate-600">Aerodrome Ground Controller / Flight Crew (A320/B737)</span>
               </div>
               <div class="flex items-center gap-2">
                 <span class="font-bold text-slate-800">Total Duration:</span>
@@ -4058,403 +4537,199 @@
             </div>
           </div>
 
-          <!-- Activity 1: Aviation News & Session 1 Catch-Up Spot-Check -->
+          <!-- Part 1: Aviation News & Ground Movement Warm-Up -->
           <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-xs space-y-4">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
               <div class="flex items-center gap-2">
-                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">00-10m</span>
+                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">PART 1</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${opening.title || 'Activity 1: Aviation News & Session 1 Catch-Up Spot-Check (10 mins)'}</h4>
-                  <p class="text-[11px] text-slate-500">${opening.summary || ''}</p>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">Aviation News &amp; Ground Movement Terminology Retrieval</h4>
+                  <p class="text-[11px] text-slate-500">Runway incursion prevention, slot management &amp; core Ground radiotelephony</p>
                 </div>
               </div>
-              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Opening &amp; Catch-Up</span>
+              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Opening &amp; Warm-Up</span>
             </div>
 
-            ${renderActivityInstructions(opening, theme)}
-
-            <!-- News Prompts -->
+            <!-- Discussion Prompts -->
             <div class="p-4 bg-amber-50/70 border border-amber-200 rounded-xl space-y-2">
               <div class="flex items-center gap-2">
                 <svg width="16" height="16" class="text-amber-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
-                <h5 class="text-xs sm:text-sm font-bold text-amber-900">Airport Technology &amp; Innovation Headlines</h5>
+                <h5 class="text-xs sm:text-sm font-bold text-amber-900">Key Discussion Prompts</h5>
               </div>
               <ul class="space-y-1.5 pl-5 list-disc text-xs text-amber-900/90 leading-relaxed">
-                ${(opening.newsPrompts || []).map(p => `<li>${p}</li>`).join('')}
+                <li>What is the operational difference between <strong>TSAT</strong> (Target Startup Approval Time) and <strong>CTOT</strong> (Calculated Takeoff Time)?</li>
+                <li>Why does ICAO mandate verbatim readbacks for <em>runway holding points</em>, <em>runway crossings</em>, and <em>altimeter settings</em>?</li>
+                <li>How do conditional clearances ("Behind the landing A320...") introduce safety risks if not properly repeated?</li>
               </ul>
             </div>
-
-            <!-- Catch-Up Spot-Check Grid -->
-            <div class="space-y-3 pt-1">
-              <div class="flex items-center justify-between">
-                <h5 class="text-xs sm:text-sm font-bold text-slate-800">${(opening.catchUpSpotCheck && opening.catchUpSpotCheck.title) || 'Session 1 Catch-Up Spot-Check'}</h5>
-                <span class="text-[11px] text-slate-500">${(opening.catchUpSpotCheck && opening.catchUpSpotCheck.instructions) || ''}</span>
-              </div>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                ${((opening.catchUpSpotCheck && opening.catchUpSpotCheck.questions) || []).map(q => `
-                  <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-xl space-y-2.5 flex flex-col justify-between">
-                    <div>
-                      <div class="flex items-center justify-between gap-2">
-                        <span class="text-[10px] font-black uppercase tracking-wider text-slate-500">${q.term}</span>
-                        <span class="w-2 h-2 rounded-full" style="background-color: ${theme.primary};"></span>
-                      </div>
-                      <p class="text-xs font-bold text-slate-800 mt-1">${q.q}</p>
-                    </div>
-                    <div>
-                      <div id="catchup-ans-${q.id}" class="hidden p-2.5 bg-white border border-slate-200 rounded-lg text-[11px] text-slate-700 leading-relaxed shadow-xs mb-2">
-                        <span class="font-bold text-slate-900">Operational Key:</span> ${q.answer}
-                      </div>
-                      <button type="button" id="catchup-btn-${q.id}" onclick="window.toggleCatchUpAnswer(${q.id})" class="no-print inline-flex items-center gap-1.5 text-[11px] font-bold text-slate-600 hover:text-slate-900 cursor-pointer">
-                        <span>Reveal Answer</span> &rarr;
-                      </button>
-                    </div>
-                  </div>
-                `).join('')}
-              </div>
-            </div>
           </div>
 
-          <!-- Activity 2: Passenger Terminal Flow & Facilitation Dilemmas -->
+          <!-- Part 2: Cockpit VHF Listening Lab -->
           <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-xs space-y-4">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
               <div class="flex items-center gap-2">
-                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">10-35m</span>
+                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">PART 2</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${journey.title || 'Activity 2: Passenger Terminal Flow & Dilemmas (25 mins)'}</h4>
-                  <p class="text-[11px] text-slate-500">${journey.summary || ''}</p>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">Cockpit VHF Audio Lab — Ground &amp; Delivery Radiotelephony</h4>
+                  <p class="text-[11px] text-slate-500">Listen to 4 authentic clearances, complete the transcript gap-fills, and analyze operational decisions</p>
                 </div>
               </div>
-              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Journey Mapping</span>
+              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Interactive Listening Lab</span>
             </div>
 
-            ${renderActivityInstructions(journey, theme)}
-
-            <!-- 5 Sequential Touchpoints -->
-            <div class="space-y-2">
-              <h5 class="text-xs font-bold text-slate-700 uppercase tracking-wider">The 5 Sequential Concourse Touchpoints:</h5>
-              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5">
-                ${(journey.stages || []).map(s => `
-                  <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-1.5 flex flex-col justify-between">
-                    <div>
-                      <div class="flex items-center justify-between gap-1 border-b border-slate-200/80 pb-1">
-                        <span class="text-[10px] font-black uppercase text-indigo-700">Stage ${s.num}</span>
-                        <span class="text-[9px] font-bold text-slate-400 truncate max-w-[85px]">${s.area}</span>
-                      </div>
-                      <h6 class="text-xs font-bold text-slate-900 mt-1">${s.title}</h6>
-                      <p class="text-[11px] text-slate-600 leading-snug mt-1">${s.desc}</p>
-                    </div>
-                  </div>
-                `).join('')}
-              </div>
-            </div>
-
-            <!-- 2 Facilitation Dilemmas -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-              ${(journey.dilemmas || []).map(d => `
-                <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3 flex flex-col justify-between">
-                  <div>
-                    <div class="flex items-center justify-between gap-2 border-b border-slate-200/80 pb-2">
-                      <span class="text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-xs" style="background-color: ${theme.primary};">${d.badge}</span>
-                      <span class="text-[10px] font-bold text-slate-400 uppercase">Dilemma 0${d.id}</span>
-                    </div>
-                    <p class="text-xs sm:text-sm font-bold text-slate-900 mt-2 leading-snug">${d.statement}</p>
-                    
-                    <div class="mt-2.5 space-y-2 text-[11px]">
-                      <div class="p-2.5 bg-emerald-50/70 border border-emerald-200 rounded-lg text-emerald-900">
-                        <strong class="font-bold text-emerald-950">PRO / Benefits:</strong> ${d.pro}
-                      </div>
-                      <div class="p-2.5 bg-rose-50/70 border border-rose-200 rounded-lg text-rose-900">
-                        <strong class="font-bold text-rose-950">CON / Concerns:</strong> ${d.con}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="pt-2 border-t border-slate-200/80 space-y-2">
-                    <p class="text-[11px] font-medium text-slate-600 italic">&ldquo;${d.prompt}&rdquo;</p>
-                    <div class="no-print pt-1">
-                      <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Your Personal Stance (1 = Strongly Disagree, 5 = Strongly Agree):</label>
-                      <div class="flex items-center justify-between gap-1 bg-white p-1.5 rounded-lg border border-slate-200">
-                        ${[1, 2, 3, 4, 5].map(score => `
-                          <button type="button" onclick="window.setTerminalDebateAgreement(${d.id}, ${score})" id="terminal-debate-${d.id}-btn-${score}" class="flex-1 py-1 text-center text-xs font-bold rounded hover:bg-slate-100 transition-all text-slate-600 border border-transparent">
-                            ${score}
-                          </button>
-                        `).join('')}
-                      </div>
-                      <div class="flex justify-between text-[9px] text-slate-400 px-1 mt-0.5">
-                        <span>Disagree</span>
-                        <span>Neutral</span>
-                        <span>Agree</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              `).join('')}
+            <div class="space-y-4">
+              ${drills.map(d => RadioAudio.renderDrill(d)).join('')}
             </div>
           </div>
 
-          <!-- Activity 3: Language Clinic: Prepositions of Place, Direction & Movement -->
+          <!-- Part 3: Operational Analysis & Phraseology Clinic -->
           <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-xs space-y-4">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
               <div class="flex items-center gap-2">
-                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">35-60m</span>
+                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">PART 3</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${preps.title || 'Activity 3: Prepositions of Place & Movement (25 mins)'}</h4>
-                  <p class="text-[11px] text-slate-500">${preps.summary || ''}</p>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">Operational Analysis &amp; Phraseology Clinic</h4>
+                  <p class="text-[11px] text-slate-500">Golden rules for Ground Movement Control and runway incursion mitigation</p>
                 </div>
               </div>
-              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Grammar &amp; Precision</span>
+              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Golden Rules</span>
             </div>
 
-            ${renderActivityInstructions(preps, theme)}
-
-            <!-- 4 Rule Cards -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-              ${(preps.rules || []).map((r, i) => {
-                const borderCols = ['border-blue-300 bg-blue-50/60', 'border-indigo-300 bg-indigo-50/60', 'border-emerald-300 bg-emerald-50/60', 'border-amber-300 bg-amber-50/60'];
-                const textCols = ['text-blue-900', 'text-indigo-900', 'text-emerald-900', 'text-amber-900'];
-                return `
-                  <div class="p-3.5 border rounded-xl space-y-2 flex flex-col justify-between ${borderCols[i % 4]}">
-                    <div>
-                      <h5 class="text-xs font-black ${textCols[i % 4]}">${r.title}</h5>
-                      <p class="text-[11px] text-slate-600 mt-1">${r.rule}</p>
-                    </div>
-                    <div class="p-2 bg-white/90 border border-slate-200 rounded-lg text-[11px] text-slate-800 leading-snug">
-                      ${r.example}
-                    </div>
-                  </div>
-                `;
-              }).join('')}
-            </div>
-
-            <!-- Interactive Spatial Challenge -->
-            <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
-              <div class="flex items-center justify-between">
-                <div>
-                  <h5 class="text-xs sm:text-sm font-bold text-slate-900">${(preps.challenge && preps.challenge.title) || 'Interactive Spatial Challenge: Spot the Correct Preposition'}</h5>
-                  <p class="text-[11px] text-slate-500">${(preps.challenge && preps.challenge.instructions) || ''}</p>
-                </div>
-              </div>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
-                ${((preps.challenge && preps.challenge.questions) || []).map(q => `
-                  <div class="p-3.5 bg-white border border-slate-200 rounded-xl space-y-2.5 shadow-xs">
-                    <div class="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-slate-500 border-b border-slate-100 pb-1.5">
-                      <span>Scenario 0${q.id}: ${q.context}</span>
-                    </div>
-                    <p class="text-xs font-semibold text-slate-800 leading-relaxed">${q.sentence}</p>
-                    
-                    <div class="space-y-1 text-xs">
-                      ${q.options.map((opt) => `
-                        <div class="p-2 bg-slate-50 rounded-lg border border-slate-200 text-slate-700">
-                          ${opt}
-                        </div>
-                      `).join('')}
-                    </div>
-
-                    <div id="prep-chal-ans-${q.id}" class="hidden p-2.5 bg-emerald-50 border border-emerald-200 rounded-lg text-[11px] text-emerald-950 leading-relaxed shadow-xs">
-                      <span class="font-bold text-emerald-900">Correct:</span> ${q.correct}<br>
-                      <span class="font-bold text-emerald-900">Rule:</span> ${q.explanation}
-                    </div>
-
-                    <button type="button" id="prep-chal-btn-${q.id}" onclick="window.togglePrepositionChallengeAnswer(${q.id})" class="no-print inline-flex items-center gap-1.5 text-[11px] font-bold text-slate-600 hover:text-slate-900 cursor-pointer pt-1">
-                      <span>Verify Rationale</span> &rarr;
-                    </button>
-                  </div>
-                `).join('')}
-              </div>
-            </div>
-          </div>
-
-          <!-- Activity 4: Operational Case Study: Unauthorized Apron Access -->
-          <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-xs space-y-4">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
-              <div class="flex items-center gap-2">
-                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">60-85m</span>
-                <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${caseStudy.title || 'Activity 4: Unauthorized Apron Access Case Study (25 mins)'}</h4>
-                  <p class="text-[11px] text-slate-500">${caseStudy.summary || ''}</p>
-                </div>
-              </div>
-              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Airside Intercept Role-Play</span>
-            </div>
-
-            ${renderActivityInstructions(caseStudy, theme)}
-
-            ${caseStudy.incidentBriefing ? `
-              <!-- Operational Incident Briefing Card -->
-              <div class="rounded-xl border border-rose-300 bg-rose-50/40 overflow-hidden shadow-xs space-y-3">
-                <!-- Incident Dispatch Header Banner -->
-                <div class="px-4 py-3 bg-slate-900 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                  <div class="flex items-center gap-2.5">
-                    <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-rose-600 text-white">Security Alert</span>
-                    <span class="font-bold text-sm text-white">${caseStudy.incidentBriefing.classification || 'Apron Security Breach'}</span>
-                  </div>
-                  <div class="text-[11px] text-slate-300 flex items-center gap-3">
-                    <span><strong>Time:</strong> ${caseStudy.incidentBriefing.time}</span>
-                    <span class="text-amber-400 font-bold"><strong>Location:</strong> ${caseStudy.incidentBriefing.location}</span>
-                    <span class="hidden md:inline text-slate-400">| ${caseStudy.incidentBriefing.commChannel}</span>
-                  </div>
-                </div>
-
-                <div class="p-4 space-y-3.5">
-                  <!-- Operational Context -->
-                  <div>
-                    <h5 class="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
-                      <svg width="14" height="14" class="text-slate-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                      Incident Situation &amp; Breach Log
-                    </h5>
-                    <p class="text-xs text-slate-700 leading-relaxed mt-1">
-                      ${caseStudy.incidentBriefing.situation}
-                    </p>
-                  </div>
-
-                  <!-- Immediate Hazards -->
-                  <div class="space-y-1.5">
-                    <h5 class="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
-                      <svg width="14" height="14" class="text-rose-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-                      Immediate Apron Safety Hazards:
-                    </h5>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                      ${(caseStudy.incidentBriefing.immediateHazards || []).map(hz => `
-                        <div class="p-2.5 bg-white border border-rose-200 rounded-lg text-[11px] text-rose-950 flex items-start gap-2 shadow-2xs">
-                          <span class="text-rose-600 font-bold">&bull;</span>
-                          <span>${hz}</span>
-                        </div>
-                      `).join('')}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ` : ''}
-
-            <!-- Role Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              ${(caseStudy.roles || []).map((r, rIdx) => {
-                const isLiaison = rIdx === 0;
-                return `
-                  <div class="p-4 rounded-xl border space-y-3 flex flex-col justify-between ${isLiaison ? 'bg-blue-50/50 border-blue-200' : 'bg-emerald-50/50 border-emerald-200'}">
-                    <div>
-                      <div class="flex items-center justify-between gap-2 border-b pb-2 ${isLiaison ? 'border-blue-200' : 'border-emerald-200'}">
-                        <span class="text-xs font-black uppercase tracking-wider ${isLiaison ? 'text-blue-900' : 'text-emerald-900'}">${r.role}</span>
-                        <span class="text-[10px] font-bold px-2 py-0.5 rounded text-white ${isLiaison ? 'bg-blue-600' : 'bg-emerald-600'}">${isLiaison ? 'Operations Trainee' : 'Ramp Lead'}</span>
-                      </div>
-                      <div class="mt-2.5 text-xs text-slate-700 leading-relaxed">
-                        <strong class="font-bold text-slate-900">Your Objective:</strong> ${r.mission}
-                      </div>
-                    </div>
-
-                    <div class="space-y-1.5 pt-2 border-t ${isLiaison ? 'border-blue-200' : 'border-emerald-200'}">
-                      <span class="text-[10px] font-black uppercase tracking-wider ${isLiaison ? 'text-blue-800' : 'text-emerald-800'}">Key VHF &amp; De-escalation Phrases:</span>
-                      <ul class="space-y-1 text-[11px] text-slate-700 pl-4 list-disc">
-                        ${(r.keyPhrases || []).map(p => `<li>${p}</li>`).join('')}
-                      </ul>
-                    </div>
-                  </div>
-                `;
-              }).join('')}
-            </div>
-
-            <div class="p-3 bg-slate-100 rounded-xl text-center text-xs font-semibold text-slate-700">
-              ${caseStudy.task || 'Conduct a 4-minute spoken VHF radio exchange and de-escalation role-play. Focus on spatial precision, professional composure, and clear prepositions. Then swap roles.'}
-            </div>
-          </div>
-
-          <!-- Activity 5: Airfield Guidance Markings & Spoken Briefing -->
-          <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-xs space-y-4">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
-              <div class="flex items-center gap-2">
-                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">85-110m</span>
-                <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${guidance.title || 'Activity 5: Airfield Guidance Markings & Spoken Briefing (25 mins)'}</h4>
-                  <p class="text-[11px] text-slate-500">${guidance.summary || ''}</p>
-                </div>
-              </div>
-              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Ground Guidance Systems</span>
-            </div>
-
-            ${renderActivityInstructions(guidance, theme)}
-
-            <!-- 4 Guidance Markings Cards -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-              ${(guidance.markings || []).map(m => `
-                <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-xl space-y-2 flex flex-col justify-between">
-                  <div>
-                    <div class="flex items-center justify-between gap-1 border-b border-slate-200/80 pb-1.5">
-                      <span class="text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow-xs" style="background-color: ${theme.primary};">${m.badge}</span>
-                      <span class="text-[10px] font-bold text-slate-400">0${m.id}</span>
-                    </div>
-                    <h5 class="text-xs font-bold text-slate-900 mt-1.5">${m.title}</h5>
-                    <p class="text-[11px] text-slate-600 leading-relaxed mt-1">${m.desc}</p>
-                  </div>
-                </div>
-              `).join('')}
-            </div>
-
-            <!-- 60-Second Airfield Safety Briefing Model -->
-            <div class="p-4 bg-emerald-50/70 border border-emerald-200 rounded-xl space-y-2">
-              <div class="flex items-center justify-between">
-                <span class="text-xs font-bold text-emerald-950 flex items-center gap-1.5">
-                  <svg width="14" height="14" class="text-emerald-700 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"/></svg>
-                  ${(guidance.spokenHandoverModel && guidance.spokenHandoverModel.title) || '60-Second Airfield Safety Briefing Model'}
-                </span>
-                <span class="text-[10px] font-bold text-emerald-700 uppercase tracking-wider">Spoken Benchmark</span>
-              </div>
-              <p class="text-xs text-emerald-900 leading-relaxed italic">
-                &ldquo;${(guidance.spokenHandoverModel && guidance.spokenHandoverModel.text) || ''}&rdquo;
-              </p>
-            </div>
-          </div>
-
-          <!-- Activity 6: Closing Review -->
-          <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-xs space-y-4">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
-              <div class="flex items-center gap-2">
-                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">110-120m</span>
-                <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${closing.title || 'Activity 6: 10-Minute Vocabulary Review & Wrap-Up (10 mins)'}</h4>
-                  <p class="text-[11px] text-slate-500">${closing.summary || ''}</p>
-                </div>
-              </div>
-              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Closing Consolidation</span>
-            </div>
-
-            ${renderActivityInstructions(closing, theme)}
-
-            <!-- Review Prompts -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-              ${(closing.reviewPrompts || []).map((rp, rpIdx) => `
-                <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-xl space-y-2 flex flex-col justify-between">
-                  <div>
-                    <span class="text-[10px] font-black uppercase tracking-wider text-slate-500">Step 0${rpIdx + 1}</span>
-                    <h5 class="text-xs font-bold text-slate-900 mt-0.5">${rp.title}</h5>
-                    <p class="text-[11px] text-slate-600 mt-1 leading-relaxed">${rp.desc}</p>
-                  </div>
-                  <div class="pt-2 border-t border-slate-200/80">
-                    <button type="button" onclick="switchModalTab('revision')" class="no-print text-[11px] font-bold text-indigo-600 hover:text-indigo-800 cursor-pointer">
-                      <span>Open Flashcard Review</span> &rarr;
-                    </button>
-                  </div>
-                </div>
-              `).join('')}
+              <div class="p-3.5 bg-blue-50/70 border border-blue-200 rounded-xl space-y-2">
+                <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-blue-200 text-blue-900">Rule 1 • The 'Behind' Sandwich</span>
+                <h5 class="text-xs font-bold text-blue-950">Conditional Clearances</h5>
+                <p class="text-xs text-blue-900/90 leading-relaxed">Always state the condition first <em>and</em> last: <em>"Behind landing B737, line up Runway 14R behind."</em> Never start with the action to avoid premature runway entry.</p>
+              </div>
+
+              <div class="p-3.5 bg-emerald-50/70 border border-emerald-200 rounded-xl space-y-2">
+                <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-emerald-200 text-emerald-900">Rule 2 • Hold Short Discipline</span>
+                <h5 class="text-xs font-bold text-emerald-950">Runway Protection</h5>
+                <p class="text-xs text-emerald-900/90 leading-relaxed">An instruction to taxi to a holding point never authorizes entering or crossing a runway. If holding instructions are absent, stop before any runway intersection.</p>
+              </div>
+
+              <div class="p-3.5 bg-purple-50/70 border border-purple-200 rounded-xl space-y-2">
+                <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-purple-200 text-purple-900">Rule 3 • Slot Synchronization</span>
+                <h5 class="text-xs font-bold text-purple-950">TSAT &amp; CTOT Management</h5>
+                <p class="text-xs text-purple-900/90 leading-relaxed">Pushback startup is calibrated within a window of TSAT -5 / +5 minutes to meet the Eurocontrol CTOT window (-5 / +10 mins) at the departure threshold.</p>
+              </div>
             </div>
+          </div>
+
+          <!-- Part 4: Communicative Pair Simulation & Readback Challenge -->
+          <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-xs space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
+              <div class="flex items-center gap-2">
+                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">PART 4</span>
+                <div>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">Communicative Pair Simulation &amp; Readback Challenge</h4>
+                  <p class="text-[11px] text-slate-500">Live pilot-controller roleplay: taxi clearance issuance, complex route tracing &amp; readback verification</p>
+                </div>
+              </div>
+              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Pair Simulation</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Student A Role Card -->
+              <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2.5">
+                <div class="flex items-center justify-between">
+                  <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-slate-200 text-slate-800">Student A • Ground Controller</span>
+                  <span class="text-xs font-bold text-slate-500">Station: Toulouse Ground</span>
+                </div>
+                <h5 class="text-xs font-bold text-slate-900">Issue Complex Taxi &amp; Crossing Instructions</h5>
+                <p class="text-xs text-slate-700 leading-relaxed">Clear Air France 1452 from Stand 24 to Holding Point Mike 2, Runway 32L via Taxiway November and Sierra. Issue a conditional clearance behind an arriving A330 on Sierra before crossing.</p>
+                <div class="p-2.5 bg-white border border-slate-200 rounded-lg text-xs font-mono text-slate-700">
+                  "Air France 1452, behind the arriving A330 passing right to left on Sierra, taxi to holding point Mike 2 via November, Sierra behind. Hold short of Runway 32L."
+                </div>
+              </div>
+
+              <!-- Student B Role Card -->
+              <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2.5">
+                <div class="flex items-center justify-between">
+                  <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-blue-100 text-blue-800">Student B • Flight Crew (AFR1452)</span>
+                  <span class="text-xs font-bold text-blue-600">Aircraft: A320</span>
+                </div>
+                <h5 class="text-xs font-bold text-slate-900">Active Peer Verification Checklist</h5>
+                <ul class="space-y-1.5 text-xs text-slate-700">
+                  <li class="flex items-start gap-1.5"><span class="text-emerald-600 font-bold">✓</span> Read back conditional phrase with "behind" at start and end</li>
+                  <li class="flex items-start gap-1.5"><span class="text-emerald-600 font-bold">✓</span> Verbatim repeat of taxiways: November, Sierra</li>
+                  <li class="flex items-start gap-1.5"><span class="text-emerald-600 font-bold">✓</span> Mandatory readback of: <em>Holding Point Mike 2, Runway 32L, Hold Short</em></li>
+                  <li class="flex items-start gap-1.5"><span class="text-emerald-600 font-bold">✓</span> Standard ICAO callsign placed at the end of the readback</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Closing Review & Flashcards Link -->
+          <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-600">
+            <div>
+              <span class="font-bold text-slate-800">Session 2 Review:</span>
+              <span class="text-slate-600 ml-1">Consolidate Ground Movement terms, TSAT/CTOT flow, and ICAO conditional clearance standards.</span>
+            </div>
+            <button onclick="switchModalTab('revision')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white shadow-xs hover:opacity-90 transition-all cursor-pointer shrink-0" style="background-color: ${theme.primary};">
+              <span>View Vocabulary Flashcards</span> &rarr;
+            </button>
           </div>
         </div>
       `;
     }
 
-    function renderLessonContentTabSession3(sessionData, theme) {
+function renderLessonContentTabSession3(sessionData, theme) {
       const bodyEl = document.getElementById('modal-body');
       if (!bodyEl) return;
       const content = sessionData.lessonContent || {};
       const hero = content.hero || {};
-      const opening = content.openingSession || {};
-      const clock = content.turnaroundClock || {};
-      const vehicles = content.vehicles || [];
-      const vehiclesInstruction = content.vehiclesInstruction || {};
-      const delays = content.safetyDelays || {};
-      const simulation = content.simulation || {};
-      const briefing = content.briefing || {};
-      const closing = content.closingReview || {};
+
+      const drills = [
+        {
+          id: "s3e1",
+          title: "Drill 3.1 — Agen Information (LFBA): Departure Advisory & Discretion",
+          freq: "118.425 MHz",
+          template: "Foxtrot Golf Sierra Echo Alpha, Agen {{Information|station callsign}}. Runway in use {{29|runway}}, surface wind {{270|degrees}} degrees {{11|knots}} knots. QNH {{1019|hPa}}. Reported traffic: one {{Cessna 172/C172|aircraft type}} on left {{downwind|circuit leg}} for touch-and-go. Runway 29 appears {{clear|state}}, backtrack and take off {{at your discretion|AFIS phrase}}.",
+          spoken: "Foxtrot Golf Sierra Echo Alpha, Agen Information. Runway in use two niner, surface wind two seven zero degrees, one one knots. QNH one zero one niner. Reported traffic: one Cessna one seven two on left downwind for touch and go. Runway two niner appears clear, backtrack and take off at your discretion.",
+          mcq: {
+            q: "Did the AFIS officer clear F-GSEA for takeoff?",
+            opts: ["Yes, unconditional takeoff clearance was issued", "No, AFIS cannot issue clearances; the pilot decides at their discretion", "Only after the Cessna lands"],
+            ans: 1
+          }
+        },
+        {
+          id: "s3e2",
+          title: "Drill 3.2 — Poitiers Information (LFBI): IFR Arrival & Surface Condition",
+          freq: "120.350 MHz",
+          template: "Airliner 402, Poitiers Information. Runway {{21|runway}} is wet; Runway Condition Code {{5/five|digit 0-6}}, 100 percent coverage, depth {{2/two|digit}} millimeters of water. Surface wind {{200|degrees}} degrees {{14|knots}} knots, QNH {{1007|hPa}}. No {{reported traffic|2 words}} in the circuit. Report {{final|circuit leg}} and runway {{vacated|state}}.",
+          spoken: "Airliner four zero two, Poitiers Information. Runway two one is wet; Runway Condition Code five, one hundred percent coverage, depth two millimeters of water. Surface wind two zero zero degrees, one four knots, QNH one zero zero seven. No reported traffic in the circuit. Report final and runway vacated.",
+          mcq: {
+            q: "What does RWYCC 5 indicate about the runway?",
+            opts: ["Standing snow/ice with poor braking", "Wet runway with good braking action", "Closed due to hydroplaning"],
+            ans: 1
+          }
+        },
+        {
+          id: "s3e3",
+          title: "Drill 3.3 — Avignon Information (LFMV): VFR Circuit Conflict & Overhead Join",
+          freq: "122.600 MHz",
+          template: "November 342 Juliet, Avignon Information. Caution, {{two/2|number}} aircraft currently in the right-hand circuit Runway {{35|runway}}: a PA28 turning {{base|leg}} and a helicopter operating {{east|compass direction}} of the runway below {{800|altitude}} feet. Wind {{340|degrees}} degrees {{09/9|knots}} knots. Join {{overhead|join type}} at 1,800 feet QNH {{1015|hPa}}.",
+          spoken: "November three four two Juliet, Avignon Information. Caution, two aircraft currently in the right hand circuit runway three five: a PA two eight turning base and a helicopter operating east of the runway below eight hundred feet. Wind three four zero degrees, zero niner knots. Join overhead at one thousand eight hundred feet QNH one zero one five.",
+          mcq: {
+            q: "Where should N342J watch out for the helicopter?",
+            opts: ["On final approach at 1,800 ft", "East of Runway 35 below 800 ft", "Taxiing on the main apron"],
+            ans: 1
+          }
+        },
+        {
+          id: "s3e4",
+          title: "Drill 3.4 — Coastal AFIS (Cherbourg): Runway Vehicle & Wind Check",
+          freq: "119.850 MHz",
+          template: "Foxtrot Hotel Mike Kilo Lima, Cherbourg Information. {{Stand by/standby|hold instruction}} on final — runway inspection {{vehicle|object}} still on Runway {{28|runway}}, expected to vacate in {{one/1|number}} minute. Wind check: {{310|degrees}} degrees {{19|knots}} knots, gusting {{26|knots}} knots. Confirm {{intentions/intention|pilot plans}}.",
+          spoken: "Foxtrot Hotel Mike Kilo Lima, Cherbourg Information. Stand by on final — runway inspection vehicle still on runway two eight, expected to vacate in one minute. Wind check: three one zero degrees, one niner knots, gusting two six knots. Confirm intentions.",
+          mcq: {
+            q: "Why does the AFIS officer warn the arriving pilot?",
+            opts: ["Because a runway inspection vehicle is still occupying Runway 28", "Because the airport just switched to Runway 10", "Because the radio failed"],
+            ans: 0
+          }
+        }
+      ];
 
       bodyEl.innerHTML = `
         <div class="space-y-6 printable-lesson-container">
@@ -4463,9 +4738,9 @@
             <div>
               <div class="flex items-center gap-2">
                 <span class="text-white text-[10px] font-black px-2 py-0.5 rounded shadow-xs" style="background-color: ${theme.primary};">DIGITAL WORKSHEET</span>
-                <span class="text-xs font-bold text-slate-700">AT Module 1 • Session 3</span>
+                <span class="text-xs font-bold text-slate-700">AAS Module 1 • Session 3</span>
               </div>
-              <h3 class="text-sm sm:text-base font-black text-slate-900 mt-1">Ground Operations &amp; Turnaround Management</h3>
+              <h3 class="text-sm sm:text-base font-black text-slate-900 mt-1">AFIS &amp; Uncontrolled Aerodrome Traffic Information</h3>
             </div>
             <button type="button" onclick="window.printLessonContent()" class="inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-300 shadow-xs transition-all cursor-pointer shrink-0">
               <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
@@ -4476,367 +4751,166 @@
           <!-- Hero Banner & Context -->
           <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs">
             <div class="relative">
-              <img src="${hero.image || 'images/turnaround_apron.jpg'}" alt="${hero.title || 'Apron Turnaround'}" class="w-full h-48 sm:h-64 object-cover" onerror="this.src='images/aas_m1card3.jpg'">
+              <img src="${hero.image || 'images/aas_m1card3.jpg'}" alt="AFIS Operations" class="w-full h-48 sm:h-64 object-cover" onerror="this.src='images/aas_m1card3.jpg'">
               <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent flex flex-col justify-end p-4 sm:p-5">
-                <span class="text-[11px] font-bold text-amber-300 uppercase tracking-wider">Apron Servicing Envelope</span>
-                <h2 class="text-base sm:text-xl font-black text-white mt-0.5">${hero.title || 'Ground Operations &amp; Turnaround Management'}</h2>
-                <p class="text-xs text-white/90 mt-1 max-w-2xl">${hero.subtitle || 'Coordinating critical ground handling operations in a 35 to 45-minute servicing window.'}</p>
+                <span class="text-[11px] font-bold text-amber-300 uppercase tracking-wider">ADVISORY AERODROMES • AIRFIELD INFORMATION</span>
+                <h3 class="text-lg sm:text-2xl font-black text-white mt-0.5">${hero.title || 'AFIS &amp; Uncontrolled Aerodrome Traffic Information'}</h3>
+                <p class="text-xs sm:text-sm text-slate-200 mt-1 line-clamp-2">${hero.subtitle || 'Aerodrome Flight Information Service, \'At Your Discretion\', RWYCC Surface Conditions &amp; VFR Circuit Separation'}</p>
+              </div>
+            </div>
+            <div class="p-4 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-600">
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-slate-800">Target Level:</span>
+                <span class="bg-indigo-100 text-indigo-800 font-bold px-2 py-0.5 rounded">CEFR B2</span>
+                <span class="text-slate-400">&bull;</span>
+                <span class="font-bold text-slate-800">Role Context:</span>
+                <span class="text-slate-600">AFIS Officer (AFISO) / General Aviation &amp; Regional IFR Pilot</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-slate-800">Total Duration:</span>
+                <span class="font-bold text-slate-900">120 Minutes</span>
               </div>
             </div>
           </div>
 
-          <!-- Activity 1: Aviation News & Previous Session Vocabulary Spot-Check (10 mins) -->
-          <div class="bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-xs space-y-4">
-            <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+          <!-- Part 1: Aviation News & AFIS Operational Warm-Up -->
+          <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-xs space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
               <div class="flex items-center gap-2">
-                <span class="text-white text-[10px] font-black px-2 py-0.5 rounded shadow-xs" style="background-color: ${theme.primary};">01</span>
-                <h3 class="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-800">${opening.title || 'Activity 1: Aviation News &amp; Previous Session Vocabulary Spot-Check (10 mins)'}</h3>
+                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">PART 1</span>
+                <div>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">Aviation News &amp; AFIS Operational Principles</h4>
+                  <p class="text-[11px] text-slate-500">Advisory communications, pilot decision authority &amp; uncontrolled airspace risks</p>
+                </div>
               </div>
-              <span class="text-[11px] font-semibold text-slate-500">Warm-Up &amp; Catch-Up</span>
+              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Opening &amp; Warm-Up</span>
             </div>
-            <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">${opening.summary || ''}</p>
 
-            ${renderActivityInstructions(opening, theme)}
-
-            <!-- News Prompts -->
-            <div class="p-3.5 rounded-lg bg-sky-50/70 border border-sky-200">
-              <span class="text-[11px] font-bold text-sky-900 uppercase tracking-wider">📰 Aviation News &amp; Current Events Prompts</span>
-              <ul class="space-y-1.5 mt-2 text-xs text-sky-950">
-                ${(opening.newsPrompts || []).map(p => `
-                  <li class="flex items-start gap-1.5">
-                    <span class="font-bold text-sky-700">&bull;</span>
-                    <span>${p}</span>
-                  </li>
-                `).join('')}
+            <!-- Discussion Prompts -->
+            <div class="p-4 bg-amber-50/70 border border-amber-200 rounded-xl space-y-2">
+              <div class="flex items-center gap-2">
+                <svg width="16" height="16" class="text-amber-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+                <h5 class="text-xs sm:text-sm font-bold text-amber-900">Key Discussion Prompts</h5>
+              </div>
+              <ul class="space-y-1.5 pl-5 list-disc text-xs text-amber-900/90 leading-relaxed">
+                <li>Why is an AFIS officer legally prohibited from issuing clearances such as <em>"Cleared to land"</em> or <em>"Cleared for takeoff"</em>?</li>
+                <li>What does the phrase <strong>"at your discretion"</strong> mean for the Pilot-in-Command?</li>
+                <li>How does the ICAO Global Reporting Format (GRF) and Runway Condition Code (RWYCC 0–6) protect wet runway operations?</li>
               </ul>
             </div>
+          </div>
 
-            <!-- Session 2 Vocabulary Spot-Check -->
-            <div class="space-y-2.5 pt-1">
-              <div class="flex items-center justify-between">
-                <span class="text-xs font-bold text-slate-800 uppercase tracking-wider">🎯 Session 2 Catch-Up: Airfield Vocabulary Spot-Check</span>
-                <span class="text-[11px] text-slate-500">Rapid-fire student recall</span>
+          <!-- Part 2: Cockpit VHF Listening Lab -->
+          <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-xs space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
+              <div class="flex items-center gap-2">
+                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">PART 2</span>
+                <div>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">Cockpit VHF Audio Lab — AFIS Aerodrome Advisory Broadcasts</h4>
+                  <p class="text-[11px] text-slate-500">Listen to 4 authentic AFIS transmissions, complete the gap-fills, and analyze advisory phraseology</p>
+                </div>
               </div>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                ${((opening.spotCheck && opening.spotCheck.questions) || []).map(q => `
-                  <div class="p-3 rounded-lg bg-slate-50 border border-slate-200/90 text-xs flex flex-col justify-between space-y-2">
-                    <div>
-                      <span class="font-bold text-slate-800 block text-xs">${q.id}. ${q.q}</span>
-                    </div>
-                    <div>
-                      <button type="button" onclick="window.toggleSpotCheckAnswer(${q.id})" id="spotcheck-btn-${q.id}" class="no-print text-[11px] font-bold text-indigo-600 hover:text-indigo-800 cursor-pointer">
-                        <span>Reveal Answer</span> &rarr;
-                      </button>
-                      <div id="spotcheck-ans-${q.id}" class="hidden p-2 mt-1.5 rounded bg-white border border-slate-200 text-[11px] text-slate-700 leading-relaxed italic">
-                        ${q.answer}
-                      </div>
-                    </div>
-                  </div>
-                `).join('')}
+              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Interactive Listening Lab</span>
+            </div>
+
+            <div class="space-y-4">
+              ${drills.map(d => RadioAudio.renderDrill(d)).join('')}
+            </div>
+          </div>
+
+          <!-- Part 3: Operational Analysis & Legal Clinic -->
+          <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-xs space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
+              <div class="flex items-center gap-2">
+                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">PART 3</span>
+                <div>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">Operational Analysis &amp; AFIS Legal Boundaries</h4>
+                  <p class="text-[11px] text-slate-500">Distinguishing advisory information from air traffic control clearances</p>
+                </div>
+              </div>
+              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Legal Boundaries</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div class="p-3.5 bg-blue-50/70 border border-blue-200 rounded-xl space-y-2">
+                <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-blue-200 text-blue-900">Principle 1 • Information Only</span>
+                <h5 class="text-xs font-bold text-blue-950">No Control Authority</h5>
+                <p class="text-xs text-blue-900/90 leading-relaxed">AFIS delivers traffic information, weather observations, and aerodrome conditions. The pilot retains 100% legal authority for separation, takeoff, and landing timing.</p>
+              </div>
+
+              <div class="p-3.5 bg-emerald-50/70 border border-emerald-200 rounded-xl space-y-2">
+                <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-emerald-200 text-emerald-900">Principle 2 • Surface Condition</span>
+                <h5 class="text-xs font-bold text-emerald-950">RWYCC Matrix</h5>
+                <p class="text-xs text-emerald-900/90 leading-relaxed">RWYCC 6 = Dry; RWYCC 5 = Wet (&le; 3mm water depth, good braking); RWYCC 2/1 = Standing water/ice (poor braking action).</p>
+              </div>
+
+              <div class="p-3.5 bg-purple-50/70 border border-purple-200 rounded-xl space-y-2">
+                <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-purple-200 text-purple-900">Principle 3 • Circuit Reports</span>
+                <h5 class="text-xs font-bold text-purple-950">Standard Position Reports</h5>
+                <p class="text-xs text-purple-900/90 leading-relaxed">Pilots report overhead join, downwind, turning base, final, and runway vacated to allow other aircraft to build mental situational awareness.</p>
               </div>
             </div>
           </div>
 
-          <!-- Activity 2: The Turnaround Clock (15 mins) -->
-          <div class="bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-xs space-y-4">
-            <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+          <!-- Part 4: Spoken Simulation & AFIS Advisory Roleplay -->
+          <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-xs space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
               <div class="flex items-center gap-2">
-                <span class="text-white text-[10px] font-black px-2 py-0.5 rounded shadow-xs" style="background-color: ${theme.primary};">02</span>
-                <h3 class="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-800">${clock.title || 'Activity 2: The Turnaround Clock (15 mins)'}</h3>
-              </div>
-              <span class="text-[11px] font-semibold text-slate-500">Pacing &amp; Tenses</span>
-            </div>
-            <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">${clock.summary || ''}</p>
-
-            ${renderActivityInstructions(clock, theme)}
-
-            <!-- Turnaround Timeline -->
-            <div class="space-y-2 pt-1">
-              ${(clock.milestones || []).map(m => `
-                <div class="grid grid-cols-[85px_1fr] sm:grid-cols-[100px_1fr] items-start gap-3 p-3 rounded-lg bg-slate-50 border border-slate-200/80">
-                  <span class="text-[11px] font-black font-mono px-2 py-1 rounded text-center text-white shrink-0 shadow-2xs" style="background-color: ${theme.primary};">${m.time}</span>
-                  <div>
-                    <h5 class="text-xs sm:text-sm font-bold text-slate-800">${m.phase}</h5>
-                    <p class="text-[11px] sm:text-xs text-slate-600 mt-0.5 leading-relaxed">${m.desc}</p>
-                  </div>
+                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">PART 4</span>
+                <div>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">Spoken Simulation &amp; AFIS Advisory Roleplay</h4>
+                  <p class="text-[11px] text-slate-500">Pair roleplay: AFIS Officer transmitting wind, runway state, and traffic advisory vs arriving pilot</p>
                 </div>
-              `).join('')}
+              </div>
+              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Pair Simulation</span>
             </div>
 
-            <!-- Discussion & Grammar Box -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5 pt-2">
-              <div class="p-3.5 rounded-lg bg-amber-50/70 border border-amber-200">
-                <span class="text-[11px] font-bold text-amber-900 uppercase tracking-wider">Spoken Pair Discussion</span>
-                <ul class="space-y-2 mt-2 text-xs text-amber-950">
-                  ${(clock.discussionPrompts || []).map(q => `
-                    <li class="flex items-start gap-1.5">
-                      <span class="font-bold text-amber-700">&rarr;</span>
-                      <span>${q}</span>
-                    </li>
-                  `).join('')}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Student A Role Card -->
+              <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2.5">
+                <div class="flex items-center justify-between">
+                  <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-slate-200 text-slate-800">Student A • AFIS Officer</span>
+                  <span class="text-xs font-bold text-slate-500">Station: Agen Information</span>
+                </div>
+                <h5 class="text-xs font-bold text-slate-900">Transmit Aerodrome Advisory</h5>
+                <p class="text-xs text-slate-700 leading-relaxed">Provide Runway 29 information to F-GSEA: surface wind 280°/14 kt, QNH 1018, reported traffic one Robin DR400 on right base, runway appears clear, land at your discretion.</p>
+                <div class="p-2.5 bg-white border border-slate-200 rounded-lg text-xs font-mono text-slate-700">
+                  "F-GSEA, Agen Information. Runway 29, wind 280 degrees 14 knots, QNH 1018. Reported traffic one DR400 on right base. Runway appears clear, land at your discretion."
+                </div>
+              </div>
+
+              <!-- Student B Role Card -->
+              <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2.5">
+                <div class="flex items-center justify-between">
+                  <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800">Student B • Pilot (F-GSEA)</span>
+                  <span class="text-xs font-bold text-emerald-700">Aircraft: Cirrus SR22</span>
+                </div>
+                <h5 class="text-xs font-bold text-slate-900">Active Peer Verification Checklist</h5>
+                <ul class="space-y-1.5 text-xs text-slate-700">
+                  <li class="flex items-start gap-1.5"><span class="text-emerald-600 font-bold">✓</span> Did Student A strictly avoid saying "Cleared to land"?</li>
+                  <li class="flex items-start gap-1.5"><span class="text-emerald-600 font-bold">✓</span> Correct readback of QNH (1018) and Runway in use (29)</li>
+                  <li class="flex items-start gap-1.5"><span class="text-emerald-600 font-bold">✓</span> Traffic acknowledgment: "Traffic in sight" or "Looking for traffic"</li>
+                  <li class="flex items-start gap-1.5"><span class="text-emerald-600 font-bold">✓</span> Stated intentions clearly when established on final</li>
                 </ul>
               </div>
-
-              <div class="p-3.5 rounded-lg bg-indigo-50/70 border border-indigo-200">
-                <span class="text-[11px] font-bold text-indigo-900 uppercase tracking-wider">${(clock.grammarBox && clock.grammarBox.title) || 'Grammar Focus'}</span>
-                <p class="text-[11px] text-indigo-950 mt-1 leading-relaxed">${(clock.grammarBox && clock.grammarBox.rule) || ''}</p>
-                <div class="space-y-1.5 mt-2 pt-2 border-t border-indigo-200/60 text-[11px] text-indigo-950">
-                  ${((clock.grammarBox && clock.grammarBox.examples) || []).map(ex => `
-                    <div><span class="font-bold text-indigo-800">${ex.type}:</span> ${ex.text}</div>
-                  `).join('')}
-                </div>
-              </div>
             </div>
           </div>
 
-          <!-- Activity 3: The 10 Airside Vehicles (GSE) Master Index & Defining Game (30 mins) -->
-          <div class="bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-xs space-y-4">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-2 border-b border-slate-100 gap-2">
-              <div class="flex items-center gap-2">
-                <span class="text-white text-[10px] font-black px-2 py-0.5 rounded shadow-xs" style="background-color: ${theme.primary};">03</span>
-                <h3 class="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-800">Activity 3: Airside Vehicles (GSE) Master Index &amp; Defining Game (30 mins)</h3>
-              </div>
-              <div class="no-print flex items-center gap-1.5">
-                <button type="button" onclick="window.toggleAllVehicles(true)" class="text-[11px] font-bold px-2 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all cursor-pointer">Show All Answers</button>
-                <button type="button" onclick="window.toggleAllVehicles(false)" class="text-[11px] font-bold px-2 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all cursor-pointer">Show All Clues</button>
-              </div>
+          <!-- Closing Review & Flashcards Link -->
+          <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-600">
+            <div>
+              <span class="font-bold text-slate-800">Session 3 Review:</span>
+              <span class="text-slate-600 ml-1">Consolidate AFIS advisory standards, 'at your discretion' protocols, and RWYCC definitions before FE1.</span>
             </div>
-
-            ${renderActivityInstructions(vehiclesInstruction, theme)}
-            
-            <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 text-xs text-slate-700 leading-relaxed">
-              <span class="font-bold text-slate-800">Pair Work Task:</span> Student A views the vehicle clues and describes its operational role using defining language (e.g. <em>"This vehicle is designed to...", "Handlers connect it to..."</em>) without stating the vehicle's name. Student B listens and identifies the correct vehicle. Click <strong>Reveal Vehicle</strong> to verify pronunciation and model sentence.
-            </div>
-
-            <!-- 10 Vehicle Cards Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-              ${vehicles.map(v => `
-                <div id="vehicle-card-${v.id}" class="bg-white border border-slate-200 rounded-xl p-3.5 flex flex-col justify-between shadow-2xs hover:border-slate-300 transition-all">
-                  <div>
-                    <div class="flex items-center justify-between gap-2 border-b border-slate-100 pb-2 mb-2.5">
-                      <div class="flex items-center gap-2">
-                        <span class="text-white text-xs font-black px-2 py-0.5 rounded-md shadow-2xs" style="background-color: ${theme.primary};">
-                          ${v.id < 10 ? '0' + v.id : v.id}
-                        </span>
-                        <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-slate-100 text-slate-700">
-                          ${v.category}
-                        </span>
-                      </div>
-                      <button type="button" onclick="window.toggleVehicleCardView(${v.id})" id="vehicle-toggle-btn-${v.id}" class="no-print inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all cursor-pointer">
-                        <span>Reveal Vehicle</span> &rarr;
-                      </button>
-                    </div>
-
-                    <!-- Clue View (Default) -->
-                    <div id="vehicle-clue-${v.id}" class="space-y-2">
-                      <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Functional Clues:</span>
-                      <ul class="space-y-1 text-xs text-slate-700">
-                        ${v.clues.map(c => `
-                          <li class="flex items-start gap-1.5">
-                            <span class="text-slate-400 font-bold shrink-0">&bull;</span>
-                            <span>${c}</span>
-                          </li>
-                        `).join('')}
-                      </ul>
-                      <div class="pt-2 border-t border-slate-100 text-[11px]">
-                        <span class="font-bold text-slate-500">Sentence Starter: </span>
-                        <span class="italic text-slate-700">"${v.sentenceStarters[0]}"</span>
-                      </div>
-                    </div>
-
-                    <!-- Revealed View (Initially Hidden) -->
-                    <div id="vehicle-reveal-${v.id}" class="hidden space-y-2">
-                      <div class="flex items-start justify-between gap-2">
-                        <div>
-                          <h5 class="text-sm font-black text-slate-900">${v.name}</h5>
-                          <span class="text-xs font-mono text-slate-500">${v.phonetic}</span>
-                        </div>
-                        <button type="button" onclick="speakWord('${v.name.replace(/'/g, "\\'")}')" class="p-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-600 transition-all cursor-pointer" title="Listen to pronunciation">
-                          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072M18.364 5.636a9 9 0 010 12.728M11 5L6 9H2v6h4l5 4V5z"/></svg>
-                        </button>
-                      </div>
-                      <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-700 leading-relaxed">
-                        <span class="font-bold text-slate-800">Operational Purpose: </span>${v.modelSentence}
-                      </div>
-                      <div class="text-[11px] text-slate-600 italic">
-                        <span class="font-bold not-italic text-slate-700">Model Definition: </span>"${v.definingPractice}"
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              `).join('')}
-            </div>
-          </div>
-
-          <!-- Activity 4: Apron Safety & Cause-Effect Linkers (25 mins) -->
-          <div class="bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-xs space-y-4">
-            <div class="flex items-center justify-between pb-2 border-b border-slate-100">
-              <div class="flex items-center gap-2">
-                <span class="text-white text-[10px] font-black px-2 py-0.5 rounded shadow-xs" style="background-color: ${theme.primary};">04</span>
-                <h3 class="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-800">${delays.title || 'Activity 4: Apron Safety &amp; Cause-Effect Linkers (25 mins)'}</h3>
-              </div>
-              <span class="text-[11px] font-semibold text-slate-500">Formal Grammar</span>
-            </div>
-            <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">${delays.summary || ''}</p>
-
-            ${renderActivityInstructions(delays, theme)}
-
-            <!-- Linkers Summary Table -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-              ${(delays.linkers || []).map(l => `
-                <div class="p-3 rounded-lg bg-slate-50 border border-slate-200">
-                  <span class="text-[11px] font-bold text-slate-800 uppercase tracking-wider">${l.category}</span>
-                  <p class="text-xs font-mono text-slate-600 font-semibold mt-1">${l.pattern}</p>
-                  <p class="text-[11px] text-slate-600 italic mt-1.5 leading-snug">${l.example}</p>
-                </div>
-              `).join('')}
-            </div>
-
-            <!-- 4 Ramp Scenarios -->
-            <div class="space-y-3 pt-2">
-              <span class="text-xs font-bold text-slate-700 uppercase tracking-wider">Ramp Incident Case Scenarios:</span>
-              ${(delays.scenarios || []).map(sc => `
-                <div class="p-3.5 rounded-xl border border-slate-200 bg-white shadow-2xs space-y-2">
-                  <div class="flex items-center justify-between gap-2 border-b border-slate-100 pb-1.5">
-                    <h5 class="text-xs sm:text-sm font-bold text-slate-800">${sc.title}</h5>
-                    <button type="button" onclick="window.toggleScenarioModel(${sc.id})" id="scenario-btn-${sc.id}" class="no-print text-[11px] font-bold text-indigo-600 hover:text-indigo-800 transition-all cursor-pointer">
-                      <span>Show Target Model</span> &rarr;
-                    </button>
-                  </div>
-                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-                    <div class="p-2 rounded bg-rose-50/60 border border-rose-200/60">
-                      <span class="font-bold text-rose-900 text-[10px] uppercase tracking-wider block">Root Cause</span>
-                      <p class="text-rose-950 mt-0.5">${sc.cause}</p>
-                    </div>
-                    <div class="p-2 rounded bg-amber-50/60 border border-amber-200/60">
-                      <span class="font-bold text-amber-900 text-[10px] uppercase tracking-wider block">Operational Consequence</span>
-                      <p class="text-amber-950 mt-0.5">${sc.consequence}</p>
-                    </div>
-                  </div>
-                  <div class="text-[11px] text-slate-600 font-medium pt-1">
-                    <span class="font-bold text-slate-700">Speaking Task: </span>${sc.spokenTask}
-                  </div>
-                  <div id="scenario-model-${sc.id}" class="hidden p-2.5 rounded bg-slate-50 border border-slate-200 text-xs text-slate-700 italic">
-                    <span class="font-bold not-italic text-slate-800">Target Model Sentence: </span>"${sc.spokenTask.includes('due to') ? 'Due to a ruptured hydraulic hose on the pushback tractor, fluid was spilled on stand, which resulted in a 25-minute movement suspension.' : (sc.spokenTask.includes('owing to') ? 'Owing to foreign object debris located on Taxiway Mike, arrivals were halted; consequently, aerodrome safety teams completed an emergency inspection.' : (sc.spokenTask.includes('because of') ? 'Because of severe ice accumulation on the wing slats, the captain requested remote de-icing, which led to a fifteen-minute slot delay.' : 'As a result of an unauthorized contractor van parked behind the aircraft, the catering hi-lift was unable to reverse; therefore, pushback was held.'))}"
-                  </div>
-                </div>
-              `).join('')}
-            </div>
-          </div>
-
-          <!-- Activity 5: Operations Simulation & Shift Handover Briefing (30 mins) -->
-          <div class="bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-xs space-y-4">
-            <div class="flex items-center justify-between pb-2 border-b border-slate-100">
-              <div class="flex items-center gap-2">
-                <span class="text-white text-[10px] font-black px-2 py-0.5 rounded shadow-xs" style="background-color: ${theme.primary};">05</span>
-                <h3 class="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-800">${simulation.title || 'Activity 5: Operations Simulation &amp; Shift Handover (30 mins)'}</h3>
-              </div>
-              <span class="text-[11px] font-semibold text-slate-500">Collaborative Role-Play &amp; Briefing</span>
-            </div>
-
-            ${renderActivityInstructions(simulation, theme)}
-            
-            <div class="p-3.5 bg-slate-50 rounded-lg border border-slate-200 text-xs text-slate-700 leading-relaxed">
-              <span class="font-bold text-slate-900 block mb-1">Operational Situation Report:</span>
-              ${simulation.context || ''}
-            </div>
-
-            <!-- Bottlenecks Grid -->
-            <div class="space-y-2">
-              <span class="text-xs font-bold text-slate-700 uppercase tracking-wider">3 Simultaneous Ramp Bottlenecks:</span>
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                ${(simulation.bottlenecks || []).map(b => `
-                  <div class="p-3 rounded-lg bg-rose-50/50 border border-rose-200 text-xs">
-                    <div class="flex items-center gap-1.5 font-bold text-rose-900 mb-1">
-                      <span class="w-4 h-4 rounded-full bg-rose-200 text-rose-800 flex items-center justify-center text-[10px]">${b.id}</span>
-                      <span>${b.title}</span>
-                    </div>
-                    <p class="text-rose-950 text-[11px] leading-relaxed">${b.desc}</p>
-                  </div>
-                `).join('')}
-              </div>
-            </div>
-
-            <!-- Role Cards -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-1">
-              ${(simulation.roles || []).map(r => `
-                <div class="p-3.5 rounded-xl border border-slate-200 bg-white shadow-2xs">
-                  <h5 class="text-xs font-bold uppercase tracking-wider text-slate-900 pb-1 border-b border-slate-100">${r.role}</h5>
-                  <p class="text-xs text-slate-600 mt-2 leading-relaxed">${r.mission}</p>
-                </div>
-              `).join('')}
-            </div>
-
-            <div class="p-3 bg-amber-50 rounded-lg border border-amber-200 text-xs text-amber-950 leading-relaxed">
-              <span class="font-bold text-amber-900">Task: </span>${simulation.recoveryInstructions}
-            </div>
-
-            <!-- Authentic Spoken Handover Briefing Sub-Section -->
-            <div class="pt-3 border-t border-slate-100 space-y-3">
-              <div class="flex items-center justify-between">
-                <span class="text-xs font-bold uppercase tracking-wider text-slate-800">The 60-Second Shift Handover Briefing Framework:</span>
-                <span class="text-[11px] text-slate-500">4-Part Standard</span>
-              </div>
-              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
-                ${(briefing.structure || []).map(st => `
-                  <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200 text-xs">
-                    <span class="font-bold text-slate-900 text-xs block mb-0.5">${st.step}</span>
-                    <p class="text-[10px] text-slate-500 mb-1">${st.desc}</p>
-                    <p class="text-[11px] text-indigo-700 italic border-t border-slate-200/80 pt-1 leading-snug">${st.phrase}</p>
-                  </div>
-                `).join('')}
-              </div>
-
-              <!-- Spoken Handover Model -->
-              <div class="p-4 rounded-xl bg-slate-900 text-slate-100 space-y-2">
-                <div class="flex items-center justify-between">
-                  <span class="text-xs font-bold uppercase tracking-wider text-amber-400">Authentic Spoken Model Briefing:</span>
-                  <button type="button" onclick="speakWord(document.getElementById('model-handover-text').innerText)" class="no-print inline-flex items-center gap-1.5 px-3 py-1 rounded bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold transition-all cursor-pointer">
-                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072M18.364 5.636a9 9 0 010 12.728M11 5L6 9H2v6h4l5 4V5z"/></svg>
-                    <span>Listen to Model</span>
-                  </button>
-                </div>
-                <p id="model-handover-text" class="text-xs sm:text-sm text-slate-200 leading-relaxed italic border-l-2 border-amber-400 pl-3">
-                  ${briefing.spokenModel || ''}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Activity 6: Vocabulary Review, Pronunciation & Class Wrap-Up (10 mins) -->
-          <div class="bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-xs space-y-4">
-            <div class="flex items-center justify-between pb-2 border-b border-slate-100">
-              <div class="flex items-center gap-2">
-                <span class="text-white text-[10px] font-black px-2 py-0.5 rounded shadow-xs" style="background-color: ${theme.primary};">06</span>
-                <h3 class="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-800">${closing.title || 'Activity 6: Vocabulary Review &amp; Class Wrap-Up (10 mins)'}</h3>
-              </div>
-              <span class="text-[11px] font-semibold text-slate-500">10-Min Consolidation</span>
-            </div>
-            <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">${closing.summary || ''}</p>
-
-            ${renderActivityInstructions(closing, theme)}
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-              ${(closing.reviewPrompts || []).map(rp => `
-                <div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50/80 flex flex-col justify-between space-y-2">
-                  <div>
-                    <h5 class="text-xs font-bold text-slate-900">${rp.title}</h5>
-                    <p class="text-[11px] text-slate-600 mt-1 leading-relaxed">${rp.desc}</p>
-                  </div>
-                  <div class="pt-2 border-t border-slate-200/80">
-                    <button type="button" onclick="switchModalTab('revision')" class="no-print text-[11px] font-bold text-indigo-600 hover:text-indigo-800 cursor-pointer">
-                      <span>Open Flashcard Review</span> &rarr;
-                    </button>
-                  </div>
-                </div>
-              `).join('')}
-            </div>
+            <button onclick="switchModalTab('revision')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white shadow-xs hover:opacity-90 transition-all cursor-pointer shrink-0" style="background-color: ${theme.primary};">
+              <span>View Vocabulary Flashcards</span> &rarr;
+            </button>
           </div>
         </div>
       `;
     }
 
-    function renderLessonContentTabSession4(sessionData, theme) {
+function renderLessonContentTabSession4(sessionData, theme) {
       const bodyEl = document.getElementById('modal-body');
       if (!bodyEl) return;
       const content = sessionData.lessonContent || {};
@@ -8411,16 +8485,57 @@
       if (!bodyEl) return;
       const content = sessionData.lessonContent || {};
       const hero = content.hero || {};
-      const opening = content.openingSession || {};
-      const diagramLabeling = content.diagramLabeling || {};
-      const externalParts = diagramLabeling.externalParts || [];
-      const spatialClinic = content.spatialClinic || {};
-      const spatialPatterns = spatialClinic.patterns || [];
-      const walkaroundRoleplay = content.walkaroundRoleplay || {};
-      const defectCards = walkaroundRoleplay.defectCards || [];
-      const cockpitSystemsHandover = content.cockpitSystemsHandover || {};
-      const melItems = cockpitSystemsHandover.melItems || [];
-      const closing = content.closingReview || {};
+
+      const drills = [
+        {
+          id: "s6e1",
+          title: "Drill 6.1 — Bordeaux Control (ACC): Step Climb & Direct Routing",
+          freq: "125.100 MHz",
+          template: "Vueling {{8420|flight}}, Bordeaux Control, radar contact. Climb Flight Level {{360|FL}} to reach by {{LMG/Lima Mike Golf|waypoint}}. Cleared direct to {{AGN/Alpha Golf November|3-letter fix}}. Maintain Mach {{0.78/.78/decimal 78|Mach number}} or {{greater|comparison}} for spacing.",
+          spoken: "Vueling eight four two zero, Bordeaux Control, radar contact. Climb flight level three six zero to reach by Lima Mike Golf. Cleared direct to Alpha Golf November. Maintain Mach decimal seven eight or greater for spacing.",
+          mcq: {
+            q: "What are the three components of this en-route clearance?",
+            opts: ["Descent, holding, and speed reduction", "Level restriction by LMG, direct to AGN, and minimum Mach .78", "Vectoring to ILS and QNH setting"],
+            ans: 1
+          }
+        },
+        {
+          id: "s6e2",
+          title: "Drill 6.2 — En-Route CB Weather Deviation Request",
+          freq: "132.450 MHz",
+          template: "Transavia {{319|flight}}, approved deviation up to {{20|miles}} miles {{left|direction}} of track between {{NARAK/November Alpha Romeo Alpha Kilo|waypoint}} and {{MEN/Mike Echo November|3-letter fix}} due to weather. Maintain Flight Level {{320|FL}}; report {{clear|status}} of weather and resuming {{own navigation|2 words}}.",
+          spoken: "Transavia three one niner, approved deviation up to two zero miles left of track between November Alpha Romeo Alpha Kilo and Mike Echo November due to weather. Maintain flight level three two zero; report clear of weather and resuming own navigation.",
+          mcq: {
+            q: "What must Transavia 319 report back to ATC later?",
+            opts: ["When clear of weather and returning to route", "Their fuel quantity on arrival", "Their groundspeed every 5 minutes"],
+            ans: 0
+          }
+        },
+        {
+          id: "s6e3",
+          title: "Drill 6.3 — Speed Control & Level Crossing Restriction",
+          freq: "127.850 MHz",
+          template: "Air France {{612|flight}}, descend Flight Level {{240|FL}}, cross waypoint {{FISTO|5-letter fix}} Flight Level {{280|FL}} or below, speed {{250|knots}} knots or less. {{Expedite|rate word}} descent through Flight Level 300.",
+          spoken: "Air France six one two, descend flight level two four zero, cross waypoint FISTO flight level two eight zero or below, speed two five zero knots or less. Expedite descent through flight level three zero zero.",
+          mcq: {
+            q: "What does 'expedite' require the flight crew to do?",
+            opts: ["Increase rate of descent to maximum safe performance until passing FL300", "Maintain level flight until FISTO", "Slow down to minimum clean speed"],
+            ans: 0
+          }
+        },
+        {
+          id: "s6e4",
+          title: "Drill 6.4 — Sector Handoff & Radar Frequency Transfer",
+          freq: "135.500 MHz",
+          template: "Iberia {{3754|flight}}, radar service {{terminated|radar status}}. Contact Brest Control on {{128.150/128.15|frequency}}, squawk {{5421|4 digits}}.",
+          spoken: "Iberia three seven five four, radar service terminated. Contact Brest Control on one two eight decimal one five zero, squawk five four two one.",
+          mcq: {
+            q: "What actions must Iberia 3754 execute?",
+            opts: ["Transfer to 128.150 MHz, set transponder to 5421, and establish contact with Brest Control", "Turn off radar transponder", "Remain on current frequency until destination"],
+            ans: 0
+          }
+        }
+      ];
 
       bodyEl.innerHTML = `
         <div class="space-y-6 printable-lesson-container">
@@ -8429,9 +8544,9 @@
             <div>
               <div class="flex items-center gap-2">
                 <span class="text-white text-[10px] font-black px-2 py-0.5 rounded shadow-xs" style="background-color: ${theme.primary};">DIGITAL WORKSHEET</span>
-                <span class="text-xs font-bold text-slate-700">AT Module 2 • Session 2</span>
+                <span class="text-xs font-bold text-slate-700">AAS Module 2 • Session 2 (Session 6)</span>
               </div>
-              <h3 class="text-sm sm:text-base font-black text-slate-900 mt-1">${hero.title || 'Aircraft Anatomy: Structure &amp; Systems'}</h3>
+              <h3 class="text-sm sm:text-base font-black text-slate-900 mt-1">En Route &amp; Area Control Clearances</h3>
             </div>
             <button type="button" onclick="window.printLessonContent()" class="inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-300 shadow-xs transition-all cursor-pointer shrink-0">
               <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
@@ -8439,14 +8554,14 @@
             </button>
           </div>
 
-          <!-- Hero Banner -->
+          <!-- Hero Banner & Context -->
           <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs">
             <div class="relative">
-              <img src="${hero.image || 'images/aas_m2card2.jpg'}" alt="${hero.title || 'Aircraft Anatomy'}" class="w-full h-48 sm:h-64 object-cover" onerror="this.src='images/aas_m2card2.jpg'">
+              <img src="${hero.image || 'images/aas_m2card2.jpg'}" alt="En Route Air Traffic Management" class="w-full h-48 sm:h-64 object-cover" onerror="this.src='images/aas_m2card2.jpg'">
               <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent flex flex-col justify-end p-4 sm:p-5">
-                <span class="text-[11px] font-bold text-amber-300 uppercase tracking-wider">Airframe Structures &amp; Walkaround Inspection</span>
-                <h3 class="text-lg sm:text-2xl font-black text-white mt-0.5">${hero.title || 'Aircraft Anatomy: Structure &amp; Systems'}</h3>
-                <p class="text-xs sm:text-sm text-slate-200 mt-1 line-clamp-2">${hero.subtitle || 'External Airframe Components, Flight Deck Controls &amp; Pre-Flight Walkaround Inspections'}</p>
+                <span class="text-[11px] font-bold text-amber-300 uppercase tracking-wider">CONTROL &amp; EN ROUTE COMMUNICATIONS • AREA RADAR</span>
+                <h3 class="text-lg sm:text-2xl font-black text-white mt-0.5">${hero.title || 'En Route &amp; Area Control Clearances'}</h3>
+                <p class="text-xs sm:text-sm text-slate-200 mt-1 line-clamp-2">${hero.subtitle || 'ACC Step Climbs, Direct Routings, Speed Restrictions, Mach Numbers &amp; CB Weather Deviations'}</p>
               </div>
             </div>
             <div class="p-4 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-600">
@@ -8455,7 +8570,7 @@
                 <span class="bg-indigo-100 text-indigo-800 font-bold px-2 py-0.5 rounded">CEFR B2</span>
                 <span class="text-slate-400">&bull;</span>
                 <span class="font-bold text-slate-800">Role Context:</span>
-                <span class="text-slate-600">Flight Crew / Line Maintenance Engineer</span>
+                <span class="text-slate-600">Area Radar Controller (ACC) / Long-Haul &amp; Regional Airline Pilot</span>
               </div>
               <div class="flex items-center gap-2">
                 <span class="font-bold text-slate-800">Total Duration:</span>
@@ -8464,523 +8579,198 @@
             </div>
           </div>
 
-          <!-- Activity 1: News & Session 1 Check -->
+          <!-- Part 1: Aviation News & En Route Operations Warm-Up -->
           <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-xs space-y-4">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
               <div class="flex items-center gap-2">
-                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">00-10m</span>
+                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">PART 1</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${opening.title || 'Activity 1: Aviation News & Session 1 Spot-Check (10 mins)'}</h4>
-                  <p class="text-[11px] text-slate-500">${opening.summary || ''}</p>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">Aviation News &amp; En Route Operations Warm-Up</h4>
+                  <p class="text-[11px] text-slate-500">Cruising levels, airway traffic flow &amp; high-altitude speed management</p>
                 </div>
               </div>
-              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Opening Warm-Up</span>
+              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Opening &amp; Warm-Up</span>
             </div>
 
-            ${renderActivityInstructions(opening, theme)}
-
-            <!-- News Prompts -->
             <div class="p-4 bg-amber-50/70 border border-amber-200 rounded-xl space-y-2">
               <div class="flex items-center gap-2">
                 <svg width="16" height="16" class="text-amber-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
-                <h5 class="text-xs sm:text-sm font-bold text-amber-900">Weekly Aircraft Maintenance &amp; Structural News</h5>
+                <h5 class="text-xs sm:text-sm font-bold text-amber-900">Key Discussion Prompts</h5>
               </div>
               <ul class="space-y-1.5 pl-5 list-disc text-xs text-amber-900/90 leading-relaxed">
-                ${(opening.newsPrompts || []).map(p => `<li>${p}</li>`).join('')}
+                <li>How does the semi-circular cruising level rule (Eastbound odd, Westbound even) establish vertical separation in European airspace?</li>
+                <li>Why do controllers use <strong>Mach number</strong> rather than Indicated Airspeed (IAS) above FL280?</li>
+                <li>What information must a pilot provide when requesting a thunderstorm (CB) weather deviation?</li>
               </ul>
             </div>
-
-            <!-- Spot check -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
-              ${((opening.diagnostic && opening.diagnostic.questions) || []).map(q => `
-                <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl flex flex-col justify-between">
-                  <p class="text-xs font-bold text-slate-800">${q.id}. ${q.q}</p>
-                  <div id="diag-ans-s2-${q.id}" class="hidden p-2 bg-white border border-slate-200 rounded text-[11px] text-slate-700 mt-2">
-                    ${q.answer}
-                  </div>
-                  <button type="button" onclick="document.getElementById('diag-ans-s2-${q.id}').classList.toggle('hidden')" class="no-print text-left text-[11px] font-bold text-slate-500 hover:text-slate-800 cursor-pointer mt-2">
-                    <span>Toggle Answer &rarr;</span>
-                  </button>
-                </div>
-              `).join('')}
-            </div>
           </div>
 
-          <!-- Activity 2: Airframe Diagram Labeling -->
+          <!-- Part 2: Cockpit VHF Listening Lab -->
           <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-xs space-y-4">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
               <div class="flex items-center gap-2">
-                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">10-35m</span>
+                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">PART 2</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${diagramLabeling.title || 'Activity 2: Airframe Anatomy Labeling Challenge (25 mins)'}</h4>
-                  <p class="text-[11px] text-slate-500">${diagramLabeling.summary || 'Identify and describe key external parts and internal zones of commercial aircraft.'}</p>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">Cockpit VHF Audio Lab — Area Control (ACC) Radiotelephony</h4>
+                  <p class="text-[11px] text-slate-500">Listen to 4 authentic en-route transmissions, complete the gap-fills, and analyze operational decisions</p>
                 </div>
               </div>
-              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Aircraft Components Chart</span>
+              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Interactive Listening Lab</span>
             </div>
 
-            ${renderActivityInstructions(diagramLabeling, theme)}
+            <div class="space-y-4">
+              ${drills.map(d => RadioAudio.renderDrill(d)).join('')}
+            </div>
+          </div>
 
-            <!-- Interactive Airframe Anatomy Diagram Container -->
-            <div class="rounded-2xl border border-slate-700 bg-slate-900 p-3 sm:p-5 shadow-lg space-y-4 text-white overflow-hidden">
-              <!-- Mode Bar & Controls -->
-              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-800">
-                <div class="flex items-center gap-2">
-                  <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-indigo-500 text-white shadow-2xs">Interactive Blueprint</span>
-                  <span class="text-xs font-bold text-slate-200">Twin-Engine Commercial Jetliner (Dorsal Planform View)</span>
-                </div>
-                
-                <!-- Controls (Study Mode vs Challenge Mode) -->
-                <div class="no-print flex flex-wrap items-center gap-2">
-                  <button type="button" id="airframe-mode-study-btn" onclick="window.setAirframeDiagramMode('study')" class="px-2.5 py-1 rounded text-xs font-bold transition-all bg-indigo-600 text-white shadow-xs cursor-pointer">
-                    Study Mode (All Labeled)
-                  </button>
-                  <button type="button" id="airframe-mode-quiz-btn" onclick="window.setAirframeDiagramMode('quiz')" class="px-2.5 py-1 rounded text-xs font-bold transition-all bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 cursor-pointer">
-                    Labeling Challenge (Test Yourself)
-                  </button>
-                  <button type="button" onclick="window.resetAirframeChallenge()" id="airframe-reset-btn" class="hidden px-2.5 py-1 rounded text-xs font-bold bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 cursor-pointer">
-                    Reset Blanks
-                  </button>
+          <!-- Part 3: Operational Analysis & Phraseology Clinic -->
+          <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-xs space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
+              <div class="flex items-center gap-2">
+                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">PART 3</span>
+                <div>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">Operational Analysis &amp; En Route Phraseology Clinic</h4>
+                  <p class="text-[11px] text-slate-500">Key standards for upper airspace clearances, speed restrictions &amp; weather avoidance</p>
                 </div>
               </div>
-
-              <!-- SVG Viewport -->
-              <div class="relative w-full overflow-x-auto flex justify-center py-1">
-                <svg viewBox="0 0 920 545" class="w-full h-auto max-w-4xl select-none" xmlns="http://www.w3.org/2000/svg" style="min-width: 650px;">
-                  <!-- Background Blueprint Guide Lines -->
-                  <g opacity="0.18">
-                    <circle cx="460" cy="275" r="140" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4 4"/>
-                    <circle cx="460" cy="275" r="230" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4 4"/>
-                    <line x1="460" y1="20" x2="460" y2="525" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4 4"/>
-                    <line x1="70" y1="275" x2="850" y2="275" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4 4"/>
-                  </g>
-
-                  <!-- Horizontal Stabilizers (Tailplane) -->
-                  <g id="svg-horizontal-stabilizers">
-                    <!-- Port Tailplane -->
-                    <polygon points="446,438 290,472 292,488 450,482" fill="#334155" stroke="#64748b" stroke-width="1.5"/>
-                    <polygon points="350,478 292,488 350,487 450,482" fill="#475569" stroke="#94a3b8" stroke-width="1"/>
-                    <!-- Starboard Tailplane -->
-                    <polygon points="474,438 630,472 628,488 470,482" fill="#334155" stroke="#64748b" stroke-width="1.5"/>
-                    <polygon points="570,478 628,488 570,487 470,482" fill="#475569" stroke="#94a3b8" stroke-width="1"/>
-                  </g>
-
-                  <!-- Main Wings -->
-                  <g id="svg-wings">
-                    <!-- Port Wing Body -->
-                    <polygon points="440,215 105,308 105,328 330,322 440,318" fill="#334155" stroke="#475569" stroke-width="2"/>
-                    <!-- Port Leading Edge Slat -->
-                    <polygon points="440,215 105,308 107,314 440,224" fill="#64748b" stroke="#38bdf8" stroke-width="1"/>
-                    <!-- Port Inboard Trailing Flap -->
-                    <polygon points="440,318 330,322 328,310 440,305" fill="#475569" stroke="#94a3b8" stroke-width="1"/>
-                    <!-- Port Outboard Aileron -->
-                    <polygon points="225,324 105,328 108,319 225,316" fill="#64748b" stroke="#94a3b8" stroke-width="1"/>
-                    <!-- Port Roll Spoilers -->
-                    <rect x="250" y="296" width="60" height="15" transform="rotate(7 280 300)" fill="#1e293b" stroke="#94a3b8" stroke-width="1" rx="2"/>
-                    <!-- Port Winglet -->
-                    <path d="M 105,300 L 98,285 L 105,328 Z" fill="#38bdf8" stroke="#0284c7" stroke-width="1.5"/>
-
-                    <!-- Starboard Wing Body -->
-                    <polygon points="480,215 815,308 815,328 590,322 480,318" fill="#334155" stroke="#475569" stroke-width="2"/>
-                    <!-- Starboard Leading Edge Slat -->
-                    <polygon points="480,215 815,308 813,314 480,224" fill="#64748b" stroke="#38bdf8" stroke-width="1"/>
-                    <!-- Starboard Inboard Trailing Flap -->
-                    <polygon points="480,318 590,322 592,310 480,305" fill="#475569" stroke="#94a3b8" stroke-width="1"/>
-                    <!-- Starboard Outboard Aileron -->
-                    <polygon points="695,324 815,328 812,319 695,316" fill="#64748b" stroke="#94a3b8" stroke-width="1"/>
-                    <!-- Starboard Roll Spoilers -->
-                    <rect x="610" y="296" width="60" height="15" transform="rotate(-7 640 300)" fill="#1e293b" stroke="#94a3b8" stroke-width="1" rx="2"/>
-                    <!-- Starboard Winglet -->
-                    <path d="M 815,300 L 822,285 L 815,328 Z" fill="#38bdf8" stroke="#0284c7" stroke-width="1.5"/>
-                  </g>
-
-                  <!-- Turbofan Engines & Pylons -->
-                  <g id="svg-engines">
-                    <!-- Port Engine -->
-                    <rect x="325" y="215" width="8" height="30" fill="#475569" rx="2"/>
-                    <rect x="312" y="235" width="34" height="62" rx="12" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
-                    <ellipse cx="329" cy="235" rx="14" ry="5" fill="#0f172a" stroke="#60a5fa" stroke-width="1.5"/>
-                    <polygon points="320,297 338,297 329,308" fill="#f59e0b"/>
-                    
-                    <!-- Starboard Engine -->
-                    <rect x="587" y="215" width="8" height="30" fill="#475569" rx="2"/>
-                    <rect x="574" y="235" width="34" height="62" rx="12" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
-                    <ellipse cx="591" cy="235" rx="14" ry="5" fill="#0f172a" stroke="#60a5fa" stroke-width="1.5"/>
-                    <polygon points="582,297 600,297 591,308" fill="#f59e0b"/>
-                  </g>
-
-                  <!-- Fuselage Main Body & Empennage -->
-                  <g id="svg-fuselage">
-                    <!-- Fuselage Shell -->
-                    <path d="M 440,95 Q 460,45 480,95 L 480,435 Q 460,488 440,435 Z" fill="#1e293b" stroke="#64748b" stroke-width="2"/>
-                    <!-- Radome Boundary Curve -->
-                    <path d="M 442,95 Q 460,102 478,95" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="2 2"/>
-                    <!-- Cockpit Windscreen -->
-                    <polygon points="447,102 453,99 460,100 467,99 473,102 471,108 460,106 449,108" fill="#38bdf8"/>
-                    <!-- Centerline Keel -->
-                    <line x1="460" y1="95" x2="460" y2="440" stroke="#334155" stroke-width="1" stroke-dasharray="3 3"/>
-                    <!-- Vertical Fin Dorsal Spine -->
-                    <polygon points="457,400 463,400 462,485 458,485" fill="#475569" stroke="#94a3b8" stroke-width="1"/>
-                    <!-- Rudder Trailing Edge -->
-                    <polygon points="458,445 462,445 461,485 459,485" fill="#f8fafc" stroke="#f59e0b" stroke-width="1.5"/>
-                    <!-- APU Exhaust Nozzle -->
-                    <circle cx="460" cy="488" r="3.5" fill="#f59e0b" stroke="#d97706" stroke-width="1"/>
-                  </g>
-
-                  <!-- Leader Lines to Callouts -->
-                  <g stroke="#94a3b8" stroke-width="1.2" fill="none" opacity="0.85">
-                    <!-- Left Leaders -->
-                    <path d="M 460,68 L 300,47 L 220,47"/>
-                    <path d="M 440,115 L 290,107 L 220,107"/>
-                    <path d="M 460,165 L 300,167 L 220,167"/>
-                    <path d="M 329,255 L 260,227 L 220,227"/>
-                    <path d="M 260,260 L 250,287 L 220,287"/>
-                    <path d="M 280,305 L 260,347 L 220,347"/>
-                    
-                    <!-- Right Leaders -->
-                    <path d="M 460,310 L 630,227 L 700,227"/>
-                    <path d="M 818,298 L 780,287 L 700,287"/>
-                    <path d="M 750,324 L 740,347 L 700,347"/>
-                    <path d="M 535,320 L 640,407 L 700,407"/>
-                    <path d="M 555,465 L 640,467 L 700,467"/>
-                    <path d="M 460,465 L 630,522 L 700,522"/>
-                  </g>
-
-                  <!-- Target Pin Dots on Aircraft Surface -->
-                  <g fill="#38bdf8" stroke="#ffffff" stroke-width="1.5">
-                    <circle cx="460" cy="68" r="4.5"/>
-                    <circle cx="440" cy="115" r="4.5"/>
-                    <circle cx="460" cy="165" r="4.5"/>
-                    <circle cx="329" cy="255" r="4.5"/>
-                    <circle cx="260" cy="260" r="4.5"/>
-                    <circle cx="280" cy="305" r="4.5"/>
-                    <circle cx="460" cy="310" r="4.5"/>
-                    <circle cx="818" cy="298" r="4.5"/>
-                    <circle cx="750" cy="324" r="4.5"/>
-                    <circle cx="535" cy="320" r="4.5"/>
-                    <circle cx="555" cy="465" r="4.5"/>
-                    <circle cx="460" cy="465" r="4.5"/>
-                  </g>
-
-                  <!-- 12 Interactive Callout Badges -->
-                  <!-- LEFT BADGES -->
-                  <!-- 01: Radome -->
-                  <g id="svg-callout-01" onclick="window.selectAirframePart('01', 'Radome (Nose Cone)')" class="cursor-pointer transition-all">
-                    <rect x="20" y="25" width="195" height="44" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
-                    <rect x="26" y="32" width="26" height="28" rx="5" fill="#4f46e5"/>
-                    <text x="39" y="50" font-family="sans-serif" font-size="11" font-weight="900" fill="#ffffff" text-anchor="middle">01</text>
-                    <text id="svg-part-text-01" data-real-name="Radome (Nose Cone)" x="58" y="44" font-family="sans-serif" font-size="11" font-weight="700" fill="#f8fafc">Radome (Nose Cone)</text>
-                    <text x="58" y="58" font-family="sans-serif" font-size="9" fill="#94a3b8">Weather Radar Housing</text>
-                  </g>
-
-                  <!-- 02: Pitot-Static Probes -->
-                  <g id="svg-callout-02" onclick="window.selectAirframePart('02', 'Pitot-Static Probes')" class="cursor-pointer transition-all">
-                    <rect x="20" y="85" width="195" height="44" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
-                    <rect x="26" y="92" width="26" height="28" rx="5" fill="#4f46e5"/>
-                    <text x="39" y="110" font-family="sans-serif" font-size="11" font-weight="900" fill="#ffffff" text-anchor="middle">02</text>
-                    <text id="svg-part-text-02" data-real-name="Pitot-Static Probes" x="58" y="104" font-family="sans-serif" font-size="11" font-weight="700" fill="#f8fafc">Pitot-Static Probes</text>
-                    <text x="58" y="118" font-family="sans-serif" font-size="9" fill="#94a3b8">Dynamic &amp; Static Pressure</text>
-                  </g>
-
-                  <!-- 03: Fuselage -->
-                  <g id="svg-callout-03" onclick="window.selectAirframePart('03', 'Fuselage')" class="cursor-pointer transition-all">
-                    <rect x="20" y="145" width="195" height="44" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
-                    <rect x="26" y="152" width="26" height="28" rx="5" fill="#4f46e5"/>
-                    <text x="39" y="170" font-family="sans-serif" font-size="11" font-weight="900" fill="#ffffff" text-anchor="middle">03</text>
-                    <text id="svg-part-text-03" data-real-name="Fuselage" x="58" y="164" font-family="sans-serif" font-size="11" font-weight="700" fill="#f8fafc">Fuselage</text>
-                    <text x="58" y="178" font-family="sans-serif" font-size="9" fill="#94a3b8">Pressurized Cabin &amp; Hold</text>
-                  </g>
-
-                  <!-- 08: Engine Nacelle & Pylon -->
-                  <g id="svg-callout-08" onclick="window.selectAirframePart('08', 'Engine Nacelle & Pylon')" class="cursor-pointer transition-all">
-                    <rect x="20" y="205" width="195" height="44" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
-                    <rect x="26" y="212" width="26" height="28" rx="5" fill="#4f46e5"/>
-                    <text x="39" y="230" font-family="sans-serif" font-size="11" font-weight="900" fill="#ffffff" text-anchor="middle">08</text>
-                    <text id="svg-part-text-08" data-real-name="Engine Nacelle & Pylon" x="58" y="224" font-family="sans-serif" font-size="10.5" font-weight="700" fill="#f8fafc">Engine Nacelle &amp; Pylon</text>
-                    <text x="58" y="238" font-family="sans-serif" font-size="9" fill="#94a3b8">Turbofan Housing &amp; Mount</text>
-                  </g>
-
-                  <!-- 04: Leading-Edge Slats -->
-                  <g id="svg-callout-04" onclick="window.selectAirframePart('04', 'Leading-Edge Slats')" class="cursor-pointer transition-all">
-                    <rect x="20" y="265" width="195" height="44" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
-                    <rect x="26" y="272" width="26" height="28" rx="5" fill="#4f46e5"/>
-                    <text x="39" y="290" font-family="sans-serif" font-size="11" font-weight="900" fill="#ffffff" text-anchor="middle">04</text>
-                    <text id="svg-part-text-04" data-real-name="Leading-Edge Slats" x="58" y="284" font-family="sans-serif" font-size="11" font-weight="700" fill="#f8fafc">Leading-Edge Slats</text>
-                    <text x="58" y="298" font-family="sans-serif" font-size="9" fill="#94a3b8">Wing Camber &amp; Stall Delay</text>
-                  </g>
-
-                  <!-- 07: Roll Spoilers & Speed Brakes -->
-                  <g id="svg-callout-07" onclick="window.selectAirframePart('07', 'Roll Spoilers & Speed Brakes')" class="cursor-pointer transition-all">
-                    <rect x="20" y="325" width="195" height="44" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
-                    <rect x="26" y="332" width="26" height="28" rx="5" fill="#4f46e5"/>
-                    <text x="39" y="350" font-family="sans-serif" font-size="11" font-weight="900" fill="#ffffff" text-anchor="middle">07</text>
-                    <text id="svg-part-text-07" data-real-name="Roll Spoilers & Speed Brakes" x="58" y="344" font-family="sans-serif" font-size="10" font-weight="700" fill="#f8fafc">Roll Spoilers &amp; Brakes</text>
-                    <text x="58" y="358" font-family="sans-serif" font-size="9" fill="#94a3b8">Lift Dumper &amp; Roll Assist</text>
-                  </g>
-
-                  <!-- RIGHT BADGES -->
-                  <!-- 09: Main & Nose Landing Gear -->
-                  <g id="svg-callout-09" onclick="window.selectAirframePart('09', 'Main & Nose Landing Gear')" class="cursor-pointer transition-all">
-                    <rect x="705" y="205" width="195" height="44" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
-                    <rect x="711" y="212" width="26" height="28" rx="5" fill="#4f46e5"/>
-                    <text x="724" y="230" font-family="sans-serif" font-size="11" font-weight="900" fill="#ffffff" text-anchor="middle">09</text>
-                    <text id="svg-part-text-09" data-real-name="Main & Nose Landing Gear" x="743" y="224" font-family="sans-serif" font-size="10.5" font-weight="700" fill="#f8fafc">Landing Gear Assembly</text>
-                    <text x="743" y="238" font-family="sans-serif" font-size="9" fill="#94a3b8">Oleo Struts &amp; Wheels</text>
-                  </g>
-
-                  <!-- 12: Winglets / Sharklets -->
-                  <g id="svg-callout-12" onclick="window.selectAirframePart('12', 'Winglets / Sharklets')" class="cursor-pointer transition-all">
-                    <rect x="705" y="265" width="195" height="44" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
-                    <rect x="711" y="272" width="26" height="28" rx="5" fill="#4f46e5"/>
-                    <text x="724" y="290" font-family="sans-serif" font-size="11" font-weight="900" fill="#ffffff" text-anchor="middle">12</text>
-                    <text id="svg-part-text-12" data-real-name="Winglets / Sharklets" x="743" y="284" font-family="sans-serif" font-size="11" font-weight="700" fill="#f8fafc">Winglets / Sharklets</text>
-                    <text x="743" y="298" font-family="sans-serif" font-size="9" fill="#94a3b8">Vortex Drag Reduction</text>
-                  </g>
-
-                  <!-- 06: Ailerons -->
-                  <g id="svg-callout-06" onclick="window.selectAirframePart('06', 'Ailerons')" class="cursor-pointer transition-all">
-                    <rect x="705" y="325" width="195" height="44" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
-                    <rect x="711" y="332" width="26" height="28" rx="5" fill="#4f46e5"/>
-                    <text x="724" y="350" font-family="sans-serif" font-size="11" font-weight="900" fill="#ffffff" text-anchor="middle">06</text>
-                    <text id="svg-part-text-06" data-real-name="Ailerons" x="743" y="344" font-family="sans-serif" font-size="11" font-weight="700" fill="#f8fafc">Ailerons</text>
-                    <text x="743" y="358" font-family="sans-serif" font-size="9" fill="#94a3b8">Differential Roll Control</text>
-                  </g>
-
-                  <!-- 05: Trailing-Edge Flaps -->
-                  <g id="svg-callout-05" onclick="window.selectAirframePart('05', 'Trailing-Edge Flaps')" class="cursor-pointer transition-all">
-                    <rect x="705" y="385" width="195" height="44" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
-                    <rect x="711" y="392" width="26" height="28" rx="5" fill="#4f46e5"/>
-                    <text x="724" y="410" font-family="sans-serif" font-size="11" font-weight="900" fill="#ffffff" text-anchor="middle">05</text>
-                    <text id="svg-part-text-05" data-real-name="Trailing-Edge Flaps" x="743" y="404" font-family="sans-serif" font-size="11" font-weight="700" fill="#f8fafc">Trailing-Edge Flaps</text>
-                    <text x="743" y="418" font-family="sans-serif" font-size="9" fill="#94a3b8">High Lift &amp; Drag Extenders</text>
-                  </g>
-
-                  <!-- 11: Horizontal Stabilizer & Elevators -->
-                  <g id="svg-callout-11" onclick="window.selectAirframePart('11', 'Horizontal Stabilizer & Elevators')" class="cursor-pointer transition-all">
-                    <rect x="705" y="445" width="195" height="44" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
-                    <rect x="711" y="452" width="26" height="28" rx="5" fill="#4f46e5"/>
-                    <text x="724" y="470" font-family="sans-serif" font-size="11" font-weight="900" fill="#ffffff" text-anchor="middle">11</text>
-                    <text id="svg-part-text-11" data-real-name="Horizontal Stabilizer & Elevators" x="743" y="464" font-family="sans-serif" font-size="10" font-weight="700" fill="#f8fafc">Stabilizer &amp; Elevators</text>
-                    <text x="743" y="478" font-family="sans-serif" font-size="9" fill="#94a3b8">Pitch Stability &amp; Control</text>
-                  </g>
-
-                  <!-- 10: Vertical Fin & Rudder -->
-                  <g id="svg-callout-10" onclick="window.selectAirframePart('10', 'Vertical Fin & Rudder')" class="cursor-pointer transition-all">
-                    <rect x="705" y="500" width="195" height="40" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
-                    <rect x="711" y="506" width="26" height="28" rx="5" fill="#4f46e5"/>
-                    <text x="724" y="524" font-family="sans-serif" font-size="11" font-weight="900" fill="#ffffff" text-anchor="middle">10</text>
-                    <text id="svg-part-text-10" data-real-name="Vertical Fin & Rudder" x="743" y="518" font-family="sans-serif" font-size="11" font-weight="700" fill="#f8fafc">Vertical Fin &amp; Rudder</text>
-                    <text x="743" y="531" font-family="sans-serif" font-size="9" fill="#94a3b8">Yaw Control &amp; Stability</text>
-                  </g>
-                </svg>
-              </div>
-              
-              <!-- Diagram Footer / Hint -->
-              <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-800 text-[11px] text-slate-400">
-                <div class="flex items-center gap-2">
-                  <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                  <span id="airframe-diagram-tip">Click any numbered pin or component badge on the blueprint to listen to pronunciation and inspect its functional purpose.</span>
-                </div>
-                <span class="font-mono text-slate-500 text-[10px]">ICAO Aerodrome Operations • Airframe Technical English</span>
-              </div>
+              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Golden Rules</span>
             </div>
 
-            <!-- 12 External Component Cards -->
-            <div class="space-y-2 pt-2">
-              <div class="flex items-center justify-between">
-                <h5 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Component Technical Specifications &amp; Walkaround Checkpoints:</h5>
-                <span class="text-[11px] text-slate-500">12 Primary Airframe Structures</span>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div class="p-3.5 bg-blue-50/70 border border-blue-200 rounded-xl space-y-2">
+                <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-blue-200 text-blue-900">Rule 1 • Expedite Instruction</span>
+                <h5 class="text-xs font-bold text-blue-950">Vertical Rate Authority</h5>
+                <p class="text-xs text-blue-900/90 leading-relaxed"><em>"Expedite climb/descent"</em> requires the crew to apply maximum safe operational rate without delay until clear of the restriction or conflicting level.</p>
               </div>
-              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                ${externalParts.map(p => `
-                  <div id="airframe-card-${p.id}" class="airframe-component-card p-3.5 bg-slate-50 border border-slate-200 rounded-xl flex flex-col justify-between shadow-2xs transition-all">
-                    <div>
-                      <div class="flex items-center justify-between pb-1.5 border-b border-slate-200">
-                        <div class="flex items-center gap-1.5">
-                          <span class="text-[10px] font-mono font-bold text-white px-1.5 py-0.5 rounded shadow-2xs" style="background-color: ${theme.primary};">${p.id}</span>
-                          <span id="card-part-name-${p.id}" data-real-name="${p.name}" class="font-bold text-xs text-slate-900">${p.name}</span>
-                        </div>
-                        <button type="button" onclick="speakWord('${p.name.replace(/'/g, "\\'")}')" class="p-1 rounded bg-white hover:bg-slate-200 border border-slate-200 text-slate-600 transition-all cursor-pointer" title="Listen to pronunciation">
-                          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072M18.364 5.636a9 9 0 010 12.728M11 5L6 9H2v6h4l5 4V5z"/></svg>
-                        </button>
-                      </div>
-                      <p class="text-[11px] text-slate-500 mt-2"><strong>Location:</strong> ${p.location}</p>
-                      <p class="text-[11px] text-slate-700 mt-1 leading-relaxed">${p.purpose}</p>
-                    </div>
-                    <div class="pt-2 border-t border-slate-200/80 mt-2 flex items-center justify-between text-[10px]">
-                      <button type="button" onclick="window.selectAirframePart('${p.id}', '${p.name.replace(/'/g, "\\'")}')" class="font-bold text-indigo-600 hover:text-indigo-800 transition-all cursor-pointer">
-                        Locate on Blueprint &uarr;
-                      </button>
-                      <span class="text-slate-400 font-mono">Airframe Item ${p.id}</span>
-                    </div>
-                  </div>
-                `).join('')}
+
+              <div class="p-3.5 bg-emerald-50/70 border border-emerald-200 rounded-xl space-y-2">
+                <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-emerald-200 text-emerald-900">Rule 2 • Weather Deviations</span>
+                <h5 class="text-xs font-bold text-emerald-950">Lateral Clearance Limits</h5>
+                <p class="text-xs text-emerald-900/90 leading-relaxed">Deviation clearances specify lateral distance (e.g., <em>up to 20 miles</em>) and direction. The pilot must report when clear of weather and resuming own navigation.</p>
+              </div>
+
+              <div class="p-3.5 bg-purple-50/70 border border-purple-200 rounded-xl space-y-2">
+                <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-purple-200 text-purple-900">Rule 3 • Level Crossing Fixes</span>
+                <h5 class="text-xs font-bold text-purple-950">Strategic Sequencing</h5>
+                <p class="text-xs text-purple-900/90 leading-relaxed"><em>"Cross waypoint FISTO at FL280 or below"</em> allows descent planning while ensuring vertical separation at sector boundary crossing points.</p>
               </div>
             </div>
           </div>
 
-          <!-- Activity 3: Language Focus: Spatial Prepositions -->
+          <!-- Part 4: Communicative Pair Simulation & Readback Challenge -->
           <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-xs space-y-4">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
               <div class="flex items-center gap-2">
-                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">35-55m</span>
+                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">PART 4</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${spatialClinic.title || 'Activity 3: Language Focus: Spatial Prepositions &amp; Functions (20 mins)'}</h4>
-                  <p class="text-[11px] text-slate-500">${spatialClinic.summary || 'Mastering precise spatial locations and functional relative clauses for maintenance communication.'}</p>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">Communicative Pair Simulation &amp; Readback Challenge</h4>
+                  <p class="text-[11px] text-slate-500">Live pilot-controller roleplay: en-route sector handoff, storm cell deviation &amp; crossing restrictions</p>
                 </div>
               </div>
-              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Spatial Descriptors</span>
+              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Pair Simulation</span>
             </div>
-
-            ${renderActivityInstructions(spatialClinic, theme)}
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              ${spatialPatterns.map(p => `
-                <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
-                  <h5 class="text-xs font-bold uppercase tracking-wider text-slate-800 pb-1 border-b border-slate-200">${p.title}</h5>
-                  <ul class="text-xs text-slate-700 space-y-1.5 pl-4 list-disc pt-1">
-                    ${p.examples.map(ex => `<li class="italic font-medium">&ldquo;${ex}&rdquo;</li>`).join('')}
-                  </ul>
-                </div>
-              `).join('')}
-            </div>
-          </div>
-
-          <!-- Activity 4: Walkaround Inspection Role-Play -->
-          <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-xs space-y-4">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
-              <div class="flex items-center gap-2">
-                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">55-85m</span>
-                <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${walkaroundRoleplay.title || 'Activity 4: Pre-Flight Exterior Walkaround Role-Play (30 mins)'}</h4>
-                  <p class="text-[11px] text-slate-500">${walkaroundRoleplay.summary || 'Captain &amp; Line Maintenance Engineer simulation: reporting and assessing airframe defects.'}</p>
-                </div>
-              </div>
-              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Walkaround Role-Play</span>
-            </div>
-
-            ${renderActivityInstructions(walkaroundRoleplay, theme)}
-
-            <div class="space-y-3">
-              ${defectCards.map(d => `
-                <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2.5">
-                  <div class="flex items-center justify-between pb-1 border-b border-slate-200">
-                    <span class="font-bold text-xs text-slate-900 uppercase">${d.item}</span>
-                    <span class="text-[10px] font-bold text-rose-700 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded">Simulated Defect</span>
-                  </div>
-                  <p class="text-xs text-slate-700 font-medium"><strong>Observed Defect:</strong> ${d.defect}</p>
-                  <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs pt-1">
-                    <div class="p-2.5 bg-white border border-slate-200 rounded">
-                      <strong class="text-indigo-900 block mb-0.5">Captain Dialogue:</strong>
-                      <p class="italic text-slate-600">&ldquo;${d.pilotDialogue}&rdquo;</p>
-                    </div>
-                    <div class="p-2.5 bg-white border border-slate-200 rounded">
-                      <strong class="text-emerald-900 block mb-0.5">Engineer Dialogue:</strong>
-                      <p class="italic text-slate-600">&ldquo;${d.engineerDialogue}&rdquo;</p>
-                    </div>
-                  </div>
-                </div>
-              `).join('')}
-            </div>
-          </div>
-
-          <!-- Activity 5: MEL Handover -->
-          <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-xs space-y-4">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
-              <div class="flex items-center gap-2">
-                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">85-110m</span>
-                <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${cockpitSystemsHandover.title || 'Activity 5: Minimum Equipment List (MEL) Dispatch Workshop (25 mins)'}</h4>
-                  <p class="text-[11px] text-slate-500">${cockpitSystemsHandover.summary || 'Reviewing the Minimum Equipment List (MEL) to make safe dispatch decisions for inoperative equipment.'}</p>
-                </div>
-              </div>
-              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">MEL Workshop</span>
-            </div>
-
-            ${renderActivityInstructions(cockpitSystemsHandover, theme)}
-
-            <p class="text-xs text-slate-600">Review these 3 maintenance status items and decide whether the aircraft is legally permitted to dispatch:</p>
-            <div class="space-y-2 text-xs">
-              ${melItems.map(m => `
-                <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                  <span class="font-bold text-slate-800">${m.item}</span>
-                  <span class="text-[11px] p-1.5 bg-white rounded border border-slate-200 text-slate-600">${m.status}</span>
-                </div>
-              `).join('')}
-            </div>
-          </div>
-
-          <!-- Activity 6: Wrap-up -->
-          <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-xs space-y-4">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
-              <div class="flex items-center gap-2">
-                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">110-120m</span>
-                <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${closing.title || 'Activity 6: Vocabulary Review &amp; Class Wrap-Up (10 mins)'}</h4>
-                  <p class="text-[11px] text-slate-500">${closing.summary || 'Drill tricky aeronautical component pronunciation and consolidate learning logs ahead of Session 3.'}</p>
-                </div>
-              </div>
-              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Closing Consolidation</span>
-            </div>
-
-            ${renderActivityInstructions(closing, theme)}
-
-            <!-- Pronunciation Syllable Badges -->
-            ${(closing.wordsToPronounce && closing.wordsToPronounce.length) ? `
-              <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
-                <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 block">Syllable Stress &amp; Pronunciation Focus:</span>
-                <div class="flex flex-wrap gap-2">
-                  ${closing.wordsToPronounce.map(w => `
-                    <span class="px-2.5 py-1 rounded-md text-xs font-mono font-bold bg-white border border-slate-300 text-slate-800 shadow-2xs">${w}</span>
-                  `).join('')}
-                </div>
-              </div>
-            ` : ''}
-
-            <!-- Technical Checkpoints -->
-            ${(closing.checkpoints && closing.checkpoints.length) ? `
-              <div class="p-4 bg-emerald-50/60 border border-emerald-200 rounded-xl space-y-3">
+              <!-- Student A Role Card -->
+              <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2.5">
                 <div class="flex items-center justify-between">
-                  <h5 class="text-xs sm:text-sm font-bold text-emerald-950">Aircraft Anatomy Mastery Checkpoints</h5>
-                  <span class="text-[11px] font-bold text-emerald-800">Verification</span>
+                  <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-slate-200 text-slate-800">Student A • ACC Sector Controller</span>
+                  <span class="text-xs font-bold text-slate-500">Sector: Bordeaux ACC (Upper)</span>
                 </div>
-                <div class="space-y-2 text-xs text-emerald-900">
-                  ${closing.checkpoints.map(cp => `
-                    <div class="p-2.5 bg-white border border-emerald-200 rounded-lg flex items-center gap-2">
-                      <span class="text-emerald-600 font-bold">&check;</span>
-                      <span>${cp}</span>
-                    </div>
-                  `).join('')}
+                <h5 class="text-xs font-bold text-slate-900">Manage Storm Deviation &amp; Crossing Restriction</h5>
+                <p class="text-xs text-slate-700 leading-relaxed">Authorize Transavia 452 to deviate 15 NM right of track between GAILLAC and TOULOUSE, climb to FL350, maintain Mach .80 or greater, and cross AGN FL290 or above.</p>
+                <div class="p-2.5 bg-white border border-slate-200 rounded-lg text-xs font-mono text-slate-700">
+                  "Transavia 452, approved deviation up to 15 miles right of track. Climb FL350, cross AGN FL290 or above, maintain Mach decimal 80 or greater."
                 </div>
               </div>
-            ` : ''}
 
-            <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-700">
-              <span class="text-[11px] text-slate-600">Review all 18 aircraft anatomy vocabulary terms and practice pronunciation flashcards.</span>
-              <button onclick="switchModalTab('revision')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white shadow-xs hover:opacity-90 transition-all cursor-pointer shrink-0" style="background-color: ${theme.primary};">
-                <span>View Vocabulary Flashcards</span> &rarr;
-              </button>
+              <!-- Student B Role Card -->
+              <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2.5">
+                <div class="flex items-center justify-between">
+                  <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-blue-100 text-blue-800">Student B • En-Route Flight Crew (TRA452)</span>
+                  <span class="text-xs font-bold text-blue-600">Aircraft: B737-800</span>
+                </div>
+                <h5 class="text-xs font-bold text-slate-900">Active Peer Verification Checklist</h5>
+                <ul class="space-y-1.5 text-xs text-slate-700">
+                  <li class="flex items-start gap-1.5"><span class="text-emerald-600 font-bold">✓</span> Read back cleared Flight Level (FL350) and crossing restriction (AGN FL290 or above)</li>
+                  <li class="flex items-start gap-1.5"><span class="text-emerald-600 font-bold">✓</span> Acknowledged weather deviation limits: 15 miles right of track</li>
+                  <li class="flex items-start gap-1.5"><span class="text-emerald-600 font-bold">✓</span> Read back speed constraint: Mach decimal 80 or greater</li>
+                  <li class="flex items-start gap-1.5"><span class="text-emerald-600 font-bold">✓</span> Standard ICAO numbers and callsign articulation</li>
+                </ul>
+              </div>
             </div>
+          </div>
+
+          <!-- Closing Review & Flashcards Link -->
+          <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-600">
+            <div>
+              <span class="font-bold text-slate-800">Session 6 Review:</span>
+              <span class="text-slate-600 ml-1">Consolidate En-Route ATC terminology, vertical navigation rules, and weather avoidance phraseology.</span>
+            </div>
+            <button onclick="switchModalTab('revision')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white shadow-xs hover:opacity-90 transition-all cursor-pointer shrink-0" style="background-color: ${theme.primary};">
+              <span>View Vocabulary Flashcards</span> &rarr;
+            </button>
           </div>
         </div>
       `;
     }
 
-    function renderAas2LessonContentTabSession3(sessionData, theme) {
+function renderAas2LessonContentTabSession3(sessionData, theme) {
       const bodyEl = document.getElementById('modal-body');
       if (!bodyEl) return;
       const content = sessionData.lessonContent || {};
       const hero = content.hero || {};
-      const opening = content.openingSession || {};
-      const fleetTaxonomy = content.fleetTaxonomy || {};
-      const categories = fleetTaxonomy.categories || [];
-      const comparativeClinic = content.comparativeClinic || {};
-      const rules = comparativeClinic.rules || [];
-      const fleetCommitteeSimulation = content.fleetCommitteeSimulation || {};
-      const cases = fleetCommitteeSimulation.cases || [];
-      const globalLandscapeDebate = content.globalLandscapeDebate || {};
-      const topics = globalLandscapeDebate.topics || [];
-      const closing = content.closingReview || {};
+
+      const drills = [
+        {
+          id: "s7e1",
+          title: "Drill 7.1 — Approach Control: Speed Reduction & Vectoring",
+          freq: "121.100 MHz",
+          template: "KLM {{1405|flight}}, turn {{right|direction}} heading {{095|3 digits}} degrees, vectors for ILS Runway {{14R/14 Right|runway}}. Descend to {{4000|altitude}} feet, QNH {{1016|hPa}}. Reduce speed to {{210|knots}} knots, and contact Approach on {{119.325|frequency}}.",
+          spoken: "KLM one four zero five, turn right heading zero niner five degrees, vectors for ILS runway one four right. Descend to four thousand feet, QNH one zero one six. Reduce speed to two one zero knots, and contact Approach on one one niner decimal three two five.",
+          mcq: {
+            q: "Notice the pressure reference changed from Flight Level to Feet. Why?",
+            opts: ["Because KLM 1405 is descending below the Transition Level onto QNH", "Because the altimeter is broken", "Because KLM is flying VFR"],
+            ans: 0
+          }
+        },
+        {
+          id: "s7e2",
+          title: "Drill 7.2 — Holding Pattern & EAT Assignment",
+          freq: "120.800 MHz",
+          template: "Iberia {{3712|flight}}, due to arrival traffic, hold at {{GAI/Golf Alpha India|3-letter fix}} as published, Flight Level {{100|FL}}. Inbound track {{215|degrees}} degrees, {{left|turn direction}} turns. Expected approach time {{1625|time}} UTC. Confirm {{endurance|fuel word}}.",
+          spoken: "Iberia three seven one two, due to arrival traffic, hold at Golf Alpha India as published, flight level one zero zero. Inbound track two one five degrees, left turns. Expected approach time one six two five UTC. Confirm endurance.",
+          mcq: {
+            q: "Which direction are the turns in the holding pattern at GAI?",
+            opts: ["Standard right turns", "Non-standard left turns", "Figure-eight turns"],
+            ans: 1
+          }
+        },
+        {
+          id: "s7e3",
+          title: "Drill 7.3 — PAN-PAN Medical Urgency & Priority Vectoring",
+          freq: "128.850 MHz",
+          template: "{{PAN-PAN/PAN PAN|urgency call}} PAN-PAN PAN-PAN, Bordeaux Control, Air France {{441|flight}}. Request {{priority|type}} landing at Toulouse due to passenger {{medical|emergency type}} emergency. Present heading {{160|degrees}}, Flight Level {{260|FL}}. Require {{ambulance|vehicle}} on arrival; {{138|number}} souls on board.",
+          spoken: "Pan pan, pan pan, pan pan, Bordeaux Control, Air France four four one. Request priority landing at Toulouse due to passenger medical emergency. Present heading one six zero, flight level two six zero. Require ambulance on arrival; one three eight souls on board.",
+          mcq: {
+            q: "Why did the crew use PAN-PAN instead of MAYDAY?",
+            opts: ["Because it is an urgent medical situation requiring priority, not an immediate flight-safety threat", "Because they forgot the word MAYDAY", "Because PAN-PAN is only for VFR flights"],
+            ans: 0
+          }
+        },
+        {
+          id: "s7e4",
+          title: "Drill 7.4 — Windshear Alert & Missed Approach (Tower)",
+          freq: "118.100 MHz",
+          template: "Ryanair {{8812|flight}}, caution: preceding B737 reported {{windshear/wind shear|hazard}} at {{300|feet}} feet on final, loss of {{15|knots}} knots airspeed. Surface wind now {{240|degrees}} degrees {{22|knots}} knots gusting {{34|knots}} knots. If going around, climb straight ahead to {{3000|altitude}} feet and contact Radar on {{121.250/121.25|frequency}}.",
+          spoken: "Ryanair eight eight one two, caution: preceding Boeing seven three seven reported windshear at three hundred feet on final, loss of one five knots airspeed. Surface wind now two four zero degrees, two two knots, gusting three four knots. If going around, climb straight ahead to three thousand feet and contact Radar on one two one decimal two five zero.",
+          mcq: {
+            q: "What happened to the preceding aircraft at 300 feet?",
+            opts: ["It suffered a tire burst", "It encountered windshear with a 15-knot airspeed loss", "It landed long due to tailwind"],
+            ans: 1
+          }
+        }
+      ];
 
       bodyEl.innerHTML = `
         <div class="space-y-6 printable-lesson-container">
@@ -8989,9 +8779,9 @@
             <div>
               <div class="flex items-center gap-2">
                 <span class="text-white text-[10px] font-black px-2 py-0.5 rounded shadow-xs" style="background-color: ${theme.primary};">DIGITAL WORKSHEET</span>
-                <span class="text-xs font-bold text-slate-700">AT Module 2 • Session 3</span>
+                <span class="text-xs font-bold text-slate-700">AAS Module 2 • Session 3 (Session 7)</span>
               </div>
-              <h3 class="text-sm sm:text-base font-black text-slate-900 mt-1">Commercial Aircraft &amp; Airlines</h3>
+              <h3 class="text-sm sm:text-base font-black text-slate-900 mt-1">Approach Control, Arrivals &amp; Non-Nominal Emergencies</h3>
             </div>
             <button type="button" onclick="window.printLessonContent()" class="inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-300 shadow-xs transition-all cursor-pointer shrink-0">
               <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
@@ -8999,14 +8789,14 @@
             </button>
           </div>
 
-          <!-- Hero Banner -->
+          <!-- Hero Banner & Context -->
           <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs">
             <div class="relative">
-              <img src="${hero.image || 'images/aas_m2card3.jpg'}" alt="Commercial Aircraft & Airlines" class="w-full h-48 sm:h-64 object-cover" onerror="this.src='images/aas_m2card3.jpg'">
+              <img src="${hero.image || 'images/aas_m2card3.jpg'}" alt="Approach & Emergency Radiotelephony" class="w-full h-48 sm:h-64 object-cover" onerror="this.src='images/aas_m2card3.jpg'">
               <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent flex flex-col justify-end p-4 sm:p-5">
-                <span class="text-[11px] font-bold text-amber-300 uppercase tracking-wider">Commercial Aircraft Types &amp; Fleet Strategy</span>
-                <h3 class="text-lg sm:text-2xl font-black text-white mt-0.5">${hero.title || 'Commercial Aircraft &amp; Airlines'}</h3>
-                <p class="text-xs sm:text-sm text-slate-200 mt-1 line-clamp-2">${hero.subtitle || 'Commercial Aircraft Types, Aerospace Manufacturers &amp; Airline Business Models'}</p>
+                <span class="text-[11px] font-bold text-amber-300 uppercase tracking-wider">APPROACH RADAR &amp; EMERGENCY COMMUNICATIONS</span>
+                <h3 class="text-lg sm:text-2xl font-black text-white mt-0.5">${hero.title || 'Approach Control, Arrivals &amp; Non-Nominal Emergencies'}</h3>
+                <p class="text-xs sm:text-sm text-slate-200 mt-1 line-clamp-2">${hero.subtitle || 'ILS Vectoring, Holding Stacks, Windshear Go-Arounds, Medical Urgency (PAN-PAN) &amp; Emergency Diversions'}</p>
               </div>
             </div>
             <div class="p-4 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-600">
@@ -9015,7 +8805,7 @@
                 <span class="bg-indigo-100 text-indigo-800 font-bold px-2 py-0.5 rounded">CEFR B2</span>
                 <span class="text-slate-400">&bull;</span>
                 <span class="font-bold text-slate-800">Role Context:</span>
-                <span class="text-slate-600">Airline Fleet Planner / Network Strategy Director</span>
+                <span class="text-slate-600">Approach Controller (Director) / Commercial Airline Flight Crew</span>
               </div>
               <div class="flex items-center gap-2">
                 <span class="font-bold text-slate-800">Total Duration:</span>
@@ -9024,209 +8814,143 @@
             </div>
           </div>
 
-          <!-- Activity 1: News & Session 2 Check -->
+          <!-- Part 1: Aviation News & Non-Nominal Operations Warm-Up -->
           <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-xs space-y-4">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
               <div class="flex items-center gap-2">
-                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">00-10m</span>
+                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">PART 1</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${opening.title || 'Activity 1: Aviation News & Session 2 Spot-Check (10 mins)'}</h4>
-                  <p class="text-[11px] text-slate-500">${opening.summary || ''}</p>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">Aviation News &amp; Non-Nominal Operations Warm-Up</h4>
+                  <p class="text-[11px] text-slate-500">Urgency vs distress distinctions, windshear awareness &amp; pilot workload during diversions</p>
                 </div>
               </div>
-              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Opening Warm-Up</span>
+              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Opening &amp; Warm-Up</span>
             </div>
 
-            ${renderActivityInstructions(opening, theme)}
-
-            <!-- News Prompts -->
             <div class="p-4 bg-amber-50/70 border border-amber-200 rounded-xl space-y-2">
               <div class="flex items-center gap-2">
                 <svg width="16" height="16" class="text-amber-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
-                <h5 class="text-xs sm:text-sm font-bold text-amber-900">Weekly Airline Fleet &amp; Order News</h5>
+                <h5 class="text-xs sm:text-sm font-bold text-amber-900">Key Discussion Prompts</h5>
               </div>
               <ul class="space-y-1.5 pl-5 list-disc text-xs text-amber-900/90 leading-relaxed">
-                ${(opening.newsPrompts || []).map(p => `<li>${p}</li>`).join('')}
+                <li>What is the strict operational difference between <strong>PAN-PAN</strong> (urgency) and <strong>MAYDAY</strong> (distress)?</li>
+                <li>When descending below the Transition Level, what altimeter pressure setting replaces standard 1013.25 hPa?</li>
+                <li>Why is immediate pilot action required during a low-altitude windshear alert on final approach?</li>
               </ul>
             </div>
-
-            <!-- Spot check -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
-              ${((opening.diagnostic && opening.diagnostic.questions) || []).map(q => `
-                <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl flex flex-col justify-between">
-                  <p class="text-xs font-bold text-slate-800">${q.id}. ${q.q}</p>
-                  <div id="diag-ans-s3-${q.id}" class="hidden p-2 bg-white border border-slate-200 rounded text-[11px] text-slate-700 mt-2">
-                    ${q.answer}
-                  </div>
-                  <button type="button" onclick="document.getElementById('diag-ans-s3-${q.id}').classList.toggle('hidden')" class="no-print text-left text-[11px] font-bold text-slate-500 hover:text-slate-800 cursor-pointer mt-2">
-                    <span>Toggle Answer &rarr;</span>
-                  </button>
-                </div>
-              `).join('')}
-            </div>
           </div>
 
-          <!-- Activity 2: Commercial Aircraft Classification -->
+          <!-- Part 2: Cockpit VHF Listening Lab -->
           <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-xs space-y-4">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
               <div class="flex items-center gap-2">
-                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">10-35m</span>
+                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">PART 2</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${fleetTaxonomy.title || 'Activity 2: Commercial Aircraft Classification Table (25 mins)'}</h4>
-                  <p class="text-[11px] text-slate-500">${fleetTaxonomy.summary || 'Classify commercial passenger and freighter aircraft into operational categories.'}</p>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">Cockpit VHF Audio Lab — Approach &amp; Non-Nominal Radiotelephony</h4>
+                  <p class="text-[11px] text-slate-500">Listen to 4 authentic approach and emergency transmissions, complete the gap-fills, and analyze operational decisions</p>
                 </div>
               </div>
-              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Fleet Table</span>
+              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Interactive Listening Lab</span>
             </div>
 
-            ${renderActivityInstructions(fleetTaxonomy, theme)}
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              ${categories.map(c => `
-                <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2 flex flex-col justify-between shadow-2xs">
-                  <div>
-                    <h5 class="font-bold text-sm text-slate-900 pb-1 border-b border-slate-200">${c.category}</h5>
-                    <p class="text-xs text-indigo-900 font-bold mt-2">Examples: ${c.examples}</p>
-                    <div class="grid grid-cols-2 gap-2 text-[11px] text-slate-600 mt-2">
-                      <p><strong>Capacity:</strong> ${c.capacity}</p>
-                      <p><strong>Range:</strong> ${c.range}</p>
-                    </div>
-                    <p class="text-[11px] text-slate-700 mt-2 leading-relaxed"><strong>Mission:</strong> ${c.typicalMission}</p>
-                  </div>
-                </div>
-              `).join('')}
+            <div class="space-y-4">
+              ${drills.map(d => RadioAudio.renderDrill(d)).join('')}
             </div>
           </div>
 
-          <!-- Activity 3: Comparative Language Clinic -->
+          <!-- Part 3: Operational Analysis & Emergency Golden Rules -->
           <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-xs space-y-4">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
               <div class="flex items-center gap-2">
-                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">35-55m</span>
+                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">PART 3</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${comparativeClinic.title || 'Activity 3: Language Focus: Comparative &amp; Superlative Data (20 mins)'}</h4>
-                  <p class="text-[11px] text-slate-500">${comparativeClinic.summary || 'Mastering modifiers and comparative structures to evaluate aircraft efficiency and fleet statistics.'}</p>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">Operational Analysis &amp; Non-Nominal Golden Rules</h4>
+                  <p class="text-[11px] text-slate-500">Emergency declarations, holding stack discipline &amp; go-around phraseology</p>
                 </div>
               </div>
-              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Comparative Structures</span>
+              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Golden Rules</span>
             </div>
-
-            ${renderActivityInstructions(comparativeClinic, theme)}
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-              ${rules.map(r => `
-                <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-xl space-y-1.5">
-                  <h5 class="text-xs font-bold text-slate-900 uppercase">${r.structure}</h5>
-                  <p class="text-[10px] font-mono text-slate-500 bg-white p-1 rounded border border-slate-200">${r.formula}</p>
-                  <p class="text-[11px] italic text-slate-700 pt-1">&ldquo;${r.example}&rdquo;</p>
-                </div>
-              `).join('')}
+              <div class="p-3.5 bg-blue-50/70 border border-blue-200 rounded-xl space-y-2">
+                <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-blue-200 text-blue-900">Rule 1 • Emergency Phraseology</span>
+                <h5 class="text-xs font-bold text-blue-950">PAN-PAN vs MAYDAY</h5>
+                <p class="text-xs text-blue-900/90 leading-relaxed">Spoken 3 times. Always state: nature of problem, intention, position, level, souls on board, and fuel endurance in hours/minutes.</p>
+              </div>
+
+              <div class="p-3.5 bg-emerald-50/70 border border-emerald-200 rounded-xl space-y-2">
+                <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-emerald-200 text-emerald-900">Rule 2 • Holding Stack EAT</span>
+                <h5 class="text-xs font-bold text-emerald-950">Expected Approach Time</h5>
+                <p class="text-xs text-emerald-900/90 leading-relaxed">When delays exceed 10 minutes, ATC issues an EAT. If radio communication fails in the hold, the pilot leaves the holding fix at the EAT for descent.</p>
+              </div>
+
+              <div class="p-3.5 bg-purple-50/70 border border-purple-200 rounded-xl space-y-2">
+                <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-purple-200 text-purple-900">Rule 3 • Immediate Go-Around</span>
+                <h5 class="text-xs font-bold text-purple-950">Missed Approach Priority</h5>
+                <p class="text-xs text-purple-900/90 leading-relaxed">Flight crew transmits: <em>"[Callsign], going around"</em>. Fly published missed approach altitude immediately. Non-essential radio chatter ceases.</p>
+              </div>
             </div>
           </div>
 
-          <!-- Activity 4: Fleet Selection Committee Simulation -->
+          <!-- Part 4: Spoken Emergency Synthesis Simulation -->
           <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-xs space-y-4">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
               <div class="flex items-center gap-2">
-                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">55-85m</span>
+                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">PART 4</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${fleetCommitteeSimulation.title || 'Activity 4: Airline Fleet Selection Committee Simulation (30 mins)'}</h4>
-                  <p class="text-[11px] text-slate-500">${fleetCommitteeSimulation.summary || 'Pairs act as airline fleet planning directors preparing an aircraft purchase pitch for new routes.'}</p>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">Spoken Emergency Synthesis Simulation</h4>
+                  <p class="text-[11px] text-slate-500">Live pilot-controller roleplay: in-flight medical urgency, radar vectoring for priority landing &amp; ground emergency services</p>
                 </div>
               </div>
-              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Executive Pitch</span>
+              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Pair Simulation</span>
             </div>
-
-            ${renderActivityInstructions(fleetCommitteeSimulation, theme)}
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              ${cases.map(cs => `
-                <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2 flex flex-col justify-between">
-                  <div>
-                    <h5 class="text-xs sm:text-sm font-bold text-slate-900 pb-1 border-b border-slate-200">${cs.title}</h5>
-                    <p class="text-xs text-slate-600 mt-2"><strong>Network:</strong> ${cs.network}</p>
-                    <div class="space-y-2 text-xs mt-3">
-                      <div class="p-2.5 bg-white border border-slate-200 rounded-lg">
-                        <strong class="text-indigo-900 block mb-0.5">Option A:</strong>
-                        <p class="text-slate-700">${cs.optionA}</p>
-                      </div>
-                      <div class="p-2.5 bg-white border border-slate-200 rounded-lg">
-                        <strong class="text-emerald-900 block mb-0.5">Option B:</strong>
-                        <p class="text-slate-700">${cs.optionB}</p>
-                      </div>
-                    </div>
-                  </div>
+              <!-- Student A Role Card -->
+              <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2.5">
+                <div class="flex items-center justify-between">
+                  <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-slate-200 text-slate-800">Student A • Approach Director</span>
+                  <span class="text-xs font-bold text-slate-500">Station: Toulouse Arrival</span>
                 </div>
-              `).join('')}
-            </div>
-          </div>
-
-          <!-- Activity 5: Industry Debate -->
-          <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-xs space-y-4">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
-              <div class="flex items-center gap-2">
-                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">85-110m</span>
-                <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${globalLandscapeDebate.title || 'Activity 5: Global Manufacturer Debate &amp; Industry Trends (25 mins)'}</h4>
-                  <p class="text-[11px] text-slate-500">${globalLandscapeDebate.summary || 'Class debate exploring the Airbus-Boeing duopoly, supply chain bottlenecks, and the emergence of COMAC.'}</p>
+                <h5 class="text-xs font-bold text-slate-900">Manage Inbound Medical Urgency</h5>
+                <p class="text-xs text-slate-700 leading-relaxed">Acknowledge Air France 742 PAN-PAN, provide immediate vectors heading 140° for ILS Runway 14R, clear to descend 3,000 ft on QNH 1018, confirm ambulance and medical services alerted.</p>
+                <div class="p-2.5 bg-white border border-slate-200 rounded-lg text-xs font-mono text-slate-700">
+                  "Air France 742, roger PAN-PAN. Turn right heading 140 degrees, vectors for ILS Runway 14R. Descend 3,000 feet, QNH 1018. Priority landing approved, medical services alerted."
                 </div>
               </div>
-              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Industry Debate</span>
-            </div>
 
-            ${renderActivityInstructions(globalLandscapeDebate, theme)}
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs text-slate-700">
-              ${topics.map(tp => `
-                <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg flex items-center gap-2">
-                  <span class="text-amber-600 font-bold">&bull;</span>
-                  <p class="font-medium">${tp}</p>
+              <!-- Student B Role Card -->
+              <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2.5">
+                <div class="flex items-center justify-between">
+                  <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-rose-100 text-rose-800">Student B • Flight Crew (AFR742)</span>
+                  <span class="text-xs font-bold text-rose-700">Aircraft: A321 (Medical Emergency)</span>
                 </div>
-              `).join('')}
-            </div>
-          </div>
-
-          <!-- Activity 6: Wrap-up -->
-          <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-xs space-y-4">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
-              <div class="flex items-center gap-2">
-                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">110-120m</span>
-                <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${closing.title || 'Activity 6: Vocabulary Review &amp; Pronunciation Wrap-Up (10 mins)'}</h4>
-                  <p class="text-[11px] text-slate-500">${closing.summary || 'Consolidate the 18 commercial fleet terms and prepare for Session 4 Aviation Accidents.'}</p>
-                </div>
-              </div>
-              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Closing Consolidation</span>
-            </div>
-
-            ${renderActivityInstructions(closing, theme)}
-
-            ${(closing.pronunciationFocus && closing.pronunciationFocus.length) ? `
-              <div class="p-3.5 bg-indigo-50/60 border border-indigo-200 rounded-xl space-y-2">
-                <span class="text-[11px] font-bold text-indigo-950 uppercase tracking-wide">Pronunciation &amp; Syllable Stress Focus:</span>
-                <div class="flex flex-wrap gap-2 text-xs">
-                  ${closing.pronunciationFocus.map(w => `<span class="px-2.5 py-1 bg-white rounded-lg border border-indigo-200 font-mono font-bold text-indigo-900 shadow-2xs">${w}</span>`).join('')}
-                </div>
-              </div>
-            ` : ''}
-
-            <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
-              <div class="space-y-1">
-                <span class="text-[10px] font-black uppercase tracking-wider text-slate-500">Consolidation Checkpoints</span>
-                <ul class="space-y-1 text-slate-700">
-                  ${(closing.checkpoints || ['Mastered 18 commercial aircraft & fleet planning terms', 'Practiced comparative modifiers in oral pitches', 'Completed syllable stress drills on aeronautical vocabulary']).map(cp => `<li class="flex items-center gap-1.5"><span class="text-emerald-600 font-bold">&check;</span> ${cp}</li>`).join('')}
+                <h5 class="text-xs font-bold text-slate-900">Active Peer Verification Checklist</h5>
+                <ul class="space-y-1.5 text-xs text-slate-700">
+                  <li class="flex items-start gap-1.5"><span class="text-emerald-600 font-bold">✓</span> Transmitted PAN-PAN prefix clearly three times</li>
+                  <li class="flex items-start gap-1.5"><span class="text-emerald-600 font-bold">✓</span> Read back heading (140°), runway (ILS 14R), and altitude (3,000 ft QNH 1018)</li>
+                  <li class="flex items-start gap-1.5"><span class="text-emerald-600 font-bold">✓</span> Stated souls on board (184) and remaining fuel endurance (1 hour 40 mins)</li>
+                  <li class="flex items-start gap-1.5"><span class="text-emerald-600 font-bold">✓</span> Maintained concise, calm ICAO emergency radiotelephony</li>
                 </ul>
               </div>
-              <button onclick="switchModalTab('revision')" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-bold text-white shadow-xs hover:opacity-90 transition-all cursor-pointer shrink-0" style="background-color: ${theme.primary};">
-                <span>View Vocabulary Flashcards</span> &rarr;
-              </button>
             </div>
+          </div>
+
+          <!-- Closing Review & Flashcards Link -->
+          <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-600">
+            <div>
+              <span class="font-bold text-slate-800">Session 7 Review:</span>
+              <span class="text-slate-600 ml-1">Consolidate Approach radar vectoring, holding pattern EAT protocols, and emergency communications before FE2.</span>
+            </div>
+            <button onclick="switchModalTab('revision')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white shadow-xs hover:opacity-90 transition-all cursor-pointer shrink-0" style="background-color: ${theme.primary};">
+              <span>View Vocabulary Flashcards</span> &rarr;
+            </button>
           </div>
         </div>
       `;
     }
 
-    function renderAas2LessonContentTabSession4(sessionData, theme) {
+function renderAas2LessonContentTabSession4(sessionData, theme) {
       const bodyEl = document.getElementById('modal-body');
       if (!bodyEl) return;
       const content = sessionData.lessonContent || {};

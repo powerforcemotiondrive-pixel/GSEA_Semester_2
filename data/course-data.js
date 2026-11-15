@@ -9936,74 +9936,64 @@
       "2": {
         "session": 2,
         "objectives": {
-          "title": "Session 2 Objectives - Passenger Journey & Airfield Movement",
-          "summary": "By the end of this session, you will be able to discuss aviation news and review core vocabulary, map terminal facilitation from landside to airside, master prepositions of place and movement, coordinate airside intercept and de-escalation role-play, decode airfield ground markings, deliver a concise 60-second spoken briefing, and consolidate key aeronautical vocabulary.",
+          "title": "Session 2 Objectives - Ground Control, Pushback & Taxi Clearances",
+          "summary": "Master clearance delivery, pushback authorizations, slot management (TSAT/CTOT), complex aerodrome taxi routing, and ICAO conditional runway clearances through authentic VHF audio decoding and spoken readback drills.",
           "items": [
             {
               "num": 1,
-              "title": "Discuss Aviation Headlines & Catch-Up Review (Fluency & Spontaneous Speech)",
-              "description": "Engage in an opening discussion on current airport passenger technology headlines, followed by rapid spot-checking of Session 1 foundational terms."
+              "title": "Discuss Aviation News & Ground Movement Terminology (Warm-Up & Fluency)",
+              "description": "Engage in an opening discussion on airport ground safety headlines, slot delay procedures, and rapid spot-checking of core Ground terminology."
             },
             {
               "num": 2,
-              "title": "Map Passenger Terminal Flow & Wayfinding (Facilitation & Dilemmas)",
-              "description": "Trace travelers through 5 concourse touchpoints and evaluate dilemmas regarding biometric e-gates, automated bag drops, and passenger accessibility."
+              "title": "Decode Full IFR Route Delivery Clearances (Authentic VHF Audio)",
+              "description": "Listen to and transcribe clearance delivery instructions including destination, SID, initial climb altitude, and 4-digit transponder squawk codes."
             },
             {
               "num": 3,
-              "title": "Master Spatial Prepositions of Place & Movement (Grammar & Operational Clarity)",
-              "description": "Accurately deploy prepositions of point (at), volume (in), surface (on), and directional transit (along, across, through, onto) in aerodrome contexts."
+              "title": "Manage Slot Restrictions & Startup Clearances (TSAT / CTOT Flow)",
+              "description": "Evaluate pushback delays against Air Traffic Flow Management slot allocations and communicate hold-on-stand procedures."
             },
             {
               "num": 4,
-              "title": "Manage Unauthorized Airside Access & De-escalation (Interactive Role-Play)",
-              "description": "Collaborate in a paired simulation between an Aerodrome Ground Liaison / AFISO Trainee and a Ramp Service Lead resolving an apron access breach."
+              "title": "Navigate Complex Aerodrome Taxi Routes (Sequential Clearances)",
+              "description": "Trace taxi routes via multiple taxiway segments, yield to conflicting traffic, and adhere strictly to mandatory runway holding point instructions."
             },
             {
               "num": 5,
-              "title": "Decode Airfield Markings & Deliver a 60-Second Briefing (Summary & Presentation)",
-              "description": "Analyze runway magnetic designators, yellow taxiway centerlines, and holding positions, delivering a structured verbal briefing model."
+              "title": "Master Conditional Runway Clearances (The ICAO 'Behind' Rule)",
+              "description": "Analyze the standard phraseology requiring condition-first and condition-last formulation to prevent runway incursion risks."
             },
             {
               "num": 6,
-              "title": "Consolidate Core Vocabulary & Syllable Stress (Phonology & Review)",
-              "description": "Consolidate the 18 essential technical terms, practice primary word stress patterns, and update personal portfolio learning logs."
+              "title": "Spoken Readback Challenge (Paired Controller & Pilot Simulation)",
+              "description": "Execute a paired simulation between Ground Controller and Flight Crew, verifying 100% accurate readbacks of mandatory safety elements."
             }
           ]
         },
         "lessonPlan": {
           "title": "Session 2 Lesson Plan (2 Hours)",
-          "summary": "A 2-hour communicative session exploring passenger terminal architecture, airside movement areas, directional prepositions, apron safety role-play, airfield markings, and a 10-minute vocabulary consolidation.",
+          "summary": "A 2-hour communicative operational radiotelephony session featuring clearance delivery, pushback authorization, complex taxiway routing, conditional runway clearances, and a live paired readback challenge.",
           "items": [
             {
-              "time": "00-10",
-              "title": "Part 1: Aviation News & Session 1 Catch-Up Spot-Check (10 mins)",
-              "description": "Opening 10-minute warm-up: discuss recent international airport technology headlines, followed by rapid paired recall of Session 1 key vocabulary (unruly passenger, ancillary revenue, EU261, TAT)."
+              "time": "Part 1",
+              "title": "Aviation News & Ground Movement Terminology Retrieval",
+              "description": "Opening warm-up: discuss recent ground safety headlines, review TSAT vs CTOT slot management, and spot-check mandatory readback items."
             },
             {
-              "time": "10-35",
-              "title": "Part 2: Passenger Terminal Flow & Facilitation Dilemmas (25 mins)",
-              "description": "Trace the 5-stage passenger journey from curb to gate, followed by paired discussion and agreement scoring on biometric screening ethics and baggage automation."
+              "time": "Part 2",
+              "title": "Cockpit VHF Audio Lab — Ground & Delivery Radiotelephony",
+              "description": "Listen to 4 authentic ground communications, complete the real-time gap-fills, check answers, and analyze operational decisions."
             },
             {
-              "time": "35-60",
-              "title": "Part 3: Language Focus: Prepositions of Place, Direction & Movement (25 mins)",
-              "description": "Contrast static positions (at, in, on) with traversal motion (across, along, through, onto). Practice with an interactive 'Spot the Preposition Flaw' challenge."
+              "time": "Part 3",
+              "title": "Operational Analysis & Phraseology Clinic",
+              "description": "Examine golden rules for runway protection, hold-short discipline, and the ICAO conditional clearance 'behind' structure."
             },
             {
-              "time": "60-85",
-              "title": "Part 4: Operational Case Study: Unauthorized Apron Access (25 mins)",
-              "description": "Airside radio role-play: Aerodrome Ground Liaison / AFISO Trainee and Ramp Service Lead coordinate to intercept and de-escalate a disoriented passenger on the active apron."
-            },
-            {
-              "time": "85-110",
-              "title": "Part 5: Airfield Guidance Markings & Spoken Briefing (25 mins)",
-              "description": "Workshop on runway magnetic headings (09/27), taxiway centerlines, and holding points. Small groups deliver a structured 60-second verbal safety briefing."
-            },
-            {
-              "time": "110-120",
-              "title": "Part 6: Vocabulary Review, Pronunciation & Class Wrap-Up (10 mins)",
-              "description": "Final 10-minute consolidation: rapid recall of the 18 terms, word stress and syllable drill, personal learning reflection, and portfolio logging."
+              "time": "Part 4",
+              "title": "Communicative Pair Simulation & Readback Challenge",
+              "description": "Paired roleplay: Ground Controller issues complex taxi and crossing instructions while Flight Crew executes verbatim ICAO readbacks."
             }
           ]
         },
@@ -10357,98 +10347,68 @@
           }
         },
         "revision": {
-          "title": "Session 2 Revision - Passenger Flow & Airfield Movement Areas",
-          "summary": "Master the 18 key technical vocabulary terms covering passenger terminal flow, airside movement areas, ground markings, and runway numbering.",
+          "title": "Session 2 Revision - Ground Control & Taxi Radiotelephony",
+          "summary": "Essential operational vocabulary for clearance delivery, apron pushback, complex taxiway routing, and runway protection.",
           "terms": [
             {
               "num": "01",
-              "term": "Landside",
-              "definition": "The public areas of an airport terminal (ticketing, check-in, arrivals hall) accessible without a boarding pass."
+              "term": "Clearance Delivery",
+              "definition": "ATC position issuing initial IFR route clearance, SID, initial altitude, and transponder squawk code."
             },
             {
               "num": "02",
-              "term": "Self-Service Kiosk",
-              "definition": "Automated touchscreens where passengers check in, print boarding passes, and generate baggage tags independently."
+              "term": "SID",
+              "definition": "Standard Instrument Departure — published IFR departure route linking runway to the en-route airway structure."
             },
             {
               "num": "03",
-              "term": "Automated Bag Drop",
-              "definition": "A conveyor system where ticketed travelers scan luggage tags and deposit checked bags without agent help."
+              "term": "Squawk Code",
+              "definition": "4-digit octal transponder code (digits 0–7) assigned by ATC to identify the flight on radar."
             },
             {
               "num": "04",
-              "term": "Security Screening Checkpoint",
-              "definition": "The inspection point using metal detectors, body scanners, and X-ray machines to examine carry-on luggage."
+              "term": "Pushback Approved",
+              "definition": "ATC authorization for a tug to push the aircraft backwards from the stand, often specifying tail/nose direction."
             },
             {
               "num": "05",
-              "term": "Airside",
-              "definition": "The secure airport zone beyond security, including departure lounges, duty-free retail, gates, and aircraft stands."
+              "term": "Hold Short of",
+              "definition": "Mandatory safety instruction to stop and hold before a specified runway or taxiway intersection."
             },
             {
               "num": "06",
-              "term": "Dwell Time",
-              "definition": "The duration passengers spend in the terminal between clearing security and boarding, driving retail revenue."
+              "term": "Conditional Clearance",
+              "definition": "Clearance predicated on an observed traffic movement, formulated with 'Behind...' at both start and end."
             },
             {
               "num": "07",
-              "term": "Boarding Gate",
-              "definition": "The concourse doorway and service counter through which ticketed travelers present passes to board."
+              "term": "TSAT",
+              "definition": "Target Startup Approval Time — target time provided by Eurocontrol ATFM for engine startup."
             },
             {
               "num": "08",
-              "term": "Jet Bridge (Airbridge)",
-              "definition": "An enclosed, movable telescopic bridge linking the airport departure gate directly to the airplane door."
+              "term": "CTOT",
+              "definition": "Calculated Takeoff Time — precise departure slot window (-5 to +10 mins) allocated by flow management."
             },
             {
               "num": "09",
-              "term": "Apron (Ramp)",
-              "definition": "The designated paved area where aircraft park to load passengers, refuel, load baggage, and undergo servicing."
+              "term": "Stand / Gate",
+              "definition": "Designated aircraft parking position on the apron where passenger boarding and ground servicing take place."
             },
             {
               "num": "10",
-              "term": "Movement Area",
-              "definition": "The aerodrome surface comprising runways, taxiways, and aprons used for aircraft surface movement."
+              "term": "Runway Incursion",
+              "definition": "Any unauthorized occurrence at an aerodrome involving the incorrect presence of an aircraft, vehicle, or person on a runway."
             },
             {
               "num": "11",
-              "term": "Manoeuvring Area",
-              "definition": "The runways and taxiways strictly managed for aircraft surface movements, distinct from terminal servicing aprons."
+              "term": "Give Way to",
+              "definition": "Instruction requiring an aircraft to yield right of way to another taxiing aircraft before proceeding."
             },
             {
               "num": "12",
-              "term": "Pushback Tug",
-              "definition": "A specialized heavy vehicle used to push aircraft backward out of their parking stands into taxi lanes."
-            },
-            {
-              "num": "13",
-              "term": "Marshaller",
-              "definition": "Ground handling personnel using illuminated wands to guide pilots precisely into an apron parking stand."
-            },
-            {
-              "num": "14",
-              "term": "Foreign Object Debris (FOD)",
-              "definition": "Loose items, trash, or metal fragments on taxiways or runways capable of damaging aircraft engines or tires."
-            },
-            {
-              "num": "15",
-              "term": "Taxiway Centerline",
-              "definition": "A solid yellow line painted on taxiway pavement that pilots align with nose gear to ensure wingtip obstacle clearance."
-            },
-            {
-              "num": "16",
-              "term": "Runway-Holding Position",
-              "definition": "A mandatory painted marking (two solid and two dashed yellow lines) and red sign where aircraft must stop short."
-            },
-            {
-              "num": "17",
-              "term": "Runway Incursion",
-              "definition": "Any unauthorized presence of an aircraft, vehicle, or pedestrian on a protected runway surface designated for takeoff or landing."
-            },
-            {
-              "num": "18",
-              "term": "Runway Designator (Numbering)",
-              "definition": "The two-digit number painted on a runway end representing its magnetic azimuth rounded to the nearest 10 degrees."
+              "term": "Verbatim Readback",
+              "definition": "Mandatory repeating of exact numbers, runway identifiers, and holding points to verify transmission accuracy."
             }
           ]
         },
@@ -10728,74 +10688,64 @@
       "3": {
         "session": 3,
         "objectives": {
-          "title": "Session 3 Objectives - Ground Operations & Turnaround",
-          "summary": "By the end of this session, you will be able to discuss aviation current events, clearly describe airside vehicles and their functions, sequence turnaround operations using precise time linkers, explain ramp delays using formal cause-and-effect structures, collaborate in operational problem-solving as an aerodrome operations officer or AFISO, deliver a concise 60-second shift handover briefing, and consolidate key vocabulary.",
+          "title": "Session 3 Objectives - AFIS & Uncontrolled Aerodrome Traffic Information",
+          "summary": "Master Aerodrome Flight Information Service (AFIS) protocols, 'at your discretion' phraseology, ICAO Global Reporting Format (GRF / RWYCC), and advisory traffic circuit integration through authentic audio decoding and paired simulation.",
           "items": [
             {
               "num": 1,
-              "title": "Discuss Aviation News & Current Events (Fluency & Spontaneous Speech)",
-              "description": "Engage in an opening discussion on current commercial aviation headlines, airline developments, or airport infrastructure news, and spot-check previous vocabulary."
+              "title": "Differentiate AFIS Information from ATC Clearances (Operational Authority)",
+              "description": "Analyze the legal distinction between advisory information and control clearances, recognizing pilot decision authority at uncontrolled aerodromes."
             },
             {
               "num": 2,
-              "title": "Identify & Describe Airside Vehicles (Fluency & Defining Language)",
-              "description": "Accurately explain the purpose of Ground Support Equipment (GSE) using relative clauses (which / that) and purpose structures (used for + -ing, designed to + base verb) without relying on technical jargon."
+              "title": "Decode AFIS Departure Advisories (Authentic VHF Audio)",
+              "description": "Listen to and transcribe airfield information broadcasts covering runway in use, surface wind, QNH, and reported circuit traffic."
             },
             {
               "num": 3,
-              "title": "Sequence Turnaround Milestones (Sequencing & Time Linkers)",
-              "description": "Chronologically order simultaneous apron tasks (deboarding, fueling, catering, baggage handling, boarding) using time connectors such as meanwhile, simultaneously, as soon as, and prior to pushback."
+              "title": "Interpret Runway Condition Codes (GRF / RWYCC Matrix)",
+              "description": "Decode Runway Condition Codes (0 to 6), percentage coverage, and water depth reporting on wet runways."
             },
             {
               "num": 4,
-              "title": "Express Cause & Consequence in Ramp Delays (Grammar: Cause & Effect)",
-              "description": "Construct clear spoken sentences explaining turnaround delays and knock-on effects using formal linkers including due to, owing to, as a result of, consequently, and led to."
+              "title": "Manage Mixed VFR/IFR Circuit Conflicts (Advisory Separation)",
+              "description": "Interpret position reports and conflict warnings for aircraft joining overhead, turning base, or operating in aerodrome sectors."
             },
             {
               "num": 5,
-              "title": "Navigate Spoken Ramp Coordination Scenarios (Interaction & Operational Roles)",
-              "description": "Participate in collaborative peer discussions between ramp coordinators and TSEEAC aerodrome operations / AFISO officers to resolve unexpected apron events (GPU failure, catering road blockage, fueling safety holds)."
+              "title": "Handle Ground Runway Hazards (Runway Inspection Vehicles)",
+              "description": "Understand advisory hold instructions ('stand by on final') when runway vehicles or temporary obstructions are present."
             },
             {
               "num": 6,
-              "title": "Deliver a Concise Operational Shift Handover (Structured Spoken Briefing)",
-              "description": "Structure and deliver a fluent 60-second verbal briefing summarizing aircraft status, root cause of delays, and pending ramp actions for an incoming colleague or AFISO officer."
+              "title": "Spoken AFIS Advisory Roleplay (Paired AFISO & Pilot Simulation)",
+              "description": "Execute paired roleplay between an AFIS Officer providing traffic and runway advisories and an inbound pilot reporting position."
             }
           ]
         },
         "lessonPlan": {
           "title": "Session 3 Lesson Plan (2 Hours)",
-          "summary": "A 2-hour communicative session featuring an aviation news opening, previous session vocabulary spot-checking, the turnaround timeline, airside vehicle defining games, ramp safety cause-effect language, collaborative AFISO/operations simulations, shift handover briefings, and a 10-minute vocabulary consolidation review.",
+          "summary": "A 2-hour communicative operational radiotelephony session exploring AFIS advisory standards, pilot decision authority, RWYCC surface condition reporting, and traffic circuit integration before Formative Evaluation 1.",
           "items": [
             {
-              "time": "00-10",
-              "title": "Part 1: Aviation News, Current Events & Session 2 Vocabulary Spot-Check (10 mins)",
-              "description": "Opening 10-minute warm-up: discuss recent international aviation headlines followed by rapid spot-checking of Session 2 vocabulary (passenger terminal flow, security checkpoints, runway designators, taxiway markings)."
+              "time": "Part 1",
+              "title": "Aviation News & AFIS Operational Principles",
+              "description": "Opening warm-up: review uncontrolled aerodrome operations, legal boundaries of AFIS, and pilot separation authority."
             },
             {
-              "time": "10-25",
-              "title": "Part 2: The Turnaround Clock & Apron Narrative (15 mins)",
-              "description": "Explore the critical 35-to-45-minute turnaround window. Contrast Past Simple and Present Perfect to describe completed vs. pending ramp milestones (e.g. \"Flight BA342 landed at 14:15, but handlers have not closed the cargo doors yet\")."
+              "time": "Part 2",
+              "title": "Cockpit VHF Audio Lab — AFIS Aerodrome Advisory Broadcasts",
+              "description": "Listen to 4 authentic regional AFIS transmissions, complete the real-time gap-fills, and analyze advisory phraseology."
             },
             {
-              "time": "25-55",
-              "title": "Part 3: Airside Vehicles (GSE) Master Index & Defining Game (30 mins)",
-              "description": "Examine the 10 core ground support vehicles. Students practice communicative defining language using relative clauses and purpose frames (designed to, fitted with, used for) in an interactive paired mystery vehicle challenge."
+              "time": "Part 3",
+              "title": "Operational Analysis & Legal Boundaries Clinic",
+              "description": "Review why AFISOs never issue clearances, decode RWYCC surface contaminant tables, and map circuit position reports."
             },
             {
-              "time": "55-80",
-              "title": "Part 4: Apron Safety, Turnaround Bottlenecks & Cause-Effect Linkers (25 mins)",
-              "description": "Analyze common ramp delays (fuel spills, FOD, belt loader breakdowns). Build high-yield B2 cause and effect statements using due to, owing to, as a result, consequently, and led to."
-            },
-            {
-              "time": "80-110",
-              "title": "Part 5: Operations Simulation & Shift Handover Briefing (30 mins)",
-              "description": "Paired role-play simulation: Ground Coordinator and TSEEAC Aerodrome Operations Officer (AFISO) resolve three simultaneous bottlenecks at Stand Charlie-4. Students deliver a structured 60-second verbal shift handover."
-            },
-            {
-              "time": "110-120",
-              "title": "Part 6: Vocabulary Review, Pronunciation & Class Wrap-Up (10 mins)",
-              "description": "Final 10-minute consolidation: rapid recall of the 18 turnaround terms, word stress and pronunciation spot-checking, personal portfolio reflection, and study log update."
+              "time": "Part 4",
+              "title": "Spoken Simulation & AFIS Advisory Roleplay",
+              "description": "Paired roleplay: AFIS Officer transmits traffic and runway warnings while arriving pilot acknowledges and reports position."
             }
           ]
         },
@@ -11279,98 +11229,68 @@
           }
         },
         "revision": {
-          "title": "Session 3: Ground Operations & Turnaround",
-          "summary": "Review the 18 essential B2 vocabulary terms for airport turnaround and Ground Support Equipment (GSE) to build fluency in operational discussions, shift briefings, and TOEIC comprehension.",
+          "title": "Session 3 Revision - AFIS Operations & Advisory Phraseology",
+          "summary": "Essential operational vocabulary for uncontrolled aerodromes, advisory communications, surface reporting, and traffic circuits.",
           "terms": [
             {
               "num": "01",
-              "term": "Turnaround Time (TAT)",
-              "definition": "The total duration an aircraft remains stationary on stand between its arrival (chocks-on) and its next departure (chocks-off)."
+              "term": "AFIS",
+              "definition": "Aerodrome Flight Information Service — unit providing flight information and alerting, without air traffic control clearances."
             },
             {
               "num": "02",
-              "term": "Ground Support Equipment (GSE)",
-              "definition": "The specialized fleet of vehicles, tugs, conveyors, and units that service an aircraft on the airport apron."
+              "term": "At Your Discretion",
+              "definition": "Phrase confirming that the pilot-in-command decides when to line up, take off, or land based on advisory info provided."
             },
             {
               "num": "03",
-              "term": "Chocks-On / Chocks-Off",
-              "definition": "The precise operational times when wooden or rubber wedges are placed against or removed from aircraft landing wheels."
+              "term": "Reported Traffic",
+              "definition": "Information on aircraft reported to be operating in or near the aerodrome traffic circuit."
             },
             {
               "num": "04",
-              "term": "Pushback Tractor (Tug)",
-              "definition": "A heavy, low-profile vehicle used to push an aircraft backwards from the terminal gate into the taxiway lane."
+              "term": "Backtrack",
+              "definition": "Taxiing along the runway in the direction opposite to takeoff/landing to reach the threshold."
             },
             {
               "num": "05",
-              "term": "Ground Power Unit (GPU)",
-              "definition": "A mobile external generator or gate connection that supplies 115V/400Hz electricity to the aircraft while main engines are off."
+              "term": "Overhead Join",
+              "definition": "Joining the aerodrome traffic pattern above circuit height before descending on the deadside."
             },
             {
               "num": "06",
-              "term": "Belt Loader",
-              "definition": "An inclined mobile conveyor belt vehicle used for loading and unloading loose baggage and cargo into the lower aircraft hold."
+              "term": "Runway Vacated",
+              "definition": "Pilot confirmation that the aircraft has fully crossed beyond the runway holding position markings."
             },
             {
               "num": "07",
-              "term": "Refueling Hydrant Dispenser",
-              "definition": "A ramp vehicle that connects underground fuel pipelines to aircraft wing tanks under regulated pressure."
+              "term": "RWYCC",
+              "definition": "Runway Condition Code (0 to 6 under ICAO Global Reporting Format) quantifying runway surface slipperiness."
             },
             {
               "num": "08",
-              "term": "Catering Hi-Lift Truck",
-              "definition": "A specialized truck with an elevated scissor-lift body that raises meal and beverage carts directly to cabin galley doors."
+              "term": "Traffic Circuit",
+              "definition": "Standard rectangular flight path flown by aircraft operating in the vicinity of an aerodrome (upwind, crosswind, downwind, base, final)."
             },
             {
               "num": "09",
-              "term": "Potable Water Truck",
-              "definition": "A dedicated sanitary tanker vehicle that replenishes the aircraft tanks with fresh drinking water for galley and washbasin use."
+              "term": "Blind Transmission",
+              "definition": "Radio transmission made when two-way communication cannot be established, but other aircraft/stations are believed to be listening."
             },
             {
               "num": "10",
-              "term": "Lavatory Service Unit",
-              "definition": "A ground servicing vehicle that empties, flushes, and sanitizes the aircraft toilet waste holding tanks."
+              "term": "Duty of Care",
+              "definition": "Legal obligation of an AFIS officer to provide accurate, timely, and complete aerodrome safety advisories."
             },
             {
               "num": "11",
-              "term": "De-icing / Anti-icing Rig",
-              "definition": "A specialized boom truck that sprays heated glycol-water mixtures onto wings and control surfaces to remove frost and ice."
+              "term": "Downwind Leg",
+              "definition": "Flight path parallel to the runway in the direction opposite to landing, where landing checks are completed."
             },
             {
               "num": "12",
-              "term": "Follow-Me Car",
-              "definition": "A high-visibility safety vehicle with amber flashing lights and illuminated signs that escorts taxiing aircraft to their gate."
-            },
-            {
-              "num": "13",
-              "term": "Foreign Object Debris (FOD)",
-              "definition": "Any loose item, tool, fragment, or trash on the apron or taxiway that could be ingested by an engine or damage an aircraft tire."
-            },
-            {
-              "num": "14",
-              "term": "Airside Service Road",
-              "definition": "Marked roadway corridors on the ramp reserved strictly for authorized ground support equipment and airport vehicles."
-            },
-            {
-              "num": "15",
-              "term": "Passenger Boarding Bridge (Jet Bridge)",
-              "definition": "An enclosed, movable elevated corridor connecting the terminal gate directly to the forward passenger door of the aircraft."
-            },
-            {
-              "num": "16",
-              "term": "Baggage Tug & Dolly Train",
-              "definition": "A small motorized towing tractor pulling a train of wheeled carts (dollies) transporting baggage containers or loose luggage."
-            },
-            {
-              "num": "17",
-              "term": "Slot Adherence (CTOT)",
-              "definition": "Departing strictly within the assigned Calculated Take-Off Time window to maintain air traffic flow management compliance."
-            },
-            {
-              "num": "18",
-              "term": "Stand Clearance",
-              "definition": "The formal safety confirmation that all vehicles, equipment, and ramp personnel have retreated behind safety lines before pushback."
+              "term": "Base Leg",
+              "definition": "Flight path perpendicular to the runway centerline extending from the downwind leg to final approach."
             }
           ]
         },
@@ -13204,69 +13124,64 @@
       "2": {
         "session": 2,
         "objectives": {
-          "title": "Session 2 Objectives - Aircraft Anatomy: Structure & Systems",
-          "summary": "By the end of this session, you will be able to identify external and internal aircraft parts from diagrams, use spatial prepositions and functional descriptors accurately, conduct a simulated pre-flight exterior walkaround, and report mechanical defects in professional B2 English.",
+          "title": "Session 6 Objectives - En Route & Area Control Clearances",
+          "summary": "Master Area Control Center (ACC) communications, vertical step climbs, direct RNAV routing, high-altitude speed restrictions (Mach number vs IAS), and thunderstorm (CB) weather deviations through authentic VHF audio decoding and controller-pilot roleplay.",
           "items": [
             {
               "num": 1,
-              "title": "Identify External & Internal Aircraft Components",
-              "description": "Accurately name key airframe components including slats, flaps, ailerons, empennage, radome, landing gear, flight deck instruments, and cabin bulkheads."
+              "title": "Understand En Route Airway Structure & Cruising Rules (Airspace Management)",
+              "description": "Analyze vertical airway separation, cruising level allocation, and semi-circular cruising altitude rules in European upper airspace."
             },
             {
               "num": 2,
-              "title": "Deploy Spatial Prepositions & Functional Descriptors",
-              "description": "Describe the physical position and operational purpose of parts using prepositions (along, behind, flush-mounted, adjacent to) and purpose clauses."
+              "title": "Decode ACC Step Climbs & Direct Routings (Authentic VHF Audio)",
+              "description": "Transcribe en-route radar clearances covering step climbs to cruising FL, direct RNAV waypoints, and sector level restrictions."
             },
             {
               "num": 3,
-              "title": "Perform a 360-Degree Pre-Flight Walkaround Inspection Role-Play",
-              "description": "Simulate a captain or maintenance engineer inspecting the airframe, identifying foreign object damage (FOD), leaks, and structural dents."
+              "title": "Request & Authorize Weather Deviations (Storm Cell Avoidance)",
+              "description": "Master phraseology for requesting and approving lateral radar deviations around convective thunderstorm (CB) clouds."
             },
             {
               "num": 4,
-              "title": "Communicate Cockpit & Cabin Defect Handovers",
-              "description": "Discuss whether unserviceable components violate the Minimum Equipment List (MEL) and agree on dispatch decisions."
+              "title": "Manage Speed & Level Crossing Restrictions (Mach Spacing)",
+              "description": "Execute speed adjustments using Mach numbers above FL280, IAS at lower levels, and vertical rate instructions ('expedite')."
             },
             {
               "num": 5,
-              "title": "Master High-Frequency Structural Pronunciation",
-              "description": "Correctly pronounce and stress specialized aeronautical components without hesitating during oral interactions."
+              "title": "Execute Sector Handoffs & Transponder Transfers (Frequency Transfer)",
+              "description": "Manage frequency change handoffs to adjacent ACC sectors and transponder squawk reassignment under radar service termination."
+            },
+            {
+              "num": 6,
+              "title": "Spoken ACC Simulation (Paired Controller & Pilot Simulation)",
+              "description": "Roleplay realistic en-route scenarios between Area Radar Controller and Airline Crew, resolving storm deviations and crossing constraints."
             }
           ]
         },
         "lessonPlan": {
-          "title": "Session 2 Lesson Plan (2 Hours)",
-          "summary": "A 2-hour communicative session combining aviation news, an airframe diagram labeling challenge, spatial grammar clinic, a 360-degree walkaround inspection simulation, MEL defect handovers, and pronunciation drills.",
+          "title": "Session 6 Lesson Plan (2 Hours)",
+          "summary": "A 2-hour communicative operational radiotelephony session exploring Area Control Center (ACC) procedures, step climbs, direct routings, Mach number management, and thunderstorm weather avoidance.",
           "items": [
             {
-              "time": "00-10",
-              "title": "Part 1: Aviation News & Session 1 Aerodynamics Spot-Check (10 mins)",
-              "description": "Weekly aviation news warm-up and rapid spot-check on the 4 forces, angle of attack, and the 3 aircraft axes."
+              "time": "Part 1",
+              "title": "Aviation News & En Route Operations Warm-Up",
+              "description": "Opening warm-up: review upper airspace navigation, cruising level allocation, and high-altitude speed control."
             },
             {
-              "time": "10-35",
-              "title": "Part 2: Airframe Diagram Labeling Race (25 mins)",
-              "description": "Collaborative visual diagram race: identifying and labeling external control surfaces and internal cabin/cockpit zones."
+              "time": "Part 2",
+              "title": "Cockpit VHF Audio Lab — Area Control (ACC) Radiotelephony",
+              "description": "Listen to 4 authentic en-route transmissions, complete the gap-fills, and analyze operational spacing decisions."
             },
             {
-              "time": "35-55",
-              "title": "Part 3: Language Focus: Spatial Prepositions & Functions (20 mins)",
-              "description": "Describing locations and mechanical functions using relative clauses and spatial prepositions (situated along, mounted to, designed to)."
+              "time": "Part 3",
+              "title": "Operational Analysis & En Route Phraseology Clinic",
+              "description": "Examine vertical rate authority ('expedite'), lateral storm offset limits, and waypoint level crossing restrictions."
             },
             {
-              "time": "55-85",
-              "title": "Part 4: Pre-Flight Walkaround Inspection Role-Play (30 mins)",
-              "description": "Captain & Ramp Maintenance Engineer simulation: performing an exterior walkaround and reporting simulated defects."
-            },
-            {
-              "time": "85-110",
-              "title": "Part 5: Cockpit & Cabin Defect Handover Workshop (25 mins)",
-              "description": "Consulting the Minimum Equipment List (MEL) to negotiate dispatch decisions for inoperative cabin or airframe items."
-            },
-            {
-              "time": "110-120",
-              "title": "Part 6: Vocabulary Review, Pronunciation & Class Wrap-Up (10 mins)",
-              "description": "Pronunciation stress practice (fu-se-lage, emp-en-nage, hy-drau-lic, ra-dome) and vocabulary log consolidation."
+              "time": "Part 4",
+              "title": "Communicative Pair Simulation & Readback Challenge",
+              "description": "Paired roleplay: ACC Sector Controller manages storm deviations and step climbs while Flight Crew executes standard readbacks."
             }
           ]
         },
@@ -13545,98 +13460,68 @@
           }
         },
         "revision": {
-          "title": "Session 2 Revision - Aircraft Anatomy: Structure & Systems",
-          "summary": "Master the 18 key vocabulary terms for Aircraft Anatomy to describe airframe structures, control devices, and pre-flight inspections.",
+          "title": "Session 6 Revision - En Route & Area Control Radiotelephony",
+          "summary": "Essential operational vocabulary for upper airspace radar control, cruising level management, speed restrictions, and weather avoidance.",
           "terms": [
             {
               "num": "01",
-              "term": "Fuselage",
-              "definition": "The central main body structure of an aircraft holding passengers, flight crew, and cargo."
+              "term": "Flight Level (FL)",
+              "definition": "Altitude expressed in hundreds of feet based on the standard altimeter pressure setting of 1013.25 hPa."
             },
             {
               "num": "02",
-              "term": "Empennage",
-              "definition": "The tail assembly of an aircraft, consisting of the vertical fin, rudder, horizontal stabilizer, and elevators."
+              "term": "Expedite",
+              "definition": "Instruction requiring flight crew to apply maximum safe operational rate of climb or descent without delay."
             },
             {
               "num": "03",
-              "term": "Leading Edge",
-              "definition": "The forwardmost edge of an airfoil or wing that first meets the relative airflow."
+              "term": "Direct to",
+              "definition": "Radar shortcut clearance allowing the aircraft to fly directly toward a downstream RNAV waypoint."
             },
             {
               "num": "04",
-              "term": "Trailing Edge",
-              "definition": "The aft rear edge of an airfoil or wing where airflow passing over and under meets."
+              "term": "Mach Number",
+              "definition": "Ratio of true airspeed to the local speed of sound, used for en-route speed control above FL280."
             },
             {
               "num": "05",
-              "term": "Slats",
-              "definition": "Movable aerodynamic surfaces on the leading edge that extend to delay stall at high angles of attack."
+              "term": "Weather Deviation",
+              "definition": "Pilot request to steer laterally away from the cleared airway track to avoid convective thunderstorm clouds."
             },
             {
               "num": "06",
-              "term": "Flaps",
-              "definition": "High-lift hinged surfaces on the trailing edge deployed to increase wing surface area and camber during takeoff and landing."
+              "term": "Level Crossing Fix",
+              "definition": "Airway restriction requiring an aircraft to cross a specific waypoint at or above/below a designated Flight Level."
             },
             {
               "num": "07",
-              "term": "Spoiler (Speed Brake)",
-              "definition": "Hinged plates on the upper wing surface that deploy upward to spoil lift and slow the aircraft."
+              "term": "Squawk Ident",
+              "definition": "Instruction to press the transponder IDENT button so the aircraft return flashes distinctly on the radar screen."
             },
             {
               "num": "08",
-              "term": "Horizontal Stabilizer",
-              "definition": "The fixed or trimmable horizontal tail surface providing longitudinal stability in pitch."
+              "term": "Radar Contact",
+              "definition": "Situation where the aircraft radar return is identified on the controller display and radar service is provided."
             },
             {
               "num": "09",
-              "term": "Vertical Fin",
-              "definition": "The vertical tail surface that provides directional stability against yaw."
+              "term": "Sector Handoff",
+              "definition": "Transfer of communication and control of an aircraft from one air traffic control sector to the next."
             },
             {
               "num": "10",
-              "term": "Landing Gear",
-              "definition": "The undercarriage assembly (wheels, oleo struts, brakes) supporting the aircraft on the ground."
+              "term": "Own Navigation",
+              "definition": "Flight status where the pilot navigates independently via onboard FMS rather than following radar vectors."
             },
             {
               "num": "11",
-              "term": "Radome",
-              "definition": "The streamlined fiberglass nose cone protecting the weather radar antenna from aerodynamic weather."
+              "term": "Indicated Airspeed (IAS)",
+              "definition": "Speed shown on the cockpit airspeed indicator, used for speed control during lower altitude climbs and descents."
             },
             {
               "num": "12",
-              "term": "Pitot Tube",
-              "definition": "A forward-facing tube mounted on the airframe that measures dynamic ram air pressure for the airspeed indicator."
-            },
-            {
-              "num": "13",
-              "term": "Static Port",
-              "definition": "A flush-mounted opening on the fuselage side that senses ambient atmospheric pressure for altimeters and VSI."
-            },
-            {
-              "num": "14",
-              "term": "Sidestick",
-              "definition": "The cockpit hand control stick mounted on the side console used by pilots to send electronic roll and pitch inputs."
-            },
-            {
-              "num": "15",
-              "term": "Throttle Quadrant",
-              "definition": "The center cockpit console containing engine thrust levers and reverse thrust triggers."
-            },
-            {
-              "num": "16",
-              "term": "Flight Deck",
-              "definition": "The cockpit area at the front of the aircraft where the flight crew operates the flight controls and instruments."
-            },
-            {
-              "num": "17",
-              "term": "Galley",
-              "definition": "The aircraft onboard kitchen area where flight attendants prepare passenger meals and store service carts."
-            },
-            {
-              "num": "18",
-              "term": "Bulkhead",
-              "definition": "A structural vertical dividing wall separating passenger cabins, galleys, or pressurized zones."
+              "term": "Semi-Circular Rule",
+              "definition": "Airspace standard assigning odd Flight Levels to eastbound flights (000°–179°) and even Flight Levels to westbound flights (180°–359°)."
             }
           ]
         },
@@ -13880,69 +13765,64 @@
       "3": {
         "session": 3,
         "objectives": {
-          "title": "Session 3 Objectives - Commercial Aircraft & Airlines",
-          "summary": "By the end of this session, you will be able to categorize commercial aircraft types, compare airliner specifications and manufacturer strategies (Airbus vs. Boeing), deploy comparative structures with confidence, and participate in an airline fleet selection committee simulation.",
+          "title": "Session 7 Objectives - Approach Control, Arrivals & Non-Nominal Emergencies",
+          "summary": "Master terminal arrival sequencing, radar vectors to ILS final, holding stack management, urgent medical declarations (PAN-PAN), windshear alerts, and immediate missed approach procedures through authentic VHF audio decoding and emergency roleplay.",
           "items": [
             {
               "num": 1,
-              "title": "Classify Commercial Aircraft Families",
-              "description": "Differentiate between regional turboprops/jets, single-aisle narrowbodies, twin-aisle widebodies, and dedicated freighters."
+              "title": "Differentiate Emergency Levels (Urgency vs Distress Radiotelephony)",
+              "description": "Distinguish urgent situations (PAN-PAN, priority handling, medical diversion) from grave distress (MAYDAY, immediate danger) and declare fuel urgency."
             },
             {
               "num": 2,
-              "title": "Compare Manufacturer Strategies & Fleet Data",
-              "description": "Analyze the global duopoly of Airbus and Boeing alongside emerging players (ATR, Embraer, COMAC) in range, capacity, and efficiency."
+              "title": "Decode Approach Vectors & Speed Constraints (Authentic VHF Audio)",
+              "description": "Transcribe radar vectors to ILS localizer intercept, altitude step-downs onto QNH altimeter setting, and speed reductions."
             },
             {
               "num": 3,
-              "title": "Deploy Comparative & Superlative Language for Data Evaluation",
-              "description": "Accurately use comparative modifiers (substantially more efficient, lowest fuel burn, twice as heavy) when presenting fleet statistics."
+              "title": "Execute Holding Patterns & Interpret EAT (Terminal Delay Management)",
+              "description": "Analyze holding clearances specifying holding fix, inbound track, non-standard turn direction, and Expected Approach Time (EAT)."
             },
             {
               "num": 4,
-              "title": "Role-Play an Airline Fleet Selection Committee",
-              "description": "Simulate an executive airline fleet planning committee evaluating candidate aircraft orders for regional and long-haul routes."
+              "title": "Declare In-Flight Medical Urgencies (PAN-PAN Structure)",
+              "description": "Structure standard urgency transmissions stating nature of medical problem, intentions, souls on board, and ground ambulance requirements."
             },
             {
               "num": 5,
-              "title": "Examine Airline Operating Models (Legacy vs. Low-Cost)",
-              "description": "Contrast hub-and-spoke vs. point-to-point network economics, fleet commonality benefits, and turnaround speed."
+              "title": "Manage Windshear Alerts & Missed Approaches (Immediate Action)",
+              "description": "Respond to low-altitude windshear reports, execute immediate go-arounds, and transmit concise missed approach communications."
+            },
+            {
+              "num": 6,
+              "title": "Spoken Emergency Synthesis Simulation (Paired Controller & Pilot Simulation)",
+              "description": "Roleplay emergency diversion handling between Approach Director and Flight Crew under high-workload non-nominal conditions."
             }
           ]
         },
         "lessonPlan": {
-          "title": "Session 3 Lesson Plan (2 Hours)",
-          "summary": "A 2-hour communicative session covering commercial aviation news, commercial aircraft classification, comparative data clinic, an airline fleet selection pitch simulation, and duopoly debates.",
+          "title": "Session 7 Lesson Plan (2 Hours)",
+          "summary": "A 2-hour communicative operational radiotelephony session exploring terminal arrival vectoring, holding stack EAT protocols, in-flight emergency declarations, and missed approach procedures before Formative Evaluation 2.",
           "items": [
             {
-              "time": "00-10",
-              "title": "Part 1: Aviation News & Session 2 Anatomy Spot-Check (10 mins)",
-              "description": "Weekly aviation news review and rapid spot-check on aircraft parts and pre-flight walkaround defect reporting."
+              "time": "Part 1",
+              "title": "Aviation News & Non-Nominal Operations Warm-Up",
+              "description": "Opening warm-up: review emergency radiotelephony standards, windshear microburst hazards, and flight crew workload during diversions."
             },
             {
-              "time": "10-35",
-              "title": "Part 2: Commercial Aircraft Classification Table (25 mins)",
-              "description": "Interactive fleet categorization: classifying regional, narrowbody, widebody, and freighter models by range, capacity, and mission."
+              "time": "Part 2",
+              "title": "Cockpit VHF Audio Lab — Approach & Non-Nominal Radiotelephony",
+              "description": "Listen to 4 authentic approach and emergency transmissions, complete the gap-fills, and analyze tactical decisions."
             },
             {
-              "time": "35-55",
-              "title": "Part 3: Language Focus: Comparative & Superlative Data (20 mins)",
-              "description": "Evaluating commercial figures with comparative structures (burns 20% less fuel, substantially greater range, the most cost-effective)."
+              "time": "Part 3",
+              "title": "Operational Analysis & Emergency Golden Rules",
+              "description": "Analyze the 3-part urgency declaration structure, holding stack radio failure protocols, and immediate go-around phraseology."
             },
             {
-              "time": "55-85",
-              "title": "Part 4: Airline Fleet Selection Committee Simulation (30 mins)",
-              "description": "Pairs act as airline fleet planning directors preparing an aircraft purchase pitch for new routes, defending their choice to classmates."
-            },
-            {
-              "time": "85-110",
-              "title": "Part 5: Global Manufacturer Debate & Industry Trends (25 mins)",
-              "description": "Class debate: Hub-and-spoke vs. point-to-point routes; Airbus vs. Boeing duopoly competition; the entry of COMAC C919."
-            },
-            {
-              "time": "110-120",
-              "title": "Part 6: Vocabulary Review, Pronunciation & Class Wrap-Up (10 mins)",
-              "description": "Pronunciation drill on commercial terms (ma-nu-fac-tu-rer, tur-bo-prop, ca-pa-ci-ty, ef-fi-cien-cy) and learning log consolidation."
+              "time": "Part 4",
+              "title": "Spoken Emergency Synthesis Simulation",
+              "description": "Paired roleplay: Approach Controller provides priority vectoring for an inbound medical emergency while Flight Crew coordinates rescue requirements."
             }
           ]
         },
@@ -14163,98 +14043,68 @@
           }
         },
         "revision": {
-          "title": "Session 3 Revision - Commercial Aircraft & Airlines",
-          "summary": "Master the 18 key vocabulary terms for Commercial Aircraft & Airlines to analyze aircraft categories, fleet planning, and airline business models.",
+          "title": "Session 7 Revision - Approach Control & Emergency Communications",
+          "summary": "Essential operational vocabulary for terminal approach control, ILS vectoring, holding stacks, and non-nominal emergency radiotelephony.",
           "terms": [
             {
               "num": "01",
-              "term": "Narrowbody",
-              "definition": "A single-aisle commercial passenger aircraft typically seating 100 to 240 passengers with 6 seats abreast."
+              "term": "PAN-PAN",
+              "definition": "ICAO urgency signal (transmitted three times) for serious conditions affecting safety but not requiring immediate life-saving rescue."
             },
             {
               "num": "02",
-              "term": "Widebody",
-              "definition": "A twin-aisle commercial airliner seating 250 to 500+ passengers with 7 to 10 seats abreast used for long-haul routes."
+              "term": "MAYDAY",
+              "definition": "ICAO distress signal (transmitted three times) indicating an aircraft is threatened by grave and imminent danger and requires immediate assistance."
             },
             {
               "num": "03",
-              "term": "Regional Jet",
-              "definition": "A short-to-medium-range jet airliner typically seating 50 to 120 passengers on feeder routes."
+              "term": "Go-Around",
+              "definition": "Maneuver in which the pilot aborts the landing approach and initiates climb onto the published missed approach procedure."
             },
             {
               "num": "04",
-              "term": "Turboprop",
-              "definition": "An aircraft powered by a gas turbine engine geared to a propeller, highly efficient at low altitudes and short distances."
+              "term": "Windshear",
+              "definition": "Sudden, rapid change in wind direction and/or velocity over a short distance, causing critical lift and airspeed loss."
             },
             {
               "num": "05",
-              "term": "Freighter",
-              "definition": "A dedicated cargo aircraft with main-deck loading doors designed exclusively to carry freight containers."
+              "term": "Diversion",
+              "definition": "Changing the aircraft destination in flight to an alternate aerodrome due to weather, technical faults, or medical emergency."
             },
             {
               "num": "06",
-              "term": "Range",
-              "definition": "The maximum distance an aircraft can fly between takeoff and landing without refueling."
+              "term": "Fuel Endurance",
+              "definition": "Total remaining flight time available based on usable fuel on board, crucial during holding and diversions."
             },
             {
               "num": "07",
-              "term": "Payload",
-              "definition": "The total revenue-generating load carrying capacity of an aircraft, including passengers, luggage, and commercial cargo."
+              "term": "Souls on Board",
+              "definition": "Total number of living persons on the aircraft (passengers plus all flight and cabin crew members)."
             },
             {
               "num": "08",
-              "term": "Maximum Takeoff Weight (MTOW)",
-              "definition": "The maximum certified total weight at which an aircraft is legally permitted to attempt takeoff."
+              "term": "Transition Level",
+              "definition": "Lowest usable Flight Level above the Transition Altitude, below which altimeters are set to aerodrome QNH."
             },
             {
               "num": "09",
-              "term": "Fuel Burn",
-              "definition": "The rate of fuel consumed by an aircraft engine during flight, measured in kilograms or liters per hour."
+              "term": "QNH Setting",
+              "definition": "Altimeter barometric pressure setting that causes the altimeter to indicate altitude above Mean Sea Level (AMSL)."
             },
             {
               "num": "10",
-              "term": "Manufacturer",
-              "definition": "An aerospace corporation, such as Airbus or Boeing, that designs, certifies, and builds aircraft."
+              "term": "ILS Vectoring",
+              "definition": "Radar headings issued by the approach controller to guide the aircraft onto the instrument localizer and glidepath."
             },
             {
               "num": "11",
-              "term": "Duopoly",
-              "definition": "A market condition where two major suppliers dominate sales, notably Airbus and Boeing in large commercial jetliners."
+              "term": "Expected Approach Time (EAT)",
+              "definition": "Time at which ATC expects an aircraft holding in a stack to leave the holding fix to commence its approach."
             },
             {
               "num": "12",
-              "term": "Flag Carrier",
-              "definition": "A legacy national airline registered in a specific country, often historically state-owned (e.g. Air France, British Airways)."
-            },
-            {
-              "num": "13",
-              "term": "Low-Cost Carrier (LCC)",
-              "definition": "An airline operating with a lean cost structure, high fleet utilization, point-to-point routes, and unbundled fares (e.g. Ryanair, easyJet)."
-            },
-            {
-              "num": "14",
-              "term": "Hub-and-Spoke",
-              "definition": "A route network model where flights connect through a central hub airport to transfer passengers onto connecting flights."
-            },
-            {
-              "num": "15",
-              "term": "Point-to-Point",
-              "definition": "A route network model providing direct nonstop flights between origin and destination without transiting a central hub."
-            },
-            {
-              "num": "16",
-              "term": "Fleet Renewal",
-              "definition": "The phased retirement of aging aircraft and replacement with newer, quieter, and more fuel-efficient models."
-            },
-            {
-              "num": "17",
-              "term": "Cabin Configuration",
-              "definition": "The physical seating arrangement inside an airliner, divided into Economy, Premium, Business, and First Class."
-            },
-            {
-              "num": "18",
-              "term": "Turnaround Efficiency",
-              "definition": "The capability of an airline and ground crew to deplane, service, refuel, and reboard an aircraft in minimum gate time."
+              "term": "Minimum Fuel",
+              "definition": "Operational declaration that the aircraft fuel state has reached a point where any undue delay cannot be accepted."
             }
           ]
         },

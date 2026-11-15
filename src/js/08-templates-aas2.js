@@ -311,16 +311,57 @@
       if (!bodyEl) return;
       const content = sessionData.lessonContent || {};
       const hero = content.hero || {};
-      const opening = content.openingSession || {};
-      const diagramLabeling = content.diagramLabeling || {};
-      const externalParts = diagramLabeling.externalParts || [];
-      const spatialClinic = content.spatialClinic || {};
-      const spatialPatterns = spatialClinic.patterns || [];
-      const walkaroundRoleplay = content.walkaroundRoleplay || {};
-      const defectCards = walkaroundRoleplay.defectCards || [];
-      const cockpitSystemsHandover = content.cockpitSystemsHandover || {};
-      const melItems = cockpitSystemsHandover.melItems || [];
-      const closing = content.closingReview || {};
+
+      const drills = [
+        {
+          id: "s6e1",
+          title: "Drill 6.1 — Bordeaux Control (ACC): Step Climb & Direct Routing",
+          freq: "125.100 MHz",
+          template: "Vueling {{8420|flight}}, Bordeaux Control, radar contact. Climb Flight Level {{360|FL}} to reach by {{LMG/Lima Mike Golf|waypoint}}. Cleared direct to {{AGN/Alpha Golf November|3-letter fix}}. Maintain Mach {{0.78/.78/decimal 78|Mach number}} or {{greater|comparison}} for spacing.",
+          spoken: "Vueling eight four two zero, Bordeaux Control, radar contact. Climb flight level three six zero to reach by Lima Mike Golf. Cleared direct to Alpha Golf November. Maintain Mach decimal seven eight or greater for spacing.",
+          mcq: {
+            q: "What are the three components of this en-route clearance?",
+            opts: ["Descent, holding, and speed reduction", "Level restriction by LMG, direct to AGN, and minimum Mach .78", "Vectoring to ILS and QNH setting"],
+            ans: 1
+          }
+        },
+        {
+          id: "s6e2",
+          title: "Drill 6.2 — En-Route CB Weather Deviation Request",
+          freq: "132.450 MHz",
+          template: "Transavia {{319|flight}}, approved deviation up to {{20|miles}} miles {{left|direction}} of track between {{NARAK/November Alpha Romeo Alpha Kilo|waypoint}} and {{MEN/Mike Echo November|3-letter fix}} due to weather. Maintain Flight Level {{320|FL}}; report {{clear|status}} of weather and resuming {{own navigation|2 words}}.",
+          spoken: "Transavia three one niner, approved deviation up to two zero miles left of track between November Alpha Romeo Alpha Kilo and Mike Echo November due to weather. Maintain flight level three two zero; report clear of weather and resuming own navigation.",
+          mcq: {
+            q: "What must Transavia 319 report back to ATC later?",
+            opts: ["When clear of weather and returning to route", "Their fuel quantity on arrival", "Their groundspeed every 5 minutes"],
+            ans: 0
+          }
+        },
+        {
+          id: "s6e3",
+          title: "Drill 6.3 — Speed Control & Level Crossing Restriction",
+          freq: "127.850 MHz",
+          template: "Air France {{612|flight}}, descend Flight Level {{240|FL}}, cross waypoint {{FISTO|5-letter fix}} Flight Level {{280|FL}} or below, speed {{250|knots}} knots or less. {{Expedite|rate word}} descent through Flight Level 300.",
+          spoken: "Air France six one two, descend flight level two four zero, cross waypoint FISTO flight level two eight zero or below, speed two five zero knots or less. Expedite descent through flight level three zero zero.",
+          mcq: {
+            q: "What does 'expedite' require the flight crew to do?",
+            opts: ["Increase rate of descent to maximum safe performance until passing FL300", "Maintain level flight until FISTO", "Slow down to minimum clean speed"],
+            ans: 0
+          }
+        },
+        {
+          id: "s6e4",
+          title: "Drill 6.4 — Sector Handoff & Radar Frequency Transfer",
+          freq: "135.500 MHz",
+          template: "Iberia {{3754|flight}}, radar service {{terminated|radar status}}. Contact Brest Control on {{128.150/128.15|frequency}}, squawk {{5421|4 digits}}.",
+          spoken: "Iberia three seven five four, radar service terminated. Contact Brest Control on one two eight decimal one five zero, squawk five four two one.",
+          mcq: {
+            q: "What actions must Iberia 3754 execute?",
+            opts: ["Transfer to 128.150 MHz, set transponder to 5421, and establish contact with Brest Control", "Turn off radar transponder", "Remain on current frequency until destination"],
+            ans: 0
+          }
+        }
+      ];
 
       bodyEl.innerHTML = `
         <div class="space-y-6 printable-lesson-container">
@@ -329,9 +370,9 @@
             <div>
               <div class="flex items-center gap-2">
                 <span class="text-white text-[10px] font-black px-2 py-0.5 rounded shadow-xs" style="background-color: ${theme.primary};">DIGITAL WORKSHEET</span>
-                <span class="text-xs font-bold text-slate-700">AT Module 2 • Session 2</span>
+                <span class="text-xs font-bold text-slate-700">AAS Module 2 • Session 2 (Session 6)</span>
               </div>
-              <h3 class="text-sm sm:text-base font-black text-slate-900 mt-1">${hero.title || 'Aircraft Anatomy: Structure &amp; Systems'}</h3>
+              <h3 class="text-sm sm:text-base font-black text-slate-900 mt-1">En Route &amp; Area Control Clearances</h3>
             </div>
             <button type="button" onclick="window.printLessonContent()" class="inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-300 shadow-xs transition-all cursor-pointer shrink-0">
               <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
@@ -339,14 +380,14 @@
             </button>
           </div>
 
-          <!-- Hero Banner -->
+          <!-- Hero Banner & Context -->
           <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs">
             <div class="relative">
-              <img src="${hero.image || 'images/aas_m2card2.jpg'}" alt="${hero.title || 'Aircraft Anatomy'}" class="w-full h-48 sm:h-64 object-cover" onerror="this.src='images/aas_m2card2.jpg'">
+              <img src="${hero.image || 'images/aas_m2card2.jpg'}" alt="En Route Air Traffic Management" class="w-full h-48 sm:h-64 object-cover" onerror="this.src='images/aas_m2card2.jpg'">
               <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent flex flex-col justify-end p-4 sm:p-5">
-                <span class="text-[11px] font-bold text-amber-300 uppercase tracking-wider">Airframe Structures &amp; Walkaround Inspection</span>
-                <h3 class="text-lg sm:text-2xl font-black text-white mt-0.5">${hero.title || 'Aircraft Anatomy: Structure &amp; Systems'}</h3>
-                <p class="text-xs sm:text-sm text-slate-200 mt-1 line-clamp-2">${hero.subtitle || 'External Airframe Components, Flight Deck Controls &amp; Pre-Flight Walkaround Inspections'}</p>
+                <span class="text-[11px] font-bold text-amber-300 uppercase tracking-wider">CONTROL &amp; EN ROUTE COMMUNICATIONS • AREA RADAR</span>
+                <h3 class="text-lg sm:text-2xl font-black text-white mt-0.5">${hero.title || 'En Route &amp; Area Control Clearances'}</h3>
+                <p class="text-xs sm:text-sm text-slate-200 mt-1 line-clamp-2">${hero.subtitle || 'ACC Step Climbs, Direct Routings, Speed Restrictions, Mach Numbers &amp; CB Weather Deviations'}</p>
               </div>
             </div>
             <div class="p-4 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-600">
@@ -355,7 +396,7 @@
                 <span class="bg-indigo-100 text-indigo-800 font-bold px-2 py-0.5 rounded">CEFR B2</span>
                 <span class="text-slate-400">&bull;</span>
                 <span class="font-bold text-slate-800">Role Context:</span>
-                <span class="text-slate-600">Flight Crew / Line Maintenance Engineer</span>
+                <span class="text-slate-600">Area Radar Controller (ACC) / Long-Haul &amp; Regional Airline Pilot</span>
               </div>
               <div class="flex items-center gap-2">
                 <span class="font-bold text-slate-800">Total Duration:</span>
@@ -364,523 +405,198 @@
             </div>
           </div>
 
-          <!-- Activity 1: News & Session 1 Check -->
+          <!-- Part 1: Aviation News & En Route Operations Warm-Up -->
           <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-xs space-y-4">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
               <div class="flex items-center gap-2">
-                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">00-10m</span>
+                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">PART 1</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${opening.title || 'Activity 1: Aviation News & Session 1 Spot-Check (10 mins)'}</h4>
-                  <p class="text-[11px] text-slate-500">${opening.summary || ''}</p>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">Aviation News &amp; En Route Operations Warm-Up</h4>
+                  <p class="text-[11px] text-slate-500">Cruising levels, airway traffic flow &amp; high-altitude speed management</p>
                 </div>
               </div>
-              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Opening Warm-Up</span>
+              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Opening &amp; Warm-Up</span>
             </div>
 
-            ${renderActivityInstructions(opening, theme)}
-
-            <!-- News Prompts -->
             <div class="p-4 bg-amber-50/70 border border-amber-200 rounded-xl space-y-2">
               <div class="flex items-center gap-2">
                 <svg width="16" height="16" class="text-amber-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
-                <h5 class="text-xs sm:text-sm font-bold text-amber-900">Weekly Aircraft Maintenance &amp; Structural News</h5>
+                <h5 class="text-xs sm:text-sm font-bold text-amber-900">Key Discussion Prompts</h5>
               </div>
               <ul class="space-y-1.5 pl-5 list-disc text-xs text-amber-900/90 leading-relaxed">
-                ${(opening.newsPrompts || []).map(p => `<li>${p}</li>`).join('')}
+                <li>How does the semi-circular cruising level rule (Eastbound odd, Westbound even) establish vertical separation in European airspace?</li>
+                <li>Why do controllers use <strong>Mach number</strong> rather than Indicated Airspeed (IAS) above FL280?</li>
+                <li>What information must a pilot provide when requesting a thunderstorm (CB) weather deviation?</li>
               </ul>
             </div>
-
-            <!-- Spot check -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
-              ${((opening.diagnostic && opening.diagnostic.questions) || []).map(q => `
-                <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl flex flex-col justify-between">
-                  <p class="text-xs font-bold text-slate-800">${q.id}. ${q.q}</p>
-                  <div id="diag-ans-s2-${q.id}" class="hidden p-2 bg-white border border-slate-200 rounded text-[11px] text-slate-700 mt-2">
-                    ${q.answer}
-                  </div>
-                  <button type="button" onclick="document.getElementById('diag-ans-s2-${q.id}').classList.toggle('hidden')" class="no-print text-left text-[11px] font-bold text-slate-500 hover:text-slate-800 cursor-pointer mt-2">
-                    <span>Toggle Answer &rarr;</span>
-                  </button>
-                </div>
-              `).join('')}
-            </div>
           </div>
 
-          <!-- Activity 2: Airframe Diagram Labeling -->
+          <!-- Part 2: Cockpit VHF Listening Lab -->
           <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-xs space-y-4">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
               <div class="flex items-center gap-2">
-                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">10-35m</span>
+                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">PART 2</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${diagramLabeling.title || 'Activity 2: Airframe Anatomy Labeling Challenge (25 mins)'}</h4>
-                  <p class="text-[11px] text-slate-500">${diagramLabeling.summary || 'Identify and describe key external parts and internal zones of commercial aircraft.'}</p>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">Cockpit VHF Audio Lab — Area Control (ACC) Radiotelephony</h4>
+                  <p class="text-[11px] text-slate-500">Listen to 4 authentic en-route transmissions, complete the gap-fills, and analyze operational decisions</p>
                 </div>
               </div>
-              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Aircraft Components Chart</span>
+              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Interactive Listening Lab</span>
             </div>
 
-            ${renderActivityInstructions(diagramLabeling, theme)}
+            <div class="space-y-4">
+              ${drills.map(d => RadioAudio.renderDrill(d)).join('')}
+            </div>
+          </div>
 
-            <!-- Interactive Airframe Anatomy Diagram Container -->
-            <div class="rounded-2xl border border-slate-700 bg-slate-900 p-3 sm:p-5 shadow-lg space-y-4 text-white overflow-hidden">
-              <!-- Mode Bar & Controls -->
-              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-800">
-                <div class="flex items-center gap-2">
-                  <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-indigo-500 text-white shadow-2xs">Interactive Blueprint</span>
-                  <span class="text-xs font-bold text-slate-200">Twin-Engine Commercial Jetliner (Dorsal Planform View)</span>
-                </div>
-                
-                <!-- Controls (Study Mode vs Challenge Mode) -->
-                <div class="no-print flex flex-wrap items-center gap-2">
-                  <button type="button" id="airframe-mode-study-btn" onclick="window.setAirframeDiagramMode('study')" class="px-2.5 py-1 rounded text-xs font-bold transition-all bg-indigo-600 text-white shadow-xs cursor-pointer">
-                    Study Mode (All Labeled)
-                  </button>
-                  <button type="button" id="airframe-mode-quiz-btn" onclick="window.setAirframeDiagramMode('quiz')" class="px-2.5 py-1 rounded text-xs font-bold transition-all bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 cursor-pointer">
-                    Labeling Challenge (Test Yourself)
-                  </button>
-                  <button type="button" onclick="window.resetAirframeChallenge()" id="airframe-reset-btn" class="hidden px-2.5 py-1 rounded text-xs font-bold bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 cursor-pointer">
-                    Reset Blanks
-                  </button>
+          <!-- Part 3: Operational Analysis & Phraseology Clinic -->
+          <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-xs space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
+              <div class="flex items-center gap-2">
+                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">PART 3</span>
+                <div>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">Operational Analysis &amp; En Route Phraseology Clinic</h4>
+                  <p class="text-[11px] text-slate-500">Key standards for upper airspace clearances, speed restrictions &amp; weather avoidance</p>
                 </div>
               </div>
-
-              <!-- SVG Viewport -->
-              <div class="relative w-full overflow-x-auto flex justify-center py-1">
-                <svg viewBox="0 0 920 545" class="w-full h-auto max-w-4xl select-none" xmlns="http://www.w3.org/2000/svg" style="min-width: 650px;">
-                  <!-- Background Blueprint Guide Lines -->
-                  <g opacity="0.18">
-                    <circle cx="460" cy="275" r="140" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4 4"/>
-                    <circle cx="460" cy="275" r="230" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4 4"/>
-                    <line x1="460" y1="20" x2="460" y2="525" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4 4"/>
-                    <line x1="70" y1="275" x2="850" y2="275" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4 4"/>
-                  </g>
-
-                  <!-- Horizontal Stabilizers (Tailplane) -->
-                  <g id="svg-horizontal-stabilizers">
-                    <!-- Port Tailplane -->
-                    <polygon points="446,438 290,472 292,488 450,482" fill="#334155" stroke="#64748b" stroke-width="1.5"/>
-                    <polygon points="350,478 292,488 350,487 450,482" fill="#475569" stroke="#94a3b8" stroke-width="1"/>
-                    <!-- Starboard Tailplane -->
-                    <polygon points="474,438 630,472 628,488 470,482" fill="#334155" stroke="#64748b" stroke-width="1.5"/>
-                    <polygon points="570,478 628,488 570,487 470,482" fill="#475569" stroke="#94a3b8" stroke-width="1"/>
-                  </g>
-
-                  <!-- Main Wings -->
-                  <g id="svg-wings">
-                    <!-- Port Wing Body -->
-                    <polygon points="440,215 105,308 105,328 330,322 440,318" fill="#334155" stroke="#475569" stroke-width="2"/>
-                    <!-- Port Leading Edge Slat -->
-                    <polygon points="440,215 105,308 107,314 440,224" fill="#64748b" stroke="#38bdf8" stroke-width="1"/>
-                    <!-- Port Inboard Trailing Flap -->
-                    <polygon points="440,318 330,322 328,310 440,305" fill="#475569" stroke="#94a3b8" stroke-width="1"/>
-                    <!-- Port Outboard Aileron -->
-                    <polygon points="225,324 105,328 108,319 225,316" fill="#64748b" stroke="#94a3b8" stroke-width="1"/>
-                    <!-- Port Roll Spoilers -->
-                    <rect x="250" y="296" width="60" height="15" transform="rotate(7 280 300)" fill="#1e293b" stroke="#94a3b8" stroke-width="1" rx="2"/>
-                    <!-- Port Winglet -->
-                    <path d="M 105,300 L 98,285 L 105,328 Z" fill="#38bdf8" stroke="#0284c7" stroke-width="1.5"/>
-
-                    <!-- Starboard Wing Body -->
-                    <polygon points="480,215 815,308 815,328 590,322 480,318" fill="#334155" stroke="#475569" stroke-width="2"/>
-                    <!-- Starboard Leading Edge Slat -->
-                    <polygon points="480,215 815,308 813,314 480,224" fill="#64748b" stroke="#38bdf8" stroke-width="1"/>
-                    <!-- Starboard Inboard Trailing Flap -->
-                    <polygon points="480,318 590,322 592,310 480,305" fill="#475569" stroke="#94a3b8" stroke-width="1"/>
-                    <!-- Starboard Outboard Aileron -->
-                    <polygon points="695,324 815,328 812,319 695,316" fill="#64748b" stroke="#94a3b8" stroke-width="1"/>
-                    <!-- Starboard Roll Spoilers -->
-                    <rect x="610" y="296" width="60" height="15" transform="rotate(-7 640 300)" fill="#1e293b" stroke="#94a3b8" stroke-width="1" rx="2"/>
-                    <!-- Starboard Winglet -->
-                    <path d="M 815,300 L 822,285 L 815,328 Z" fill="#38bdf8" stroke="#0284c7" stroke-width="1.5"/>
-                  </g>
-
-                  <!-- Turbofan Engines & Pylons -->
-                  <g id="svg-engines">
-                    <!-- Port Engine -->
-                    <rect x="325" y="215" width="8" height="30" fill="#475569" rx="2"/>
-                    <rect x="312" y="235" width="34" height="62" rx="12" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
-                    <ellipse cx="329" cy="235" rx="14" ry="5" fill="#0f172a" stroke="#60a5fa" stroke-width="1.5"/>
-                    <polygon points="320,297 338,297 329,308" fill="#f59e0b"/>
-                    
-                    <!-- Starboard Engine -->
-                    <rect x="587" y="215" width="8" height="30" fill="#475569" rx="2"/>
-                    <rect x="574" y="235" width="34" height="62" rx="12" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
-                    <ellipse cx="591" cy="235" rx="14" ry="5" fill="#0f172a" stroke="#60a5fa" stroke-width="1.5"/>
-                    <polygon points="582,297 600,297 591,308" fill="#f59e0b"/>
-                  </g>
-
-                  <!-- Fuselage Main Body & Empennage -->
-                  <g id="svg-fuselage">
-                    <!-- Fuselage Shell -->
-                    <path d="M 440,95 Q 460,45 480,95 L 480,435 Q 460,488 440,435 Z" fill="#1e293b" stroke="#64748b" stroke-width="2"/>
-                    <!-- Radome Boundary Curve -->
-                    <path d="M 442,95 Q 460,102 478,95" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="2 2"/>
-                    <!-- Cockpit Windscreen -->
-                    <polygon points="447,102 453,99 460,100 467,99 473,102 471,108 460,106 449,108" fill="#38bdf8"/>
-                    <!-- Centerline Keel -->
-                    <line x1="460" y1="95" x2="460" y2="440" stroke="#334155" stroke-width="1" stroke-dasharray="3 3"/>
-                    <!-- Vertical Fin Dorsal Spine -->
-                    <polygon points="457,400 463,400 462,485 458,485" fill="#475569" stroke="#94a3b8" stroke-width="1"/>
-                    <!-- Rudder Trailing Edge -->
-                    <polygon points="458,445 462,445 461,485 459,485" fill="#f8fafc" stroke="#f59e0b" stroke-width="1.5"/>
-                    <!-- APU Exhaust Nozzle -->
-                    <circle cx="460" cy="488" r="3.5" fill="#f59e0b" stroke="#d97706" stroke-width="1"/>
-                  </g>
-
-                  <!-- Leader Lines to Callouts -->
-                  <g stroke="#94a3b8" stroke-width="1.2" fill="none" opacity="0.85">
-                    <!-- Left Leaders -->
-                    <path d="M 460,68 L 300,47 L 220,47"/>
-                    <path d="M 440,115 L 290,107 L 220,107"/>
-                    <path d="M 460,165 L 300,167 L 220,167"/>
-                    <path d="M 329,255 L 260,227 L 220,227"/>
-                    <path d="M 260,260 L 250,287 L 220,287"/>
-                    <path d="M 280,305 L 260,347 L 220,347"/>
-                    
-                    <!-- Right Leaders -->
-                    <path d="M 460,310 L 630,227 L 700,227"/>
-                    <path d="M 818,298 L 780,287 L 700,287"/>
-                    <path d="M 750,324 L 740,347 L 700,347"/>
-                    <path d="M 535,320 L 640,407 L 700,407"/>
-                    <path d="M 555,465 L 640,467 L 700,467"/>
-                    <path d="M 460,465 L 630,522 L 700,522"/>
-                  </g>
-
-                  <!-- Target Pin Dots on Aircraft Surface -->
-                  <g fill="#38bdf8" stroke="#ffffff" stroke-width="1.5">
-                    <circle cx="460" cy="68" r="4.5"/>
-                    <circle cx="440" cy="115" r="4.5"/>
-                    <circle cx="460" cy="165" r="4.5"/>
-                    <circle cx="329" cy="255" r="4.5"/>
-                    <circle cx="260" cy="260" r="4.5"/>
-                    <circle cx="280" cy="305" r="4.5"/>
-                    <circle cx="460" cy="310" r="4.5"/>
-                    <circle cx="818" cy="298" r="4.5"/>
-                    <circle cx="750" cy="324" r="4.5"/>
-                    <circle cx="535" cy="320" r="4.5"/>
-                    <circle cx="555" cy="465" r="4.5"/>
-                    <circle cx="460" cy="465" r="4.5"/>
-                  </g>
-
-                  <!-- 12 Interactive Callout Badges -->
-                  <!-- LEFT BADGES -->
-                  <!-- 01: Radome -->
-                  <g id="svg-callout-01" onclick="window.selectAirframePart('01', 'Radome (Nose Cone)')" class="cursor-pointer transition-all">
-                    <rect x="20" y="25" width="195" height="44" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
-                    <rect x="26" y="32" width="26" height="28" rx="5" fill="#4f46e5"/>
-                    <text x="39" y="50" font-family="sans-serif" font-size="11" font-weight="900" fill="#ffffff" text-anchor="middle">01</text>
-                    <text id="svg-part-text-01" data-real-name="Radome (Nose Cone)" x="58" y="44" font-family="sans-serif" font-size="11" font-weight="700" fill="#f8fafc">Radome (Nose Cone)</text>
-                    <text x="58" y="58" font-family="sans-serif" font-size="9" fill="#94a3b8">Weather Radar Housing</text>
-                  </g>
-
-                  <!-- 02: Pitot-Static Probes -->
-                  <g id="svg-callout-02" onclick="window.selectAirframePart('02', 'Pitot-Static Probes')" class="cursor-pointer transition-all">
-                    <rect x="20" y="85" width="195" height="44" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
-                    <rect x="26" y="92" width="26" height="28" rx="5" fill="#4f46e5"/>
-                    <text x="39" y="110" font-family="sans-serif" font-size="11" font-weight="900" fill="#ffffff" text-anchor="middle">02</text>
-                    <text id="svg-part-text-02" data-real-name="Pitot-Static Probes" x="58" y="104" font-family="sans-serif" font-size="11" font-weight="700" fill="#f8fafc">Pitot-Static Probes</text>
-                    <text x="58" y="118" font-family="sans-serif" font-size="9" fill="#94a3b8">Dynamic &amp; Static Pressure</text>
-                  </g>
-
-                  <!-- 03: Fuselage -->
-                  <g id="svg-callout-03" onclick="window.selectAirframePart('03', 'Fuselage')" class="cursor-pointer transition-all">
-                    <rect x="20" y="145" width="195" height="44" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
-                    <rect x="26" y="152" width="26" height="28" rx="5" fill="#4f46e5"/>
-                    <text x="39" y="170" font-family="sans-serif" font-size="11" font-weight="900" fill="#ffffff" text-anchor="middle">03</text>
-                    <text id="svg-part-text-03" data-real-name="Fuselage" x="58" y="164" font-family="sans-serif" font-size="11" font-weight="700" fill="#f8fafc">Fuselage</text>
-                    <text x="58" y="178" font-family="sans-serif" font-size="9" fill="#94a3b8">Pressurized Cabin &amp; Hold</text>
-                  </g>
-
-                  <!-- 08: Engine Nacelle & Pylon -->
-                  <g id="svg-callout-08" onclick="window.selectAirframePart('08', 'Engine Nacelle & Pylon')" class="cursor-pointer transition-all">
-                    <rect x="20" y="205" width="195" height="44" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
-                    <rect x="26" y="212" width="26" height="28" rx="5" fill="#4f46e5"/>
-                    <text x="39" y="230" font-family="sans-serif" font-size="11" font-weight="900" fill="#ffffff" text-anchor="middle">08</text>
-                    <text id="svg-part-text-08" data-real-name="Engine Nacelle & Pylon" x="58" y="224" font-family="sans-serif" font-size="10.5" font-weight="700" fill="#f8fafc">Engine Nacelle &amp; Pylon</text>
-                    <text x="58" y="238" font-family="sans-serif" font-size="9" fill="#94a3b8">Turbofan Housing &amp; Mount</text>
-                  </g>
-
-                  <!-- 04: Leading-Edge Slats -->
-                  <g id="svg-callout-04" onclick="window.selectAirframePart('04', 'Leading-Edge Slats')" class="cursor-pointer transition-all">
-                    <rect x="20" y="265" width="195" height="44" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
-                    <rect x="26" y="272" width="26" height="28" rx="5" fill="#4f46e5"/>
-                    <text x="39" y="290" font-family="sans-serif" font-size="11" font-weight="900" fill="#ffffff" text-anchor="middle">04</text>
-                    <text id="svg-part-text-04" data-real-name="Leading-Edge Slats" x="58" y="284" font-family="sans-serif" font-size="11" font-weight="700" fill="#f8fafc">Leading-Edge Slats</text>
-                    <text x="58" y="298" font-family="sans-serif" font-size="9" fill="#94a3b8">Wing Camber &amp; Stall Delay</text>
-                  </g>
-
-                  <!-- 07: Roll Spoilers & Speed Brakes -->
-                  <g id="svg-callout-07" onclick="window.selectAirframePart('07', 'Roll Spoilers & Speed Brakes')" class="cursor-pointer transition-all">
-                    <rect x="20" y="325" width="195" height="44" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
-                    <rect x="26" y="332" width="26" height="28" rx="5" fill="#4f46e5"/>
-                    <text x="39" y="350" font-family="sans-serif" font-size="11" font-weight="900" fill="#ffffff" text-anchor="middle">07</text>
-                    <text id="svg-part-text-07" data-real-name="Roll Spoilers & Speed Brakes" x="58" y="344" font-family="sans-serif" font-size="10" font-weight="700" fill="#f8fafc">Roll Spoilers &amp; Brakes</text>
-                    <text x="58" y="358" font-family="sans-serif" font-size="9" fill="#94a3b8">Lift Dumper &amp; Roll Assist</text>
-                  </g>
-
-                  <!-- RIGHT BADGES -->
-                  <!-- 09: Main & Nose Landing Gear -->
-                  <g id="svg-callout-09" onclick="window.selectAirframePart('09', 'Main & Nose Landing Gear')" class="cursor-pointer transition-all">
-                    <rect x="705" y="205" width="195" height="44" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
-                    <rect x="711" y="212" width="26" height="28" rx="5" fill="#4f46e5"/>
-                    <text x="724" y="230" font-family="sans-serif" font-size="11" font-weight="900" fill="#ffffff" text-anchor="middle">09</text>
-                    <text id="svg-part-text-09" data-real-name="Main & Nose Landing Gear" x="743" y="224" font-family="sans-serif" font-size="10.5" font-weight="700" fill="#f8fafc">Landing Gear Assembly</text>
-                    <text x="743" y="238" font-family="sans-serif" font-size="9" fill="#94a3b8">Oleo Struts &amp; Wheels</text>
-                  </g>
-
-                  <!-- 12: Winglets / Sharklets -->
-                  <g id="svg-callout-12" onclick="window.selectAirframePart('12', 'Winglets / Sharklets')" class="cursor-pointer transition-all">
-                    <rect x="705" y="265" width="195" height="44" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
-                    <rect x="711" y="272" width="26" height="28" rx="5" fill="#4f46e5"/>
-                    <text x="724" y="290" font-family="sans-serif" font-size="11" font-weight="900" fill="#ffffff" text-anchor="middle">12</text>
-                    <text id="svg-part-text-12" data-real-name="Winglets / Sharklets" x="743" y="284" font-family="sans-serif" font-size="11" font-weight="700" fill="#f8fafc">Winglets / Sharklets</text>
-                    <text x="743" y="298" font-family="sans-serif" font-size="9" fill="#94a3b8">Vortex Drag Reduction</text>
-                  </g>
-
-                  <!-- 06: Ailerons -->
-                  <g id="svg-callout-06" onclick="window.selectAirframePart('06', 'Ailerons')" class="cursor-pointer transition-all">
-                    <rect x="705" y="325" width="195" height="44" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
-                    <rect x="711" y="332" width="26" height="28" rx="5" fill="#4f46e5"/>
-                    <text x="724" y="350" font-family="sans-serif" font-size="11" font-weight="900" fill="#ffffff" text-anchor="middle">06</text>
-                    <text id="svg-part-text-06" data-real-name="Ailerons" x="743" y="344" font-family="sans-serif" font-size="11" font-weight="700" fill="#f8fafc">Ailerons</text>
-                    <text x="743" y="358" font-family="sans-serif" font-size="9" fill="#94a3b8">Differential Roll Control</text>
-                  </g>
-
-                  <!-- 05: Trailing-Edge Flaps -->
-                  <g id="svg-callout-05" onclick="window.selectAirframePart('05', 'Trailing-Edge Flaps')" class="cursor-pointer transition-all">
-                    <rect x="705" y="385" width="195" height="44" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
-                    <rect x="711" y="392" width="26" height="28" rx="5" fill="#4f46e5"/>
-                    <text x="724" y="410" font-family="sans-serif" font-size="11" font-weight="900" fill="#ffffff" text-anchor="middle">05</text>
-                    <text id="svg-part-text-05" data-real-name="Trailing-Edge Flaps" x="743" y="404" font-family="sans-serif" font-size="11" font-weight="700" fill="#f8fafc">Trailing-Edge Flaps</text>
-                    <text x="743" y="418" font-family="sans-serif" font-size="9" fill="#94a3b8">High Lift &amp; Drag Extenders</text>
-                  </g>
-
-                  <!-- 11: Horizontal Stabilizer & Elevators -->
-                  <g id="svg-callout-11" onclick="window.selectAirframePart('11', 'Horizontal Stabilizer & Elevators')" class="cursor-pointer transition-all">
-                    <rect x="705" y="445" width="195" height="44" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
-                    <rect x="711" y="452" width="26" height="28" rx="5" fill="#4f46e5"/>
-                    <text x="724" y="470" font-family="sans-serif" font-size="11" font-weight="900" fill="#ffffff" text-anchor="middle">11</text>
-                    <text id="svg-part-text-11" data-real-name="Horizontal Stabilizer & Elevators" x="743" y="464" font-family="sans-serif" font-size="10" font-weight="700" fill="#f8fafc">Stabilizer &amp; Elevators</text>
-                    <text x="743" y="478" font-family="sans-serif" font-size="9" fill="#94a3b8">Pitch Stability &amp; Control</text>
-                  </g>
-
-                  <!-- 10: Vertical Fin & Rudder -->
-                  <g id="svg-callout-10" onclick="window.selectAirframePart('10', 'Vertical Fin & Rudder')" class="cursor-pointer transition-all">
-                    <rect x="705" y="500" width="195" height="40" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
-                    <rect x="711" y="506" width="26" height="28" rx="5" fill="#4f46e5"/>
-                    <text x="724" y="524" font-family="sans-serif" font-size="11" font-weight="900" fill="#ffffff" text-anchor="middle">10</text>
-                    <text id="svg-part-text-10" data-real-name="Vertical Fin & Rudder" x="743" y="518" font-family="sans-serif" font-size="11" font-weight="700" fill="#f8fafc">Vertical Fin &amp; Rudder</text>
-                    <text x="743" y="531" font-family="sans-serif" font-size="9" fill="#94a3b8">Yaw Control &amp; Stability</text>
-                  </g>
-                </svg>
-              </div>
-              
-              <!-- Diagram Footer / Hint -->
-              <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-800 text-[11px] text-slate-400">
-                <div class="flex items-center gap-2">
-                  <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                  <span id="airframe-diagram-tip">Click any numbered pin or component badge on the blueprint to listen to pronunciation and inspect its functional purpose.</span>
-                </div>
-                <span class="font-mono text-slate-500 text-[10px]">ICAO Aerodrome Operations • Airframe Technical English</span>
-              </div>
+              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Golden Rules</span>
             </div>
 
-            <!-- 12 External Component Cards -->
-            <div class="space-y-2 pt-2">
-              <div class="flex items-center justify-between">
-                <h5 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Component Technical Specifications &amp; Walkaround Checkpoints:</h5>
-                <span class="text-[11px] text-slate-500">12 Primary Airframe Structures</span>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div class="p-3.5 bg-blue-50/70 border border-blue-200 rounded-xl space-y-2">
+                <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-blue-200 text-blue-900">Rule 1 • Expedite Instruction</span>
+                <h5 class="text-xs font-bold text-blue-950">Vertical Rate Authority</h5>
+                <p class="text-xs text-blue-900/90 leading-relaxed"><em>"Expedite climb/descent"</em> requires the crew to apply maximum safe operational rate without delay until clear of the restriction or conflicting level.</p>
               </div>
-              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                ${externalParts.map(p => `
-                  <div id="airframe-card-${p.id}" class="airframe-component-card p-3.5 bg-slate-50 border border-slate-200 rounded-xl flex flex-col justify-between shadow-2xs transition-all">
-                    <div>
-                      <div class="flex items-center justify-between pb-1.5 border-b border-slate-200">
-                        <div class="flex items-center gap-1.5">
-                          <span class="text-[10px] font-mono font-bold text-white px-1.5 py-0.5 rounded shadow-2xs" style="background-color: ${theme.primary};">${p.id}</span>
-                          <span id="card-part-name-${p.id}" data-real-name="${p.name}" class="font-bold text-xs text-slate-900">${p.name}</span>
-                        </div>
-                        <button type="button" onclick="speakWord('${p.name.replace(/'/g, "\\'")}')" class="p-1 rounded bg-white hover:bg-slate-200 border border-slate-200 text-slate-600 transition-all cursor-pointer" title="Listen to pronunciation">
-                          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072M18.364 5.636a9 9 0 010 12.728M11 5L6 9H2v6h4l5 4V5z"/></svg>
-                        </button>
-                      </div>
-                      <p class="text-[11px] text-slate-500 mt-2"><strong>Location:</strong> ${p.location}</p>
-                      <p class="text-[11px] text-slate-700 mt-1 leading-relaxed">${p.purpose}</p>
-                    </div>
-                    <div class="pt-2 border-t border-slate-200/80 mt-2 flex items-center justify-between text-[10px]">
-                      <button type="button" onclick="window.selectAirframePart('${p.id}', '${p.name.replace(/'/g, "\\'")}')" class="font-bold text-indigo-600 hover:text-indigo-800 transition-all cursor-pointer">
-                        Locate on Blueprint &uarr;
-                      </button>
-                      <span class="text-slate-400 font-mono">Airframe Item ${p.id}</span>
-                    </div>
-                  </div>
-                `).join('')}
+
+              <div class="p-3.5 bg-emerald-50/70 border border-emerald-200 rounded-xl space-y-2">
+                <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-emerald-200 text-emerald-900">Rule 2 • Weather Deviations</span>
+                <h5 class="text-xs font-bold text-emerald-950">Lateral Clearance Limits</h5>
+                <p class="text-xs text-emerald-900/90 leading-relaxed">Deviation clearances specify lateral distance (e.g., <em>up to 20 miles</em>) and direction. The pilot must report when clear of weather and resuming own navigation.</p>
+              </div>
+
+              <div class="p-3.5 bg-purple-50/70 border border-purple-200 rounded-xl space-y-2">
+                <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-purple-200 text-purple-900">Rule 3 • Level Crossing Fixes</span>
+                <h5 class="text-xs font-bold text-purple-950">Strategic Sequencing</h5>
+                <p class="text-xs text-purple-900/90 leading-relaxed"><em>"Cross waypoint FISTO at FL280 or below"</em> allows descent planning while ensuring vertical separation at sector boundary crossing points.</p>
               </div>
             </div>
           </div>
 
-          <!-- Activity 3: Language Focus: Spatial Prepositions -->
+          <!-- Part 4: Communicative Pair Simulation & Readback Challenge -->
           <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-xs space-y-4">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
               <div class="flex items-center gap-2">
-                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">35-55m</span>
+                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">PART 4</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${spatialClinic.title || 'Activity 3: Language Focus: Spatial Prepositions &amp; Functions (20 mins)'}</h4>
-                  <p class="text-[11px] text-slate-500">${spatialClinic.summary || 'Mastering precise spatial locations and functional relative clauses for maintenance communication.'}</p>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">Communicative Pair Simulation &amp; Readback Challenge</h4>
+                  <p class="text-[11px] text-slate-500">Live pilot-controller roleplay: en-route sector handoff, storm cell deviation &amp; crossing restrictions</p>
                 </div>
               </div>
-              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Spatial Descriptors</span>
+              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Pair Simulation</span>
             </div>
-
-            ${renderActivityInstructions(spatialClinic, theme)}
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              ${spatialPatterns.map(p => `
-                <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
-                  <h5 class="text-xs font-bold uppercase tracking-wider text-slate-800 pb-1 border-b border-slate-200">${p.title}</h5>
-                  <ul class="text-xs text-slate-700 space-y-1.5 pl-4 list-disc pt-1">
-                    ${p.examples.map(ex => `<li class="italic font-medium">&ldquo;${ex}&rdquo;</li>`).join('')}
-                  </ul>
-                </div>
-              `).join('')}
-            </div>
-          </div>
-
-          <!-- Activity 4: Walkaround Inspection Role-Play -->
-          <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-xs space-y-4">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
-              <div class="flex items-center gap-2">
-                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">55-85m</span>
-                <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${walkaroundRoleplay.title || 'Activity 4: Pre-Flight Exterior Walkaround Role-Play (30 mins)'}</h4>
-                  <p class="text-[11px] text-slate-500">${walkaroundRoleplay.summary || 'Captain &amp; Line Maintenance Engineer simulation: reporting and assessing airframe defects.'}</p>
-                </div>
-              </div>
-              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Walkaround Role-Play</span>
-            </div>
-
-            ${renderActivityInstructions(walkaroundRoleplay, theme)}
-
-            <div class="space-y-3">
-              ${defectCards.map(d => `
-                <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2.5">
-                  <div class="flex items-center justify-between pb-1 border-b border-slate-200">
-                    <span class="font-bold text-xs text-slate-900 uppercase">${d.item}</span>
-                    <span class="text-[10px] font-bold text-rose-700 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded">Simulated Defect</span>
-                  </div>
-                  <p class="text-xs text-slate-700 font-medium"><strong>Observed Defect:</strong> ${d.defect}</p>
-                  <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs pt-1">
-                    <div class="p-2.5 bg-white border border-slate-200 rounded">
-                      <strong class="text-indigo-900 block mb-0.5">Captain Dialogue:</strong>
-                      <p class="italic text-slate-600">&ldquo;${d.pilotDialogue}&rdquo;</p>
-                    </div>
-                    <div class="p-2.5 bg-white border border-slate-200 rounded">
-                      <strong class="text-emerald-900 block mb-0.5">Engineer Dialogue:</strong>
-                      <p class="italic text-slate-600">&ldquo;${d.engineerDialogue}&rdquo;</p>
-                    </div>
-                  </div>
-                </div>
-              `).join('')}
-            </div>
-          </div>
-
-          <!-- Activity 5: MEL Handover -->
-          <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-xs space-y-4">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
-              <div class="flex items-center gap-2">
-                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">85-110m</span>
-                <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${cockpitSystemsHandover.title || 'Activity 5: Minimum Equipment List (MEL) Dispatch Workshop (25 mins)'}</h4>
-                  <p class="text-[11px] text-slate-500">${cockpitSystemsHandover.summary || 'Reviewing the Minimum Equipment List (MEL) to make safe dispatch decisions for inoperative equipment.'}</p>
-                </div>
-              </div>
-              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">MEL Workshop</span>
-            </div>
-
-            ${renderActivityInstructions(cockpitSystemsHandover, theme)}
-
-            <p class="text-xs text-slate-600">Review these 3 maintenance status items and decide whether the aircraft is legally permitted to dispatch:</p>
-            <div class="space-y-2 text-xs">
-              ${melItems.map(m => `
-                <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                  <span class="font-bold text-slate-800">${m.item}</span>
-                  <span class="text-[11px] p-1.5 bg-white rounded border border-slate-200 text-slate-600">${m.status}</span>
-                </div>
-              `).join('')}
-            </div>
-          </div>
-
-          <!-- Activity 6: Wrap-up -->
-          <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-xs space-y-4">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
-              <div class="flex items-center gap-2">
-                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">110-120m</span>
-                <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${closing.title || 'Activity 6: Vocabulary Review &amp; Class Wrap-Up (10 mins)'}</h4>
-                  <p class="text-[11px] text-slate-500">${closing.summary || 'Drill tricky aeronautical component pronunciation and consolidate learning logs ahead of Session 3.'}</p>
-                </div>
-              </div>
-              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Closing Consolidation</span>
-            </div>
-
-            ${renderActivityInstructions(closing, theme)}
-
-            <!-- Pronunciation Syllable Badges -->
-            ${(closing.wordsToPronounce && closing.wordsToPronounce.length) ? `
-              <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
-                <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 block">Syllable Stress &amp; Pronunciation Focus:</span>
-                <div class="flex flex-wrap gap-2">
-                  ${closing.wordsToPronounce.map(w => `
-                    <span class="px-2.5 py-1 rounded-md text-xs font-mono font-bold bg-white border border-slate-300 text-slate-800 shadow-2xs">${w}</span>
-                  `).join('')}
-                </div>
-              </div>
-            ` : ''}
-
-            <!-- Technical Checkpoints -->
-            ${(closing.checkpoints && closing.checkpoints.length) ? `
-              <div class="p-4 bg-emerald-50/60 border border-emerald-200 rounded-xl space-y-3">
+              <!-- Student A Role Card -->
+              <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2.5">
                 <div class="flex items-center justify-between">
-                  <h5 class="text-xs sm:text-sm font-bold text-emerald-950">Aircraft Anatomy Mastery Checkpoints</h5>
-                  <span class="text-[11px] font-bold text-emerald-800">Verification</span>
+                  <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-slate-200 text-slate-800">Student A • ACC Sector Controller</span>
+                  <span class="text-xs font-bold text-slate-500">Sector: Bordeaux ACC (Upper)</span>
                 </div>
-                <div class="space-y-2 text-xs text-emerald-900">
-                  ${closing.checkpoints.map(cp => `
-                    <div class="p-2.5 bg-white border border-emerald-200 rounded-lg flex items-center gap-2">
-                      <span class="text-emerald-600 font-bold">&check;</span>
-                      <span>${cp}</span>
-                    </div>
-                  `).join('')}
+                <h5 class="text-xs font-bold text-slate-900">Manage Storm Deviation &amp; Crossing Restriction</h5>
+                <p class="text-xs text-slate-700 leading-relaxed">Authorize Transavia 452 to deviate 15 NM right of track between GAILLAC and TOULOUSE, climb to FL350, maintain Mach .80 or greater, and cross AGN FL290 or above.</p>
+                <div class="p-2.5 bg-white border border-slate-200 rounded-lg text-xs font-mono text-slate-700">
+                  "Transavia 452, approved deviation up to 15 miles right of track. Climb FL350, cross AGN FL290 or above, maintain Mach decimal 80 or greater."
                 </div>
               </div>
-            ` : ''}
 
-            <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-700">
-              <span class="text-[11px] text-slate-600">Review all 18 aircraft anatomy vocabulary terms and practice pronunciation flashcards.</span>
-              <button onclick="switchModalTab('revision')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white shadow-xs hover:opacity-90 transition-all cursor-pointer shrink-0" style="background-color: ${theme.primary};">
-                <span>View Vocabulary Flashcards</span> &rarr;
-              </button>
+              <!-- Student B Role Card -->
+              <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2.5">
+                <div class="flex items-center justify-between">
+                  <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-blue-100 text-blue-800">Student B • En-Route Flight Crew (TRA452)</span>
+                  <span class="text-xs font-bold text-blue-600">Aircraft: B737-800</span>
+                </div>
+                <h5 class="text-xs font-bold text-slate-900">Active Peer Verification Checklist</h5>
+                <ul class="space-y-1.5 text-xs text-slate-700">
+                  <li class="flex items-start gap-1.5"><span class="text-emerald-600 font-bold">✓</span> Read back cleared Flight Level (FL350) and crossing restriction (AGN FL290 or above)</li>
+                  <li class="flex items-start gap-1.5"><span class="text-emerald-600 font-bold">✓</span> Acknowledged weather deviation limits: 15 miles right of track</li>
+                  <li class="flex items-start gap-1.5"><span class="text-emerald-600 font-bold">✓</span> Read back speed constraint: Mach decimal 80 or greater</li>
+                  <li class="flex items-start gap-1.5"><span class="text-emerald-600 font-bold">✓</span> Standard ICAO numbers and callsign articulation</li>
+                </ul>
+              </div>
             </div>
+          </div>
+
+          <!-- Closing Review & Flashcards Link -->
+          <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-600">
+            <div>
+              <span class="font-bold text-slate-800">Session 6 Review:</span>
+              <span class="text-slate-600 ml-1">Consolidate En-Route ATC terminology, vertical navigation rules, and weather avoidance phraseology.</span>
+            </div>
+            <button onclick="switchModalTab('revision')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white shadow-xs hover:opacity-90 transition-all cursor-pointer shrink-0" style="background-color: ${theme.primary};">
+              <span>View Vocabulary Flashcards</span> &rarr;
+            </button>
           </div>
         </div>
       `;
     }
 
-    function renderAas2LessonContentTabSession3(sessionData, theme) {
+function renderAas2LessonContentTabSession3(sessionData, theme) {
       const bodyEl = document.getElementById('modal-body');
       if (!bodyEl) return;
       const content = sessionData.lessonContent || {};
       const hero = content.hero || {};
-      const opening = content.openingSession || {};
-      const fleetTaxonomy = content.fleetTaxonomy || {};
-      const categories = fleetTaxonomy.categories || [];
-      const comparativeClinic = content.comparativeClinic || {};
-      const rules = comparativeClinic.rules || [];
-      const fleetCommitteeSimulation = content.fleetCommitteeSimulation || {};
-      const cases = fleetCommitteeSimulation.cases || [];
-      const globalLandscapeDebate = content.globalLandscapeDebate || {};
-      const topics = globalLandscapeDebate.topics || [];
-      const closing = content.closingReview || {};
+
+      const drills = [
+        {
+          id: "s7e1",
+          title: "Drill 7.1 — Approach Control: Speed Reduction & Vectoring",
+          freq: "121.100 MHz",
+          template: "KLM {{1405|flight}}, turn {{right|direction}} heading {{095|3 digits}} degrees, vectors for ILS Runway {{14R/14 Right|runway}}. Descend to {{4000|altitude}} feet, QNH {{1016|hPa}}. Reduce speed to {{210|knots}} knots, and contact Approach on {{119.325|frequency}}.",
+          spoken: "KLM one four zero five, turn right heading zero niner five degrees, vectors for ILS runway one four right. Descend to four thousand feet, QNH one zero one six. Reduce speed to two one zero knots, and contact Approach on one one niner decimal three two five.",
+          mcq: {
+            q: "Notice the pressure reference changed from Flight Level to Feet. Why?",
+            opts: ["Because KLM 1405 is descending below the Transition Level onto QNH", "Because the altimeter is broken", "Because KLM is flying VFR"],
+            ans: 0
+          }
+        },
+        {
+          id: "s7e2",
+          title: "Drill 7.2 — Holding Pattern & EAT Assignment",
+          freq: "120.800 MHz",
+          template: "Iberia {{3712|flight}}, due to arrival traffic, hold at {{GAI/Golf Alpha India|3-letter fix}} as published, Flight Level {{100|FL}}. Inbound track {{215|degrees}} degrees, {{left|turn direction}} turns. Expected approach time {{1625|time}} UTC. Confirm {{endurance|fuel word}}.",
+          spoken: "Iberia three seven one two, due to arrival traffic, hold at Golf Alpha India as published, flight level one zero zero. Inbound track two one five degrees, left turns. Expected approach time one six two five UTC. Confirm endurance.",
+          mcq: {
+            q: "Which direction are the turns in the holding pattern at GAI?",
+            opts: ["Standard right turns", "Non-standard left turns", "Figure-eight turns"],
+            ans: 1
+          }
+        },
+        {
+          id: "s7e3",
+          title: "Drill 7.3 — PAN-PAN Medical Urgency & Priority Vectoring",
+          freq: "128.850 MHz",
+          template: "{{PAN-PAN/PAN PAN|urgency call}} PAN-PAN PAN-PAN, Bordeaux Control, Air France {{441|flight}}. Request {{priority|type}} landing at Toulouse due to passenger {{medical|emergency type}} emergency. Present heading {{160|degrees}}, Flight Level {{260|FL}}. Require {{ambulance|vehicle}} on arrival; {{138|number}} souls on board.",
+          spoken: "Pan pan, pan pan, pan pan, Bordeaux Control, Air France four four one. Request priority landing at Toulouse due to passenger medical emergency. Present heading one six zero, flight level two six zero. Require ambulance on arrival; one three eight souls on board.",
+          mcq: {
+            q: "Why did the crew use PAN-PAN instead of MAYDAY?",
+            opts: ["Because it is an urgent medical situation requiring priority, not an immediate flight-safety threat", "Because they forgot the word MAYDAY", "Because PAN-PAN is only for VFR flights"],
+            ans: 0
+          }
+        },
+        {
+          id: "s7e4",
+          title: "Drill 7.4 — Windshear Alert & Missed Approach (Tower)",
+          freq: "118.100 MHz",
+          template: "Ryanair {{8812|flight}}, caution: preceding B737 reported {{windshear/wind shear|hazard}} at {{300|feet}} feet on final, loss of {{15|knots}} knots airspeed. Surface wind now {{240|degrees}} degrees {{22|knots}} knots gusting {{34|knots}} knots. If going around, climb straight ahead to {{3000|altitude}} feet and contact Radar on {{121.250/121.25|frequency}}.",
+          spoken: "Ryanair eight eight one two, caution: preceding Boeing seven three seven reported windshear at three hundred feet on final, loss of one five knots airspeed. Surface wind now two four zero degrees, two two knots, gusting three four knots. If going around, climb straight ahead to three thousand feet and contact Radar on one two one decimal two five zero.",
+          mcq: {
+            q: "What happened to the preceding aircraft at 300 feet?",
+            opts: ["It suffered a tire burst", "It encountered windshear with a 15-knot airspeed loss", "It landed long due to tailwind"],
+            ans: 1
+          }
+        }
+      ];
 
       bodyEl.innerHTML = `
         <div class="space-y-6 printable-lesson-container">
@@ -889,9 +605,9 @@
             <div>
               <div class="flex items-center gap-2">
                 <span class="text-white text-[10px] font-black px-2 py-0.5 rounded shadow-xs" style="background-color: ${theme.primary};">DIGITAL WORKSHEET</span>
-                <span class="text-xs font-bold text-slate-700">AT Module 2 • Session 3</span>
+                <span class="text-xs font-bold text-slate-700">AAS Module 2 • Session 3 (Session 7)</span>
               </div>
-              <h3 class="text-sm sm:text-base font-black text-slate-900 mt-1">Commercial Aircraft &amp; Airlines</h3>
+              <h3 class="text-sm sm:text-base font-black text-slate-900 mt-1">Approach Control, Arrivals &amp; Non-Nominal Emergencies</h3>
             </div>
             <button type="button" onclick="window.printLessonContent()" class="inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-300 shadow-xs transition-all cursor-pointer shrink-0">
               <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
@@ -899,14 +615,14 @@
             </button>
           </div>
 
-          <!-- Hero Banner -->
+          <!-- Hero Banner & Context -->
           <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs">
             <div class="relative">
-              <img src="${hero.image || 'images/aas_m2card3.jpg'}" alt="Commercial Aircraft & Airlines" class="w-full h-48 sm:h-64 object-cover" onerror="this.src='images/aas_m2card3.jpg'">
+              <img src="${hero.image || 'images/aas_m2card3.jpg'}" alt="Approach & Emergency Radiotelephony" class="w-full h-48 sm:h-64 object-cover" onerror="this.src='images/aas_m2card3.jpg'">
               <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent flex flex-col justify-end p-4 sm:p-5">
-                <span class="text-[11px] font-bold text-amber-300 uppercase tracking-wider">Commercial Aircraft Types &amp; Fleet Strategy</span>
-                <h3 class="text-lg sm:text-2xl font-black text-white mt-0.5">${hero.title || 'Commercial Aircraft &amp; Airlines'}</h3>
-                <p class="text-xs sm:text-sm text-slate-200 mt-1 line-clamp-2">${hero.subtitle || 'Commercial Aircraft Types, Aerospace Manufacturers &amp; Airline Business Models'}</p>
+                <span class="text-[11px] font-bold text-amber-300 uppercase tracking-wider">APPROACH RADAR &amp; EMERGENCY COMMUNICATIONS</span>
+                <h3 class="text-lg sm:text-2xl font-black text-white mt-0.5">${hero.title || 'Approach Control, Arrivals &amp; Non-Nominal Emergencies'}</h3>
+                <p class="text-xs sm:text-sm text-slate-200 mt-1 line-clamp-2">${hero.subtitle || 'ILS Vectoring, Holding Stacks, Windshear Go-Arounds, Medical Urgency (PAN-PAN) &amp; Emergency Diversions'}</p>
               </div>
             </div>
             <div class="p-4 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-600">
@@ -915,7 +631,7 @@
                 <span class="bg-indigo-100 text-indigo-800 font-bold px-2 py-0.5 rounded">CEFR B2</span>
                 <span class="text-slate-400">&bull;</span>
                 <span class="font-bold text-slate-800">Role Context:</span>
-                <span class="text-slate-600">Airline Fleet Planner / Network Strategy Director</span>
+                <span class="text-slate-600">Approach Controller (Director) / Commercial Airline Flight Crew</span>
               </div>
               <div class="flex items-center gap-2">
                 <span class="font-bold text-slate-800">Total Duration:</span>
@@ -924,209 +640,143 @@
             </div>
           </div>
 
-          <!-- Activity 1: News & Session 2 Check -->
+          <!-- Part 1: Aviation News & Non-Nominal Operations Warm-Up -->
           <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-xs space-y-4">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
               <div class="flex items-center gap-2">
-                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">00-10m</span>
+                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">PART 1</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${opening.title || 'Activity 1: Aviation News & Session 2 Spot-Check (10 mins)'}</h4>
-                  <p class="text-[11px] text-slate-500">${opening.summary || ''}</p>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">Aviation News &amp; Non-Nominal Operations Warm-Up</h4>
+                  <p class="text-[11px] text-slate-500">Urgency vs distress distinctions, windshear awareness &amp; pilot workload during diversions</p>
                 </div>
               </div>
-              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Opening Warm-Up</span>
+              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Opening &amp; Warm-Up</span>
             </div>
 
-            ${renderActivityInstructions(opening, theme)}
-
-            <!-- News Prompts -->
             <div class="p-4 bg-amber-50/70 border border-amber-200 rounded-xl space-y-2">
               <div class="flex items-center gap-2">
                 <svg width="16" height="16" class="text-amber-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
-                <h5 class="text-xs sm:text-sm font-bold text-amber-900">Weekly Airline Fleet &amp; Order News</h5>
+                <h5 class="text-xs sm:text-sm font-bold text-amber-900">Key Discussion Prompts</h5>
               </div>
               <ul class="space-y-1.5 pl-5 list-disc text-xs text-amber-900/90 leading-relaxed">
-                ${(opening.newsPrompts || []).map(p => `<li>${p}</li>`).join('')}
+                <li>What is the strict operational difference between <strong>PAN-PAN</strong> (urgency) and <strong>MAYDAY</strong> (distress)?</li>
+                <li>When descending below the Transition Level, what altimeter pressure setting replaces standard 1013.25 hPa?</li>
+                <li>Why is immediate pilot action required during a low-altitude windshear alert on final approach?</li>
               </ul>
             </div>
-
-            <!-- Spot check -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
-              ${((opening.diagnostic && opening.diagnostic.questions) || []).map(q => `
-                <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl flex flex-col justify-between">
-                  <p class="text-xs font-bold text-slate-800">${q.id}. ${q.q}</p>
-                  <div id="diag-ans-s3-${q.id}" class="hidden p-2 bg-white border border-slate-200 rounded text-[11px] text-slate-700 mt-2">
-                    ${q.answer}
-                  </div>
-                  <button type="button" onclick="document.getElementById('diag-ans-s3-${q.id}').classList.toggle('hidden')" class="no-print text-left text-[11px] font-bold text-slate-500 hover:text-slate-800 cursor-pointer mt-2">
-                    <span>Toggle Answer &rarr;</span>
-                  </button>
-                </div>
-              `).join('')}
-            </div>
           </div>
 
-          <!-- Activity 2: Commercial Aircraft Classification -->
+          <!-- Part 2: Cockpit VHF Listening Lab -->
           <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-xs space-y-4">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
               <div class="flex items-center gap-2">
-                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">10-35m</span>
+                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">PART 2</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${fleetTaxonomy.title || 'Activity 2: Commercial Aircraft Classification Table (25 mins)'}</h4>
-                  <p class="text-[11px] text-slate-500">${fleetTaxonomy.summary || 'Classify commercial passenger and freighter aircraft into operational categories.'}</p>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">Cockpit VHF Audio Lab — Approach &amp; Non-Nominal Radiotelephony</h4>
+                  <p class="text-[11px] text-slate-500">Listen to 4 authentic approach and emergency transmissions, complete the gap-fills, and analyze operational decisions</p>
                 </div>
               </div>
-              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Fleet Table</span>
+              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Interactive Listening Lab</span>
             </div>
 
-            ${renderActivityInstructions(fleetTaxonomy, theme)}
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              ${categories.map(c => `
-                <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2 flex flex-col justify-between shadow-2xs">
-                  <div>
-                    <h5 class="font-bold text-sm text-slate-900 pb-1 border-b border-slate-200">${c.category}</h5>
-                    <p class="text-xs text-indigo-900 font-bold mt-2">Examples: ${c.examples}</p>
-                    <div class="grid grid-cols-2 gap-2 text-[11px] text-slate-600 mt-2">
-                      <p><strong>Capacity:</strong> ${c.capacity}</p>
-                      <p><strong>Range:</strong> ${c.range}</p>
-                    </div>
-                    <p class="text-[11px] text-slate-700 mt-2 leading-relaxed"><strong>Mission:</strong> ${c.typicalMission}</p>
-                  </div>
-                </div>
-              `).join('')}
+            <div class="space-y-4">
+              ${drills.map(d => RadioAudio.renderDrill(d)).join('')}
             </div>
           </div>
 
-          <!-- Activity 3: Comparative Language Clinic -->
+          <!-- Part 3: Operational Analysis & Emergency Golden Rules -->
           <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-xs space-y-4">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
               <div class="flex items-center gap-2">
-                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">35-55m</span>
+                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">PART 3</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${comparativeClinic.title || 'Activity 3: Language Focus: Comparative &amp; Superlative Data (20 mins)'}</h4>
-                  <p class="text-[11px] text-slate-500">${comparativeClinic.summary || 'Mastering modifiers and comparative structures to evaluate aircraft efficiency and fleet statistics.'}</p>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">Operational Analysis &amp; Non-Nominal Golden Rules</h4>
+                  <p class="text-[11px] text-slate-500">Emergency declarations, holding stack discipline &amp; go-around phraseology</p>
                 </div>
               </div>
-              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Comparative Structures</span>
+              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Golden Rules</span>
             </div>
-
-            ${renderActivityInstructions(comparativeClinic, theme)}
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-              ${rules.map(r => `
-                <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-xl space-y-1.5">
-                  <h5 class="text-xs font-bold text-slate-900 uppercase">${r.structure}</h5>
-                  <p class="text-[10px] font-mono text-slate-500 bg-white p-1 rounded border border-slate-200">${r.formula}</p>
-                  <p class="text-[11px] italic text-slate-700 pt-1">&ldquo;${r.example}&rdquo;</p>
-                </div>
-              `).join('')}
+              <div class="p-3.5 bg-blue-50/70 border border-blue-200 rounded-xl space-y-2">
+                <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-blue-200 text-blue-900">Rule 1 • Emergency Phraseology</span>
+                <h5 class="text-xs font-bold text-blue-950">PAN-PAN vs MAYDAY</h5>
+                <p class="text-xs text-blue-900/90 leading-relaxed">Spoken 3 times. Always state: nature of problem, intention, position, level, souls on board, and fuel endurance in hours/minutes.</p>
+              </div>
+
+              <div class="p-3.5 bg-emerald-50/70 border border-emerald-200 rounded-xl space-y-2">
+                <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-emerald-200 text-emerald-900">Rule 2 • Holding Stack EAT</span>
+                <h5 class="text-xs font-bold text-emerald-950">Expected Approach Time</h5>
+                <p class="text-xs text-emerald-900/90 leading-relaxed">When delays exceed 10 minutes, ATC issues an EAT. If radio communication fails in the hold, the pilot leaves the holding fix at the EAT for descent.</p>
+              </div>
+
+              <div class="p-3.5 bg-purple-50/70 border border-purple-200 rounded-xl space-y-2">
+                <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-purple-200 text-purple-900">Rule 3 • Immediate Go-Around</span>
+                <h5 class="text-xs font-bold text-purple-950">Missed Approach Priority</h5>
+                <p class="text-xs text-purple-900/90 leading-relaxed">Flight crew transmits: <em>"[Callsign], going around"</em>. Fly published missed approach altitude immediately. Non-essential radio chatter ceases.</p>
+              </div>
             </div>
           </div>
 
-          <!-- Activity 4: Fleet Selection Committee Simulation -->
+          <!-- Part 4: Spoken Emergency Synthesis Simulation -->
           <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-xs space-y-4">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
               <div class="flex items-center gap-2">
-                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">55-85m</span>
+                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">PART 4</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${fleetCommitteeSimulation.title || 'Activity 4: Airline Fleet Selection Committee Simulation (30 mins)'}</h4>
-                  <p class="text-[11px] text-slate-500">${fleetCommitteeSimulation.summary || 'Pairs act as airline fleet planning directors preparing an aircraft purchase pitch for new routes.'}</p>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">Spoken Emergency Synthesis Simulation</h4>
+                  <p class="text-[11px] text-slate-500">Live pilot-controller roleplay: in-flight medical urgency, radar vectoring for priority landing &amp; ground emergency services</p>
                 </div>
               </div>
-              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Executive Pitch</span>
+              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Pair Simulation</span>
             </div>
-
-            ${renderActivityInstructions(fleetCommitteeSimulation, theme)}
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              ${cases.map(cs => `
-                <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2 flex flex-col justify-between">
-                  <div>
-                    <h5 class="text-xs sm:text-sm font-bold text-slate-900 pb-1 border-b border-slate-200">${cs.title}</h5>
-                    <p class="text-xs text-slate-600 mt-2"><strong>Network:</strong> ${cs.network}</p>
-                    <div class="space-y-2 text-xs mt-3">
-                      <div class="p-2.5 bg-white border border-slate-200 rounded-lg">
-                        <strong class="text-indigo-900 block mb-0.5">Option A:</strong>
-                        <p class="text-slate-700">${cs.optionA}</p>
-                      </div>
-                      <div class="p-2.5 bg-white border border-slate-200 rounded-lg">
-                        <strong class="text-emerald-900 block mb-0.5">Option B:</strong>
-                        <p class="text-slate-700">${cs.optionB}</p>
-                      </div>
-                    </div>
-                  </div>
+              <!-- Student A Role Card -->
+              <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2.5">
+                <div class="flex items-center justify-between">
+                  <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-slate-200 text-slate-800">Student A • Approach Director</span>
+                  <span class="text-xs font-bold text-slate-500">Station: Toulouse Arrival</span>
                 </div>
-              `).join('')}
-            </div>
-          </div>
-
-          <!-- Activity 5: Industry Debate -->
-          <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-xs space-y-4">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
-              <div class="flex items-center gap-2">
-                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">85-110m</span>
-                <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${globalLandscapeDebate.title || 'Activity 5: Global Manufacturer Debate &amp; Industry Trends (25 mins)'}</h4>
-                  <p class="text-[11px] text-slate-500">${globalLandscapeDebate.summary || 'Class debate exploring the Airbus-Boeing duopoly, supply chain bottlenecks, and the emergence of COMAC.'}</p>
+                <h5 class="text-xs font-bold text-slate-900">Manage Inbound Medical Urgency</h5>
+                <p class="text-xs text-slate-700 leading-relaxed">Acknowledge Air France 742 PAN-PAN, provide immediate vectors heading 140° for ILS Runway 14R, clear to descend 3,000 ft on QNH 1018, confirm ambulance and medical services alerted.</p>
+                <div class="p-2.5 bg-white border border-slate-200 rounded-lg text-xs font-mono text-slate-700">
+                  "Air France 742, roger PAN-PAN. Turn right heading 140 degrees, vectors for ILS Runway 14R. Descend 3,000 feet, QNH 1018. Priority landing approved, medical services alerted."
                 </div>
               </div>
-              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Industry Debate</span>
-            </div>
 
-            ${renderActivityInstructions(globalLandscapeDebate, theme)}
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs text-slate-700">
-              ${topics.map(tp => `
-                <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg flex items-center gap-2">
-                  <span class="text-amber-600 font-bold">&bull;</span>
-                  <p class="font-medium">${tp}</p>
+              <!-- Student B Role Card -->
+              <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2.5">
+                <div class="flex items-center justify-between">
+                  <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-rose-100 text-rose-800">Student B • Flight Crew (AFR742)</span>
+                  <span class="text-xs font-bold text-rose-700">Aircraft: A321 (Medical Emergency)</span>
                 </div>
-              `).join('')}
-            </div>
-          </div>
-
-          <!-- Activity 6: Wrap-up -->
-          <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-xs space-y-4">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
-              <div class="flex items-center gap-2">
-                <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">110-120m</span>
-                <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${closing.title || 'Activity 6: Vocabulary Review &amp; Pronunciation Wrap-Up (10 mins)'}</h4>
-                  <p class="text-[11px] text-slate-500">${closing.summary || 'Consolidate the 18 commercial fleet terms and prepare for Session 4 Aviation Accidents.'}</p>
-                </div>
-              </div>
-              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Closing Consolidation</span>
-            </div>
-
-            ${renderActivityInstructions(closing, theme)}
-
-            ${(closing.pronunciationFocus && closing.pronunciationFocus.length) ? `
-              <div class="p-3.5 bg-indigo-50/60 border border-indigo-200 rounded-xl space-y-2">
-                <span class="text-[11px] font-bold text-indigo-950 uppercase tracking-wide">Pronunciation &amp; Syllable Stress Focus:</span>
-                <div class="flex flex-wrap gap-2 text-xs">
-                  ${closing.pronunciationFocus.map(w => `<span class="px-2.5 py-1 bg-white rounded-lg border border-indigo-200 font-mono font-bold text-indigo-900 shadow-2xs">${w}</span>`).join('')}
-                </div>
-              </div>
-            ` : ''}
-
-            <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
-              <div class="space-y-1">
-                <span class="text-[10px] font-black uppercase tracking-wider text-slate-500">Consolidation Checkpoints</span>
-                <ul class="space-y-1 text-slate-700">
-                  ${(closing.checkpoints || ['Mastered 18 commercial aircraft & fleet planning terms', 'Practiced comparative modifiers in oral pitches', 'Completed syllable stress drills on aeronautical vocabulary']).map(cp => `<li class="flex items-center gap-1.5"><span class="text-emerald-600 font-bold">&check;</span> ${cp}</li>`).join('')}
+                <h5 class="text-xs font-bold text-slate-900">Active Peer Verification Checklist</h5>
+                <ul class="space-y-1.5 text-xs text-slate-700">
+                  <li class="flex items-start gap-1.5"><span class="text-emerald-600 font-bold">✓</span> Transmitted PAN-PAN prefix clearly three times</li>
+                  <li class="flex items-start gap-1.5"><span class="text-emerald-600 font-bold">✓</span> Read back heading (140°), runway (ILS 14R), and altitude (3,000 ft QNH 1018)</li>
+                  <li class="flex items-start gap-1.5"><span class="text-emerald-600 font-bold">✓</span> Stated souls on board (184) and remaining fuel endurance (1 hour 40 mins)</li>
+                  <li class="flex items-start gap-1.5"><span class="text-emerald-600 font-bold">✓</span> Maintained concise, calm ICAO emergency radiotelephony</li>
                 </ul>
               </div>
-              <button onclick="switchModalTab('revision')" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-bold text-white shadow-xs hover:opacity-90 transition-all cursor-pointer shrink-0" style="background-color: ${theme.primary};">
-                <span>View Vocabulary Flashcards</span> &rarr;
-              </button>
             </div>
+          </div>
+
+          <!-- Closing Review & Flashcards Link -->
+          <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-600">
+            <div>
+              <span class="font-bold text-slate-800">Session 7 Review:</span>
+              <span class="text-slate-600 ml-1">Consolidate Approach radar vectoring, holding pattern EAT protocols, and emergency communications before FE2.</span>
+            </div>
+            <button onclick="switchModalTab('revision')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white shadow-xs hover:opacity-90 transition-all cursor-pointer shrink-0" style="background-color: ${theme.primary};">
+              <span>View Vocabulary Flashcards</span> &rarr;
+            </button>
           </div>
         </div>
       `;
     }
 
-    function renderAas2LessonContentTabSession4(sessionData, theme) {
+function renderAas2LessonContentTabSession4(sessionData, theme) {
       const bodyEl = document.getElementById('modal-body');
       if (!bodyEl) return;
       const content = sessionData.lessonContent || {};
