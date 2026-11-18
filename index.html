@@ -2331,19 +2331,21 @@
       const dockDot = document.getElementById('action-dock-dot');
       const dockTitle = document.getElementById('action-dock-title');
       if (dockDot) dockDot.style.backgroundColor = mod.accent || mod.primary;
+      const sNumber = (page.sessionNum !== undefined && page.sessionNum !== null) ? page.sessionNum : (currentIndex + 1);
+
       if (dockTitle) {
         if (page.isImmersion || (page.tag && page.tag.includes("Immersion"))) {
           dockTitle.textContent = "English Immersion & Destinations";
         } else if (page.isObjectives || page.title === "Semester Objectives" || page.title === "Student Guide & Objectives") {
           dockTitle.textContent = "Semester 2 Objectives";
-        } else if (page.isAdmin || currentIndex === 6) {
+        } else if (page.isAdmin) {
           dockTitle.textContent = "GSEA26A Administration Hub";
-        } else if (page.detailsUrl || currentIndex === 5) {
+        } else if (page.detailsUrl) {
           dockTitle.textContent = "DDRS Sustainability Guide";
-        } else if (currentIndex === 4) {
-          dockTitle.textContent = `Session 0${currentIndex + 1} Evaluation Center`;
+        } else if (page.isFe) {
+          dockTitle.textContent = `Session 0${sNumber} Evaluation Center`;
         } else {
-          dockTitle.textContent = `Session 0${currentIndex + 1} Study Resources`;
+          dockTitle.textContent = `Session 0${sNumber} Study Resources`;
         }
       }
 
@@ -2358,7 +2360,7 @@
         btn.onmouseleave = () => btn.style.backgroundColor = ctaBg;
         btn.innerHTML = `<span>${label}</span> <span class="font-bold text-sm leading-none" aria-hidden="true">⇥</span>`;
         btn.addEventListener('click', () => {
-          openModalDrawer(tabKey, mod.id, currentIndex + 1, fallbackHref);
+          openModalDrawer(tabKey, mod.id, sNumber, fallbackHref);
         });
         return btn;
       };
@@ -2778,7 +2780,7 @@
 
       const progConfig = PROGRAMS_CONFIG[modalState.program] || PROGRAMS_CONFIG.ag;
       const activeMod = progConfig.modules[modalState.modNum - 1] || progConfig.modules[0];
-      const activePage = (activeMod && activeMod.pages && activeMod.pages[modalState.sessionNum - 1]) || {};
+      const activePage = (activeMod && activeMod.pages && (activeMod.pages.find(p => p.sessionNum === modalState.sessionNum) || activeMod.pages[modalState.sessionNum - 1])) || {};
 
       const isObjectivesSession = activePage.isObjectives || tabKey === 'student_guide' || tabKey.startsWith('sem_obj_') || modalState.tab === 'student_guide' || modalState.tab.startsWith('sem_obj_');
       const isImmersionSession = activePage.isImmersion || (!isObjectivesSession && (tabKey === 'immersion' || tabKey.startsWith('immersion_')));
