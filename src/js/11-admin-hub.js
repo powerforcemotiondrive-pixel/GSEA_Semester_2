@@ -1743,7 +1743,7 @@
                 <span class="w-6 h-6 rounded bg-slate-800 text-white font-bold text-xs flex items-center justify-center">1</span>
                 <h4 class="text-xs sm:text-sm font-bold text-slate-800">
                   <span class="lang-en">Curriculum Dual-Track &amp; 120-Min Lesson Flow</span>
-                  <span class="lang-fr">Double Cursus Pédagogique &amp; Déroulé des Séances (120 min)</span>
+                  <span class="lang-fr">Double Cursus Pédagogique &amp; Déroulé des Séances </span>
                 </h4>
               </div>
               <p class="text-xs text-slate-600 leading-relaxed">

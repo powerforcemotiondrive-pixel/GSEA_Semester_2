@@ -32,8 +32,8 @@
 
           <!-- Hero Banner & Context -->
           <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs">
-            <div class="relative">
-              <img src="${hero.image || 'images/aas_m2card1.jpg'}" alt="${hero.title || 'Aerodynamics & Flight Principles'}" class="w-full h-48 sm:h-64 object-cover" onerror="this.src='images/aas_m2card1.jpg'">
+            <div class="relative bg-slate-900">
+              <img src="${hero.image || 'images/aas_m2card1.jpg'}" alt="${hero.title || 'Aerodynamics & Flight Principles'}" class="w-full h-48 sm:h-64 object-cover" onerror="this.onerror=null;this.src='images/aas_m2card1.jpg'">
               <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent flex flex-col justify-end p-4 sm:p-5">
                 <span class="text-[11px] font-bold text-amber-300 uppercase tracking-wider">Flight Physics &amp; Aerodynamic Controls</span>
                 <h3 class="text-lg sm:text-2xl font-black text-white mt-0.5">${hero.title || 'Aerodynamics &amp; Flight Principles'}</h3>
@@ -61,7 +61,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">00-10m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${opening.title || 'Activity 1: Aviation News & Principles Warm-Up (10 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${opening.title || 'Activity 1: Aviation News & Principles Warm-Up '}</h4>
                   <p class="text-[11px] text-slate-500">${opening.summary || ''}</p>
                 </div>
               </div>
@@ -117,7 +117,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">10-30m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${forcesPrinciples.title || 'Activity 2: The Four Forces in Equilibrium &amp; Maneuvers (20 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${forcesPrinciples.title || 'Activity 2: The Four Forces in Equilibrium &amp; Maneuvers '}</h4>
                   <p class="text-[11px] text-slate-500">${forcesPrinciples.summary || 'Analyze the four forces acting on an aircraft and explain how pilots create unbalance to climb, descend, turn, and accelerate.'}</p>
                 </div>
               </div>
@@ -150,7 +150,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">30-50m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${grammar.title || 'Activity 3: Language Focus: Cause & Effect in Flight Physics (20 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${grammar.title || 'Activity 3: Language Focus: Cause & Effect in Flight Physics '}</h4>
                   <p class="text-[11px] text-slate-500">${grammar.summary || ''}</p>
                 </div>
               </div>
@@ -195,7 +195,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">50-80m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${axesGame.title || 'Activity 4: The 3 Axes &amp; Control Surfaces Game / Role-Play (30 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${axesGame.title || 'Activity 4: The 3 Axes &amp; Control Surfaces Game / Role-Play '}</h4>
                   <p class="text-[11px] text-slate-500">${axesGame.summary || 'Interactive kinesthetic \'Human Flight Simulator\' game and pilot-to-flight-test-engineer debrief role-play.'}</p>
                 </div>
               </div>
@@ -241,7 +241,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">80-110m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${stall.title || 'Activity 5: Operational Scenario: Stall Recovery & High-Altitude Turbulence (30 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${stall.title || 'Activity 5: Operational Scenario: Stall Recovery & High-Altitude Turbulence '}</h4>
                   <p class="text-[11px] text-slate-500">${stall.summary || ''}</p>
                 </div>
               </div>
@@ -269,7 +269,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">110-120m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${closing.title || 'Activity 6: Vocabulary Review & Class Wrap-Up (10 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${closing.title || 'Activity 6: Vocabulary Review & Class Wrap-Up '}</h4>
                   <p class="text-[11px] text-slate-500">${closing.summary || 'Consolidate the 18 key aerodynamic terms, verify pronunciation stress, and prepare for Session 2 Aircraft Anatomy.'}</p>
                 </div>
               </div>
@@ -382,8 +382,8 @@
 
           <!-- Hero Banner & Context -->
           <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs">
-            <div class="relative">
-              <img src="${hero.image || 'images/aas_m2card2.jpg'}" alt="En Route Air Traffic Management" class="w-full h-48 sm:h-64 object-cover" onerror="this.src='images/aas_m2card2.jpg'">
+            <div class="relative bg-slate-900">
+              <img src="${hero.image || 'images/aas_m2card2.jpg'}" alt="En Route Air Traffic Management" class="w-full h-48 sm:h-64 object-cover" onerror="this.onerror=null;this.src='images/aas_m2card2.jpg'">
               <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent flex flex-col justify-end p-4 sm:p-5">
                 <span class="text-[11px] font-bold text-amber-300 uppercase tracking-wider">CONTROL &amp; EN ROUTE COMMUNICATIONS • AREA RADAR</span>
                 <h3 class="text-lg sm:text-2xl font-black text-white mt-0.5">${hero.title || 'En Route &amp; Area Control Clearances'}</h3>
@@ -617,8 +617,8 @@ function renderAas2LessonContentTabSession3(sessionData, theme) {
 
           <!-- Hero Banner & Context -->
           <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs">
-            <div class="relative">
-              <img src="${hero.image || 'images/aas_m2card3.jpg'}" alt="Approach & Emergency Radiotelephony" class="w-full h-48 sm:h-64 object-cover" onerror="this.src='images/aas_m2card3.jpg'">
+            <div class="relative bg-slate-900">
+              <img src="${hero.image || 'images/aas_m2card3.jpg'}" alt="Approach & Emergency Radiotelephony" class="w-full h-48 sm:h-64 object-cover" onerror="this.onerror=null;this.src='images/aas_m2card3.jpg'">
               <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent flex flex-col justify-end p-4 sm:p-5">
                 <span class="text-[11px] font-bold text-amber-300 uppercase tracking-wider">APPROACH RADAR &amp; EMERGENCY COMMUNICATIONS</span>
                 <h3 class="text-lg sm:text-2xl font-black text-white mt-0.5">${hero.title || 'Approach Control, Arrivals &amp; Non-Nominal Emergencies'}</h3>
@@ -811,8 +811,8 @@ function renderAas2LessonContentTabSession4(sessionData, theme) {
 
           <!-- Hero Banner -->
           <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs">
-            <div class="relative">
-              <img src="${hero.image || 'images/aas_m2card4.jpg'}" alt="Aviation Accidents & Aircraft Types" class="w-full h-48 sm:h-64 object-cover" onerror="this.src='images/aas_m2card4.jpg'">
+            <div class="relative bg-slate-900">
+              <img src="${hero.image || 'images/aas_m2card4.jpg'}" alt="Aviation Accidents & Aircraft Types" class="w-full h-48 sm:h-64 object-cover" onerror="this.onerror=null;this.src='images/aas_m2card4.jpg'">
               <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent flex flex-col justify-end p-4 sm:p-5">
                 <span class="text-[11px] font-bold text-amber-300 uppercase tracking-wider">Accident Investigation &amp; Safety Revolution</span>
                 <h3 class="text-lg sm:text-2xl font-black text-white mt-0.5">${hero.title || 'Significant Aviation Accidents &amp; Aircraft Types'}</h3>
@@ -840,7 +840,7 @@ function renderAas2LessonContentTabSession4(sessionData, theme) {
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">00-10m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${opening.title || 'Activity 1: Aviation News & Session 3 Spot-Check (10 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${opening.title || 'Activity 1: Aviation News & Session 3 Spot-Check '}</h4>
                   <p class="text-[11px] text-slate-500">${opening.summary || ''}</p>
                 </div>
               </div>
@@ -882,7 +882,7 @@ function renderAas2LessonContentTabSession4(sessionData, theme) {
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">10-30m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${investigationLexis.title || 'Activity 2: Accident Investigation Terminology &amp; Causal Chains (20 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${investigationLexis.title || 'Activity 2: Accident Investigation Terminology &amp; Causal Chains '}</h4>
                   <p class="text-[11px] text-slate-500">${investigationLexis.summary || 'Learn and deploy specialized safety vocabulary used by investigation authorities.'}</p>
                 </div>
               </div>
@@ -907,7 +907,7 @@ function renderAas2LessonContentTabSession4(sessionData, theme) {
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">30-50m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${pastNarrativesClinic.title || 'Activity 3: Language Focus: Narrative Past Tenses &amp; Sequencers (20 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${pastNarrativesClinic.title || 'Activity 3: Language Focus: Narrative Past Tenses &amp; Sequencers '}</h4>
                   <p class="text-[11px] text-slate-500">${pastNarrativesClinic.summary || 'Combining Past Simple, Past Continuous, and Past Perfect to build clear chronological incident reports.'}</p>
                 </div>
               </div>
@@ -933,7 +933,7 @@ function renderAas2LessonContentTabSession4(sessionData, theme) {
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">50-65m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${groupResearchSprint.title || 'Activity 4: 15-Minute Group Research &amp; Preparation Sprint (15 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${groupResearchSprint.title || 'Activity 4: 15-Minute Group Research &amp; Preparation Sprint '}</h4>
                   <p class="text-[11px] text-slate-500">${groupResearchSprint.summary || 'In small groups (3-4 students), select one historical accident case study. You have 15 minutes to research and structure your 5-minute briefing.'}</p>
                 </div>
               </div>
@@ -967,7 +967,7 @@ function renderAas2LessonContentTabSession4(sessionData, theme) {
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">65-110m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${presentationsDebrief.title || 'Activity 5: Spoken Group Presentations &amp; Safety Debrief (45 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${presentationsDebrief.title || 'Activity 5: Spoken Group Presentations &amp; Safety Debrief '}</h4>
                   <p class="text-[11px] text-slate-500">${presentationsDebrief.summary || 'Each group presents their 5-minute accident analysis using whiteboard or bullet slides, followed by class Q&amp;A.'}</p>
                 </div>
               </div>
@@ -990,7 +990,7 @@ function renderAas2LessonContentTabSession4(sessionData, theme) {
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">110-120m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${closing.title || 'Activity 6: Vocabulary Review &amp; Formative Evaluation 2 Prep (10 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${closing.title || 'Activity 6: Vocabulary Review &amp; Formative Evaluation 2 Prep '}</h4>
                   <p class="text-[11px] text-slate-500">${closing.summary || 'Review the 18 accident investigation terms and review expectations for Session 5 Formative Evaluation 2.'}</p>
                 </div>
               </div>

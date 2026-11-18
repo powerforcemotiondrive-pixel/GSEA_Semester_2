@@ -28,8 +28,8 @@
 
           <!-- Session Overview Banner -->
           <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs">
-            <div class="relative">
-              <img src="${ov.image || 'images/ag_m2card1.jpg'}" alt="${ov.title || 'Extreme Weather'}" class="w-full h-48 sm:h-64 object-cover" onerror="this.src='images/ag_m2card1.jpg'">
+            <div class="relative bg-slate-900">
+              <img src="${ov.image || 'images/ag_m2card1.jpg'}" alt="${ov.title || 'Extreme Weather'}" class="w-full h-48 sm:h-64 object-cover" onerror="this.onerror=null;this.src='images/ag_m2card1.jpg'">
               <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex flex-col justify-end p-4 sm:p-5">
                 <span class="text-[11px] font-bold text-amber-300 uppercase tracking-wider">${ov.badge || 'Session Overview • Extreme Weather & Climate Resilience'}</span>
                 <h3 class="text-lg sm:text-2xl font-black text-white mt-0.5">${ov.title || 'Extreme Weather & Climate Hazards'}</h3>
@@ -57,7 +57,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">00-10m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${opening.title || 'Activity 1: Extreme Weather News & Meteorological Warm-Up (10 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${opening.title || 'Activity 1: Extreme Weather News & Meteorological Warm-Up '}</h4>
                   <p class="text-[11px] text-slate-500">${opening.summary || ''}</p>
                 </div>
               </div>
@@ -113,7 +113,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">10-35m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${survey.title || 'Activity 2: Severe Weather Incident Analysis: Speed Survey (25 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${survey.title || 'Activity 2: Severe Weather Incident Analysis: Speed Survey '}</h4>
                   <p class="text-[11px] text-slate-500">${survey.summary || ''}</p>
                 </div>
               </div>
@@ -161,7 +161,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">35-55m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${grammar.title || 'Activity 3: Language Focus: Word Forms & Suffixes in Technical English (20 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${grammar.title || 'Activity 3: Language Focus: Word Forms & Suffixes in Technical English '}</h4>
                   <p class="text-[11px] text-slate-500">${grammar.summary || ''}</p>
                 </div>
               </div>
@@ -221,7 +221,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">55-100m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${roleplay.title || 'Activity 4: Airport Severe Weather Crisis Taskforce (45 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${roleplay.title || 'Activity 4: Airport Severe Weather Crisis Taskforce '}</h4>
                   <p class="text-[11px] text-slate-500">Collaborative emergency response taskforce simulation</p>
                 </div>
               </div>
@@ -261,7 +261,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">100-120m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${closing.title || 'Activity 5: Wrap-Up & FE2 Preparation (15 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${closing.title || 'Activity 5: Wrap-Up & FE2 Preparation '}</h4>
                   <p class="text-[11px] text-slate-500">Consolidation, phonetics, and portfolio check</p>
                 </div>
               </div>
@@ -319,8 +319,8 @@
 
           <!-- Session Overview Banner -->
           <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs">
-            <div class="relative">
-              <img src="${ov.image || 'images/ag_m2card2.jpg'}" alt="${ov.title || 'Sustainable Cities'}" class="w-full h-48 sm:h-64 object-cover" onerror="this.src='images/ag_m2card2.jpg'">
+            <div class="relative bg-slate-900">
+              <img src="${ov.image || 'images/ag_m2card2.jpg'}" alt="${ov.title || 'Sustainable Cities'}" class="w-full h-48 sm:h-64 object-cover" onerror="this.onerror=null;this.src='images/ag_m2card2.jpg'">
               <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex flex-col justify-end p-4 sm:p-5">
                 <span class="text-[11px] font-bold text-amber-300 uppercase tracking-wider">${ov.badge || 'Session Overview • Sustainable Cities & Urban Design'}</span>
                 <h3 class="text-lg sm:text-2xl font-black text-white mt-0.5">${ov.title || 'Sustainable Cities & Low-Emission Urban Mobility'}</h3>
@@ -348,7 +348,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">00-10m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${opening.title || 'Activity 1: Sustainable Urbanism News & Opening Warm-Up (10 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${opening.title || 'Activity 1: Sustainable Urbanism News & Opening Warm-Up '}</h4>
                   <p class="text-[11px] text-slate-500">${opening.summary || ''}</p>
                 </div>
               </div>
@@ -404,7 +404,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">10-35m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${survey.title || 'Activity 2: Resilient Urban Innovations: Speed Survey (25 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${survey.title || 'Activity 2: Resilient Urban Innovations: Speed Survey '}</h4>
                   <p class="text-[11px] text-slate-500">${survey.summary || ''}</p>
                 </div>
               </div>
@@ -452,7 +452,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">35-55m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${grammar.title || 'Activity 3: Language Focus: Subject-Verb Agreement with Collective Nouns (20 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${grammar.title || 'Activity 3: Language Focus: Subject-Verb Agreement with Collective Nouns '}</h4>
                   <p class="text-[11px] text-slate-500">${grammar.summary || ''}</p>
                 </div>
               </div>
@@ -512,7 +512,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">55-100m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${roleplay.title || 'Activity 4: Urban Eco-District Redesign Committee (45 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${roleplay.title || 'Activity 4: Urban Eco-District Redesign Committee '}</h4>
                   <p class="text-[11px] text-slate-500">Collaborative municipal redevelopment steering committee</p>
                 </div>
               </div>
@@ -552,7 +552,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">100-120m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${closing.title || 'Activity 5: Wrap-Up & FE2 Alignment (15 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${closing.title || 'Activity 5: Wrap-Up & FE2 Alignment '}</h4>
                   <p class="text-[11px] text-slate-500">Consolidation, phonetics, and portfolio check</p>
                 </div>
               </div>
@@ -610,8 +610,8 @@
 
           <!-- Session Overview Banner -->
           <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs">
-            <div class="relative">
-              <img src="${ov.image || 'images/ag_m2card3.jpg'}" alt="${ov.title || 'Building Arguments'}" class="w-full h-48 sm:h-64 object-cover" onerror="this.src='images/ag_m2card3.jpg'">
+            <div class="relative bg-slate-900">
+              <img src="${ov.image || 'images/ag_m2card3.jpg'}" alt="${ov.title || 'Building Arguments'}" class="w-full h-48 sm:h-64 object-cover" onerror="this.onerror=null;this.src='images/ag_m2card3.jpg'">
               <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex flex-col justify-end p-4 sm:p-5">
                 <span class="text-[11px] font-bold text-amber-300 uppercase tracking-wider">${ov.badge || 'Session Overview • Environmental Argumentation & Policy'}</span>
                 <h3 class="text-lg sm:text-2xl font-black text-white mt-0.5">${ov.title || 'Building & Defending Environmental Arguments'}</h3>
@@ -639,7 +639,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">00-10m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${opening.title || 'Activity 1: Environmental Policy News & Argument Warm-Up (10 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${opening.title || 'Activity 1: Environmental Policy News & Argument Warm-Up '}</h4>
                   <p class="text-[11px] text-slate-500">${opening.summary || ''}</p>
                 </div>
               </div>
@@ -695,7 +695,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">10-35m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${survey.title || 'Activity 2: Environmental Policy Dilemmas: Speed Sparring (25 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${survey.title || 'Activity 2: Environmental Policy Dilemmas: Speed Sparring '}</h4>
                   <p class="text-[11px] text-slate-500">${survey.summary || ''}</p>
                 </div>
               </div>
@@ -743,7 +743,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">35-55m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${grammar.title || 'Activity 3: Language Focus: Gerunds vs. Infinitives & Connecting Words for Contrasting Ideas (20 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${grammar.title || 'Activity 3: Language Focus: Gerunds vs. Infinitives & Connecting Words for Contrasting Ideas '}</h4>
                   <p class="text-[11px] text-slate-500">${grammar.summary || ''}</p>
                 </div>
               </div>
@@ -803,7 +803,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">55-100m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${roleplay.title || 'Activity 4: Public Inquiry Hearing Simulation (45 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${roleplay.title || 'Activity 4: Public Inquiry Hearing Simulation '}</h4>
                   <p class="text-[11px] text-slate-500">Formal administrative inquiry and stakeholder Q&amp;A</p>
                 </div>
               </div>
@@ -843,7 +843,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">100-120m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${closing.title || 'Activity 5: Wrap-Up & FE2 Argument Defense (15 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${closing.title || 'Activity 5: Wrap-Up & FE2 Argument Defense '}</h4>
                   <p class="text-[11px] text-slate-500">Consolidation, phonetics, and portfolio check</p>
                 </div>
               </div>
@@ -901,8 +901,8 @@
 
           <!-- Session Overview Banner -->
           <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs">
-            <div class="relative">
-              <img src="${ov.image || 'images/ag_m2card4.jpg'}" alt="${ov.title || 'Biodiversity'}" class="w-full h-48 sm:h-64 object-cover" onerror="this.src='images/ag_m2card4.jpg'">
+            <div class="relative bg-slate-900">
+              <img src="${ov.image || 'images/ag_m2card4.jpg'}" alt="${ov.title || 'Biodiversity'}" class="w-full h-48 sm:h-64 object-cover" onerror="this.onerror=null;this.src='images/ag_m2card4.jpg'">
               <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex flex-col justify-end p-4 sm:p-5">
                 <span class="text-[11px] font-bold text-amber-300 uppercase tracking-wider">${ov.badge || 'Session Overview • Biodiversity & Ecological Infrastructure'}</span>
                 <h3 class="text-lg sm:text-2xl font-black text-white mt-0.5">${ov.title || 'Biodiversity in Urban Areas & Transport Hubs'}</h3>
@@ -930,7 +930,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">00-10m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${opening.title || 'Activity 1: Airport Ecology News & Opening Warm-Up (10 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${opening.title || 'Activity 1: Airport Ecology News & Opening Warm-Up '}</h4>
                   <p class="text-[11px] text-slate-500">${opening.summary || ''}</p>
                 </div>
               </div>
@@ -986,7 +986,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">10-35m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${survey.title || 'Activity 2: Biodiversity & Safety Dilemmas: Speed Survey (25 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${survey.title || 'Activity 2: Biodiversity & Safety Dilemmas: Speed Survey '}</h4>
                   <p class="text-[11px] text-slate-500">${survey.summary || ''}</p>
                 </div>
               </div>
@@ -1034,7 +1034,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">35-55m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${grammar.title || 'Activity 3: Language Focus: Pronouns & Determiners in Technical English (20 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${grammar.title || 'Activity 3: Language Focus: Pronouns & Determiners in Technical English '}</h4>
                   <p class="text-[11px] text-slate-500">${grammar.summary || ''}</p>
                 </div>
               </div>
@@ -1094,7 +1094,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">55-100m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${roleplay.title || 'Activity 4: Aerodrome Wildlife Hazard & Ecological Transition Committee (45 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${roleplay.title || 'Activity 4: Aerodrome Wildlife Hazard & Ecological Transition Committee '}</h4>
                   <p class="text-[11px] text-slate-500">Joint wildlife hazard mitigation and nature-based solutions committee</p>
                 </div>
               </div>
@@ -1134,7 +1134,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">100-120m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${closing.title || 'Activity 5: Wrap-Up & FE2 Launch Briefing (15 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${closing.title || 'Activity 5: Wrap-Up & FE2 Launch Briefing '}</h4>
                   <p class="text-[11px] text-slate-500">Final Formative Evaluation 2 checklist &amp; topic confirmation</p>
                 </div>
               </div>

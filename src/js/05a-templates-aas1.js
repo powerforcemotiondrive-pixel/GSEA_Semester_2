@@ -29,8 +29,8 @@
 
           <!-- Hero Banner & Context -->
           <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs">
-            <div class="relative">
-              <img src="${hero.image || 'images/aas_m1card1.jpg'}" alt="${hero.title || 'Introduction & Aviation Survey'}" class="w-full h-48 sm:h-64 object-cover" onerror="this.src='images/aas_m1card1.jpg'">
+            <div class="relative bg-slate-900">
+              <img src="${hero.image || 'images/aas_m1card1.jpg'}" alt="${hero.title || 'Introduction & Aviation Survey'}" class="w-full h-48 sm:h-64 object-cover" onerror="this.onerror=null;this.src='images/aas_m1card1.jpg'">
               <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent flex flex-col justify-end p-4 sm:p-5">
                 <span class="text-[11px] font-bold text-amber-300 uppercase tracking-wider">Commercial Aviation Dynamics</span>
                 <h3 class="text-lg sm:text-2xl font-black text-white mt-0.5">${hero.title || 'Introduction & Aviation Survey'}</h3>
@@ -58,7 +58,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">00-10m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${opening.title || 'Activity 1: Aviation News & Warm-Up Check (10 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${opening.title || 'Activity 1: Aviation News & Warm-Up Check '}</h4>
                   <p class="text-[11px] text-slate-500">${opening.summary || ''}</p>
                 </div>
               </div>
@@ -155,7 +155,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">10-35m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${survey.title || 'Activity 2: The Global Aviation Survey (25 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${survey.title || 'Activity 2: The Global Aviation Survey '}</h4>
                   <p class="text-[11px] text-slate-500">${survey.summary || ''}</p>
                 </div>
               </div>
@@ -227,7 +227,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">35-60m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${modals.title || 'Activity 3: Language Focus: Modals of Authority (25 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${modals.title || 'Activity 3: Language Focus: Modals of Authority '}</h4>
                   <p class="text-[11px] text-slate-500">${modals.summary || ''}</p>
                 </div>
               </div>
@@ -300,7 +300,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">60-85m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${caseStudy.title || 'Activity 4: EU261 Delay & Disruption Case Study (25 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${caseStudy.title || 'Activity 4: EU261 Delay & Disruption Case Study '}</h4>
                   <p class="text-[11px] text-slate-500">${caseStudy.summary || ''}</p>
                 </div>
               </div>
@@ -414,7 +414,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">85-110m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${miniDebate.title || 'Activity 5: Station Mini-Debate & Spoken Consensus Briefing (25 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${miniDebate.title || 'Activity 5: Station Mini-Debate & Spoken Consensus Briefing '}</h4>
                   <p class="text-[11px] text-slate-500">${miniDebate.summary || ''}</p>
                 </div>
               </div>
@@ -468,7 +468,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">110-120m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${closing.title || 'Activity 6: 10-Minute Vocabulary Review & Wrap-Up (10 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${closing.title || 'Activity 6: 10-Minute Vocabulary Review & Wrap-Up '}</h4>
                   <p class="text-[11px] text-slate-500">${closing.summary || ''}</p>
                 </div>
               </div>
@@ -575,8 +575,8 @@
 
           <!-- Hero Banner & Context -->
           <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs">
-            <div class="relative">
-              <img src="${hero.image || 'images/aas_m1card2.jpg'}" alt="Ground Movement Control" class="w-full h-48 sm:h-64 object-cover" onerror="this.src='images/aas_m1card2.jpg'">
+            <div class="relative bg-slate-900">
+              <img src="${hero.image || 'images/aas_m1card2.jpg'}" alt="Ground Movement Control" class="w-full h-48 sm:h-64 object-cover" onerror="this.onerror=null;this.src='images/aas_m1card2.jpg'">
               <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent flex flex-col justify-end p-4 sm:p-5">
                 <span class="text-[11px] font-bold text-amber-300 uppercase tracking-wider">SURFACE &amp; TERMINAL COMMUNICATIONS • ATC RADIOTELEPHONY</span>
                 <h3 class="text-lg sm:text-2xl font-black text-white mt-0.5">${hero.title || 'Ground Control, Pushback &amp; Taxi Clearances'}</h3>
@@ -672,7 +672,7 @@
               <div class="p-3.5 bg-purple-50/70 border border-purple-200 rounded-xl space-y-2">
                 <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-purple-200 text-purple-900">Rule 3 • Slot Synchronization</span>
                 <h5 class="text-xs font-bold text-purple-950">TSAT &amp; CTOT Management</h5>
-                <p class="text-xs text-purple-900/90 leading-relaxed">Pushback startup is calibrated within a window of TSAT -5 / +5 minutes to meet the Eurocontrol CTOT window (-5 / +10 mins) at the departure threshold.</p>
+                <p class="text-xs text-purple-900/90 leading-relaxed">Pushback startup is calibrated within a window of TSAT -5 / +5 minutes to meet the Eurocontrol CTOT window  at the departure threshold.</p>
               </div>
             </div>
           </div>
@@ -811,8 +811,8 @@ function renderLessonContentTabSession3(sessionData, theme) {
 
           <!-- Hero Banner & Context -->
           <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs">
-            <div class="relative">
-              <img src="${hero.image || 'images/aas_m1card3.jpg'}" alt="AFIS Operations" class="w-full h-48 sm:h-64 object-cover" onerror="this.src='images/aas_m1card3.jpg'">
+            <div class="relative bg-slate-900">
+              <img src="${hero.image || 'images/aas_m1card3.jpg'}" alt="AFIS Operations" class="w-full h-48 sm:h-64 object-cover" onerror="this.onerror=null;this.src='images/aas_m1card3.jpg'">
               <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent flex flex-col justify-end p-4 sm:p-5">
                 <span class="text-[11px] font-bold text-amber-300 uppercase tracking-wider">ADVISORY AERODROMES • AIRFIELD INFORMATION</span>
                 <h3 class="text-lg sm:text-2xl font-black text-white mt-0.5">${hero.title || 'AFIS &amp; Uncontrolled Aerodrome Traffic Information'}</h3>
@@ -1002,8 +1002,8 @@ function renderLessonContentTabSession4(sessionData, theme) {
 
           <!-- Hero Banner & Context -->
           <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs">
-            <div class="relative">
-              <img src="${hero.image || 'images/aas_m1card4.jpg'}" alt="${hero.title || 'Jobs in Aviation'}" class="w-full h-48 sm:h-64 object-cover" onerror="this.src='images/ag_m1card4.jpg'">
+            <div class="relative bg-slate-900">
+              <img src="${hero.image || 'images/aas_m1card4.jpg'}" alt="${hero.title || 'Jobs in Aviation'}" class="w-full h-48 sm:h-64 object-cover" onerror="this.onerror=null;this.src='images/ag_m1card4.jpg'">
               <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent flex flex-col justify-end p-4 sm:p-5">
                 <span class="text-[11px] font-bold text-amber-300 uppercase tracking-wider">Aviation Roles &amp; Operational Interfaces</span>
                 <h2 class="text-base sm:text-xl font-black text-white mt-0.5">${hero.title || 'Jobs in Aviation: Roles, Responsibilities &amp; Operational Interfaces'}</h2>
@@ -1012,12 +1012,12 @@ function renderLessonContentTabSession4(sessionData, theme) {
             </div>
           </div>
 
-          <!-- Activity 1: Aviation News & Session 3 Spot-Check (10 mins) -->
+          <!-- Activity 1: Aviation News & Session 3 Spot-Check  -->
           <div class="bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-xs space-y-4">
             <div class="flex items-center justify-between pb-2 border-b border-slate-100">
               <div class="flex items-center gap-2">
                 <span class="text-white text-[10px] font-black px-2 py-0.5 rounded shadow-xs" style="background-color: ${theme.primary};">01</span>
-                <h3 class="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-800">${opening.title || 'Activity 1: Aviation News &amp; Session 3 Spot-Check (10 mins)'}</h3>
+                <h3 class="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-800">${opening.title || 'Activity 1: Aviation News &amp; Session 3 Spot-Check '}</h3>
               </div>
               <span class="text-[11px] font-semibold text-slate-500">Warm-Up &amp; Catch-Up</span>
             </div>
@@ -1067,12 +1067,12 @@ function renderLessonContentTabSession4(sessionData, theme) {
             </div>
           </div>
 
-          <!-- Activity 2: Aviation Job Taxonomy & The Operational Spectrum (20 mins) -->
+          <!-- Activity 2: Aviation Job Taxonomy & The Operational Spectrum  -->
           <div class="bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-xs space-y-4">
             <div class="flex items-center justify-between pb-2 border-b border-slate-100">
               <div class="flex items-center gap-2">
                 <span class="text-white text-[10px] font-black px-2 py-0.5 rounded shadow-xs" style="background-color: ${theme.primary};">02</span>
-                <h3 class="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-800">${taxonomy.title || 'Activity 2: Aviation Roles Across the Industry (20 mins)'}</h3>
+                <h3 class="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-800">${taxonomy.title || 'Activity 2: Aviation Roles Across the Industry '}</h3>
               </div>
               <span class="text-[11px] font-semibold text-slate-500">5 Primary Domains</span>
             </div>
@@ -1110,12 +1110,12 @@ function renderLessonContentTabSession4(sessionData, theme) {
             </div>
           </div>
 
-          <!-- Activity 3: Functional Grammar & Authority Clinic (20 mins) -->
+          <!-- Activity 3: Functional Grammar & Authority Clinic  -->
           <div class="bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-xs space-y-4">
             <div class="flex items-center justify-between pb-2 border-b border-slate-100">
               <div class="flex items-center gap-2">
                 <span class="text-white text-[10px] font-black px-2 py-0.5 rounded shadow-xs" style="background-color: ${theme.primary};">03</span>
-                <h3 class="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-800">${clinic.title || 'Activity 3: Language Focus: Roles, Responsibilities &amp; Authority (20 mins)'}</h3>
+                <h3 class="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-800">${clinic.title || 'Activity 3: Language Focus: Roles, Responsibilities &amp; Authority '}</h3>
               </div>
               <span class="text-[11px] font-semibold text-slate-500">Target Language</span>
             </div>
@@ -1167,12 +1167,12 @@ function renderLessonContentTabSession4(sessionData, theme) {
             </div>
           </div>
 
-          <!-- Activity 4: Pairwork & Triad Simulation — 'A Day in the Life' Role Handoff (25 mins) -->
+          <!-- Activity 4: Pairwork & Triad Simulation — 'A Day in the Life' Role Handoff  -->
           <div class="bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-xs space-y-4">
             <div class="flex items-center justify-between pb-2 border-b border-slate-100">
               <div class="flex items-center gap-2">
                 <span class="text-white text-[10px] font-black px-2 py-0.5 rounded shadow-xs" style="background-color: ${theme.primary};">04</span>
-                <h3 class="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-800">${handoffs.title || 'Activity 4: Pairwork &amp; Triad Simulation — Role Handoffs (25 mins)'}</h3>
+                <h3 class="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-800">${handoffs.title || 'Activity 4: Pairwork &amp; Triad Simulation — Role Handoffs '}</h3>
               </div>
               <span class="text-[11px] font-semibold text-slate-500">Pair &amp; Triad Speaking</span>
             </div>
@@ -1209,12 +1209,12 @@ function renderLessonContentTabSession4(sessionData, theme) {
             </div>
           </div>
 
-          <!-- Activity 5: Aviation Career Forum & Operational Dilemma Debate (35 mins) -->
+          <!-- Activity 5: Aviation Career Forum & Operational Dilemma Debate  -->
           <div class="bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-xs space-y-4">
             <div class="flex items-center justify-between pb-2 border-b border-slate-100">
               <div class="flex items-center gap-2">
                 <span class="text-white text-[10px] font-black px-2 py-0.5 rounded shadow-xs" style="background-color: ${theme.primary};">05</span>
-                <h3 class="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-800">${debate.title || 'Activity 5: Aviation Career Forum &amp; Operational Dilemma Debate (35 mins)'}</h3>
+                <h3 class="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-800">${debate.title || 'Activity 5: Aviation Career Forum &amp; Operational Dilemma Debate '}</h3>
               </div>
               <span class="text-[11px] font-semibold text-slate-500">Multi-Stakeholder Forum</span>
             </div>
@@ -1267,12 +1267,12 @@ function renderLessonContentTabSession4(sessionData, theme) {
             </div>
           </div>
 
-          <!-- Activity 6: Vocabulary Review, Pronunciation & Wrap-Up (10 mins) -->
+          <!-- Activity 6: Vocabulary Review, Pronunciation & Wrap-Up  -->
           <div class="bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-xs space-y-4">
             <div class="flex items-center justify-between pb-2 border-b border-slate-100">
               <div class="flex items-center gap-2">
                 <span class="text-white text-[10px] font-black px-2 py-0.5 rounded shadow-xs" style="background-color: ${theme.primary};">06</span>
-                <h3 class="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-800">${closing.title || 'Activity 6: Vocabulary Review, Pronunciation &amp; Class Wrap-Up (10 mins)'}</h3>
+                <h3 class="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-800">${closing.title || 'Activity 6: Vocabulary Review, Pronunciation &amp; Class Wrap-Up '}</h3>
               </div>
               <span class="text-[11px] font-semibold text-slate-500">10-Minute Consolidation</span>
             </div>

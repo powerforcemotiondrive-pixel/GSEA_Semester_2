@@ -89,8 +89,8 @@
 
           <!-- Session Overview Banner -->
           <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs">
-            <div class="relative">
-              <img src="${ov.image || 'images/ag_m1card1.jpg'}" alt="${ov.title || 'Introduction & Travel Anecdotes'}" class="w-full h-48 sm:h-64 object-cover" onerror="this.src='images/ag_m1card1.jpg'">
+            <div class="relative bg-slate-900">
+              <img src="${ov.image || 'images/ag_m1card1.jpg'}" alt="${ov.title || 'Introduction & Travel Anecdotes'}" class="w-full h-48 sm:h-64 object-cover" onerror="this.onerror=null;this.src='images/ag_m1card1.jpg'">
               <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex flex-col justify-end p-4 sm:p-5">
                 <span class="text-[11px] font-bold text-amber-300 uppercase tracking-wider">${ov.badge || 'Session Overview • Travel & Transport'}</span>
                 <h3 class="text-lg sm:text-2xl font-black text-white mt-0.5">${ov.title || 'Introduction & Travel Anecdotes'}</h3>
@@ -118,7 +118,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">00-15m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${opening.title || 'Activity 1: Travel Anecdotes — My Most Memorable Trip (15 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${opening.title || 'Activity 1: Travel Anecdotes — My Most Memorable Trip '}</h4>
                   <p class="text-[11px] text-slate-500">${opening.summary || ''}</p>
                 </div>
               </div>
@@ -209,7 +209,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">15-35m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${survey.title || 'Activity 2: Global Travel Dilemmas: Speed Discussion (20 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${survey.title || 'Activity 2: Global Travel Dilemmas: Speed Discussion '}</h4>
                   <p class="text-[11px] text-slate-500">${survey.summary || ''}</p>
                 </div>
               </div>
@@ -259,7 +259,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">35-55m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${collocations.title || 'Activity 3: Language Focus: Essential Travel Collocations & Idioms (20 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${collocations.title || 'Activity 3: Language Focus: Essential Travel Collocations & Idioms '}</h4>
                   <p class="text-[11px] text-slate-500">${collocations.summary || ''}</p>
                 </div>
               </div>
@@ -320,7 +320,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">55-80m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${grammar.title || 'Activity 4: Grammar Focus: Narrative Tenses & Storytelling (25 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${grammar.title || 'Activity 4: Grammar Focus: Narrative Tenses & Storytelling '}</h4>
                   <p class="text-[11px] text-slate-500">${grammar.summary || ''}</p>
                 </div>
               </div>
@@ -373,7 +373,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">80-110m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${rolePlay.title || 'Activity 5: Role-Play Simulation: Flight Delay & Missing a Connection (30 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${rolePlay.title || 'Activity 5: Role-Play Simulation: Flight Delay & Missing a Connection '}</h4>
                   <p class="text-[11px] text-slate-500">${rolePlay.summary || ''}</p>
                 </div>
               </div>
@@ -413,7 +413,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">110-120m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${closing.title || 'Activity 6: 10-Minute Vocabulary Wrap-Up & Exit Ticket (10 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${closing.title || 'Activity 6: 10-Minute Vocabulary Wrap-Up & Exit Ticket '}</h4>
                   <p class="text-[11px] text-slate-500">${closing.summary || ''}</p>
                 </div>
               </div>
@@ -481,8 +481,8 @@
 
           <!-- Session Overview Banner -->
           <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs">
-            <div class="relative">
-              <img src="${ov.image || 'images/ag_m1card2.jpg'}" alt="${ov.title || 'Evolution of Transport'}" class="w-full h-48 sm:h-64 object-cover" onerror="this.src='images/ag_m1card2.jpg'">
+            <div class="relative bg-slate-900">
+              <img src="${ov.image || 'images/ag_m1card2.jpg'}" alt="${ov.title || 'Evolution of Transport'}" class="w-full h-48 sm:h-64 object-cover" onerror="this.onerror=null;this.src='images/ag_m1card2.jpg'">
               <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex flex-col justify-end p-4 sm:p-5">
                 <span class="text-[11px] font-bold text-amber-300 uppercase tracking-wider">${ov.badge || 'Session Overview • Transport Evolution & Green Mobility'}</span>
                 <h3 class="text-lg sm:text-2xl font-black text-white mt-0.5">${ov.title || 'Evolution of Transport & Sustainable Mobility'}</h3>
@@ -510,7 +510,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">00-10m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${opening.title || 'Activity 1: Green Transport News & Session 1 Review (10 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${opening.title || 'Activity 1: Green Transport News & Session 1 Review '}</h4>
                   <p class="text-[11px] text-slate-500">${opening.summary || ''}</p>
                 </div>
               </div>
@@ -566,7 +566,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">10-35m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${timeline.title || 'Activity 2: The Timeline Clash: 4 Epochs of Transport (25 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${timeline.title || 'Activity 2: The Timeline Clash: 4 Epochs of Transport '}</h4>
                   <p class="text-[11px] text-slate-500">${timeline.summary || ''}</p>
                 </div>
               </div>
@@ -612,7 +612,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">35-60m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${corridor.title || 'Activity 3: The Multi-Modal Corridor Pitch: Rail vs. Air (25 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${corridor.title || 'Activity 3: The Multi-Modal Corridor Pitch: Rail vs. Air '}</h4>
                   <p class="text-[11px] text-slate-500">${corridor.summary || ''}</p>
                 </div>
               </div>
@@ -653,7 +653,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">60-80m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${grammar.title || 'Activity 4: Grammar Focus: Cause, Effect & Complex Comparisons (20 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${grammar.title || 'Activity 4: Grammar Focus: Cause, Effect & Complex Comparisons '}</h4>
                   <p class="text-[11px] text-slate-500">${grammar.summary || ''}</p>
                 </div>
               </div>
@@ -710,7 +710,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">80-110m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${caseStudy.title || 'Activity 5: DDRS Case Study: The Campus Travel Dilemma (30 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${caseStudy.title || 'Activity 5: DDRS Case Study: The Campus Travel Dilemma '}</h4>
                   <p class="text-[11px] text-slate-500">${caseStudy.summary || ''}</p>
                 </div>
               </div>
@@ -748,7 +748,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">110-120m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${closing.title || 'Activity 6: 10-Minute Vocabulary Wrap-Up & Taboo Fluency Challenge (10 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${closing.title || 'Activity 6: 10-Minute Vocabulary Wrap-Up & Taboo Fluency Challenge '}</h4>
                   <p class="text-[11px] text-slate-500">${closing.summary || ''}</p>
                 </div>
               </div>
@@ -837,8 +837,8 @@
 
           <!-- Session Overview Banner -->
           <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs">
-            <div class="relative">
-              <img src="${ov.image || 'images/ag_m1card3.jpg'}" alt="${ov.title || 'Overtourism'}" class="w-full h-48 sm:h-64 object-cover" onerror="this.src='images/ag_m1card3.jpg'">
+            <div class="relative bg-slate-900">
+              <img src="${ov.image || 'images/ag_m1card3.jpg'}" alt="${ov.title || 'Overtourism'}" class="w-full h-48 sm:h-64 object-cover" onerror="this.onerror=null;this.src='images/ag_m1card3.jpg'">
               <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex flex-col justify-end p-4 sm:p-5">
                 <span class="text-[11px] font-bold text-amber-300 uppercase tracking-wider">${ov.badge || 'Session Overview • Managing Tourism & City Life'}</span>
                 <h3 class="text-lg sm:text-2xl font-black text-white mt-0.5">${ov.title || 'Overtourism & Tourism Policy'}</h3>
@@ -866,7 +866,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">00-10m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${opening.title || 'Activity 1: Tourism Policy News & Session 2 Review (10 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${opening.title || 'Activity 1: Tourism Policy News & Session 2 Review '}</h4>
                   <p class="text-[11px] text-slate-500">${opening.summary || ''}</p>
                 </div>
               </div>
@@ -922,7 +922,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">10-35m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${pressure.title || 'Activity 2: Destination Pressure & Visitor Capacity (25 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${pressure.title || 'Activity 2: Destination Pressure & Visitor Capacity '}</h4>
                   <p class="text-[11px] text-slate-500">${pressure.summary || ''}</p>
                 </div>
               </div>
@@ -960,7 +960,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">35-60m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${policy.title || 'Activity 3: Pitching New Tourism Policies to the Mayor (25 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${policy.title || 'Activity 3: Pitching New Tourism Policies to the Mayor '}</h4>
                   <p class="text-[11px] text-slate-500">${policy.summary || ''}</p>
                 </div>
               </div>
@@ -991,7 +991,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">60-80m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${grammar.title || 'Activity 4: Grammar Focus: Causatives & Contrast Words (20 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${grammar.title || 'Activity 4: Grammar Focus: Causatives & Contrast Words '}</h4>
                   <p class="text-[11px] text-slate-500">${grammar.summary || ''}</p>
                 </div>
               </div>
@@ -1048,7 +1048,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">80-110m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${simulation.title || 'Activity 5: DDRS Simulation: The Isla Serena Water Crisis (30 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${simulation.title || 'Activity 5: DDRS Simulation: The Isla Serena Water Crisis '}</h4>
                   <p class="text-[11px] text-slate-500">${simulation.summary || ''}</p>
                 </div>
               </div>
@@ -1123,7 +1123,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">110-120m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${closing.title || 'Activity 6: 10-Minute Vocabulary Wrap-Up & Taboo Fluency Challenge (10 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${closing.title || 'Activity 6: 10-Minute Vocabulary Wrap-Up & Taboo Fluency Challenge '}</h4>
                   <p class="text-[11px] text-slate-500">${closing.summary || ''}</p>
                 </div>
               </div>
@@ -1212,8 +1212,8 @@
 
           <!-- Session Overview Banner -->
           <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs">
-            <div class="relative">
-              <img src="${ov.image || 'images/ag_m1card4.jpg'}" alt="${ov.title || 'Sustainable Tourism'}" class="w-full h-48 sm:h-64 object-cover" onerror="this.src='images/ag_m1card4.jpg'">
+            <div class="relative bg-slate-900">
+              <img src="${ov.image || 'images/ag_m1card4.jpg'}" alt="${ov.title || 'Sustainable Tourism'}" class="w-full h-48 sm:h-64 object-cover" onerror="this.onerror=null;this.src='images/ag_m1card4.jpg'">
               <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex flex-col justify-end p-4 sm:p-5">
                 <span class="text-[11px] font-bold text-amber-300 uppercase tracking-wider">${ov.badge || 'Session Overview • Eco-Tourism & Green Certification'}</span>
                 <h3 class="text-lg sm:text-2xl font-black text-white mt-0.5">${ov.title || 'Sustainable & Eco-Tourism'}</h3>
@@ -1241,7 +1241,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">00-10m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${opening.title || 'Activity 1: Eco-Tourism News & Session 3 Review (10 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${opening.title || 'Activity 1: Eco-Tourism News & Session 3 Review '}</h4>
                   <p class="text-[11px] text-slate-500">${opening.summary || ''}</p>
                 </div>
               </div>
@@ -1297,7 +1297,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">10-35m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${forensic.title || 'Activity 2: Genuine Eco-Tourism vs. Greenwashing (25 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${forensic.title || 'Activity 2: Genuine Eco-Tourism vs. Greenwashing '}</h4>
                   <p class="text-[11px] text-slate-500">${forensic.summary || ''}</p>
                 </div>
               </div>
@@ -1339,7 +1339,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">35-55m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${grammar.title || 'Activity 3: Grammar Focus: Mixed Conditionals & Purpose Clauses (20 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${grammar.title || 'Activity 3: Grammar Focus: Mixed Conditionals & Purpose Clauses '}</h4>
                   <p class="text-[11px] text-slate-500">${grammar.summary || ''}</p>
                 </div>
               </div>
@@ -1396,7 +1396,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">55-85m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${workshop.title || 'Activity 4: Workshop: The €2,500,000 Eco-Resort Blueprint (30 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${workshop.title || 'Activity 4: Workshop: The €2,500,000 Eco-Resort Blueprint '}</h4>
                   <p class="text-[11px] text-slate-500">${workshop.summary || ''}</p>
                 </div>
               </div>
@@ -1434,7 +1434,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">85-110m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${investor.title || 'Activity 5: The Green Investor Forum: Pitches & Defense (25 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${investor.title || 'Activity 5: The Green Investor Forum: Pitches & Defense '}</h4>
                   <p class="text-[11px] text-slate-500">${investor.summary || ''}</p>
                 </div>
               </div>
@@ -1461,7 +1461,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs" style="background-color: ${theme.primary};">110-120m</span>
                 <div>
-                  <h4 class="text-sm sm:text-base font-black text-slate-900">${closing.title || 'Activity 6: 10-Minute Vocabulary Wrap-Up & FE1 Readiness Check (10 mins)'}</h4>
+                  <h4 class="text-sm sm:text-base font-black text-slate-900">${closing.title || 'Activity 6: 10-Minute Vocabulary Wrap-Up & FE1 Readiness Check '}</h4>
                   <p class="text-[11px] text-slate-500">${closing.summary || ''}</p>
                 </div>
               </div>
