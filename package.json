@@ -19,7 +19,11 @@
     "backup2": "node scripts/backup.js semester2",
     "backup3": "node scripts/backup.js semester3",
     "verify:links": "node scripts/verify-links.js",
-    "audit": "node scripts/audit-session.js"
+    "audit": "node scripts/audit-session.js",
+    "bug:check": "node scripts/bug-check.js",
+    "bug1": "node scripts/bug-check.js 1",
+    "bug2": "node scripts/bug-check.js 2",
+    "bug3": "node scripts/bug-check.js 3"
   },
   "repository": {
     "type": "git",
