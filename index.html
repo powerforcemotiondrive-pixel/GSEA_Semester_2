@@ -596,6 +596,11 @@
 
         <!-- Main Content Panel Area -->
         <div class="flex-1 bg-white p-4 sm:p-6 flex flex-col justify-between overflow-y-auto content-panel">
+          <!-- Student Noticeboard View (Card 00) -->
+          <div id="deck-noticeboard-view" class="space-y-4 sm:space-y-5 deck-card-fade hidden">
+            <!-- Populated dynamically via renderNoticeboardContent -->
+          </div>
+
           <!-- Content Card Details: Balanced Horizontal Grid (Option A) -->
           <div id="deck-card-view" class="space-y-4 sm:space-y-5 deck-card-fade">
             <!-- Top Briefing Row: Left Briefing Bento Box & Right Photo Anchor (Locked to 2-Column Grid) -->
@@ -1157,29 +1162,45 @@
       const desc = (isAas ? aasDescriptions[modNumber] : agDescriptions[modNumber]) || (isAas ? aasDescriptions[1] : agDescriptions[1]);
       const sessOffset = modNumber === 1 ? 0 : 4;
 
+      const noticeboardPage = {
+        tag: isAas ? "Technical English • Noticeboard" : "General English • Noticeboard",
+        title: "Student Noticeboard",
+        description: isAas
+          ? "Welcome to Technical English (LV122E)! Here is your home bulletin for weekly lessons, operational radiotelephony, listening practice, study materials, and course announcements."
+          : "Welcome to General English (LV102E)! Here is your home bulletin for weekly lessons, current events, spoken practice, study materials, immersion guidance, and course announcements.",
+        isNoticeboard: true,
+        sessionNum: 0,
+        imageUrl: "images/semester_objectives.jpg"
+      };
+
       const pages = [
+        noticeboardPage,
         {
           tag: `Module ${modNumber} • Session ${sessOffset + 1}`,
           title: titles.s1,
           description: desc.s1,
+          sessionNum: sessOffset + 1,
           imageUrl: images.card1
         },
         {
           tag: `Module ${modNumber} • Session ${sessOffset + 2}`,
           title: titles.s2,
           description: desc.s2,
+          sessionNum: sessOffset + 2,
           imageUrl: images.card2
         },
         {
           tag: `Module ${modNumber} • Session ${sessOffset + 3}`,
           title: titles.s3,
           description: desc.s3,
+          sessionNum: sessOffset + 3,
           imageUrl: images.card3
         },
         {
           tag: `Module ${modNumber} • Formative Evaluation ${modNumber}`,
           title: titles.s4,
           description: desc.s4,
+          sessionNum: sessOffset + 4,
           imageUrl: images.card4,
           isFe: true
         },
@@ -1192,6 +1213,7 @@
             ? "<strong>Definition:</strong> DDRS (Sustainable Development & Social Responsibility) in aeronautical operations combines flight efficiency, noise abatement, continuous descent approaches, and carbon reduction.<br><br><strong>Key areas covered:</strong> Green taxiing, reduced engine taxi-in, continuous descent operations (CDO), and runway safety.<br><br><strong>Why we discuss DDRS in English:</strong> Communicating operational sustainability in international English prepares aviation professionals for global compliance."
             : "<strong>Definition:</strong> DDRS (Sustainable Development & Social Responsibility) in modern media links factual reporting, social responsibility, and ethical deliberation on global challenges.<br><br><strong>Key areas covered:</strong> Media literacy, climate reporting ethics, sustainable development goals (SDGs), and public interest journalism.<br><br><strong>Why we discuss DDRS in English:</strong> Analyzing global challenges in international English develops the critical thinking and communication skills essential for international careers.",
           imageUrl: images.ddrs,
+          sessionNum: sessOffset + 5,
           isMuted: isAas
         },
         {
@@ -1200,6 +1222,7 @@
           description: "Welcome to the GSEA26A Course Administration Hub. Access your official class groups (Group A & Group B), teacher assignments, 8-week course calendar, and in-class Formative Evaluation schedules.<br><br><em>Subject overview:</em> Weekly classes run Wednesdays (13h15–15h15) for Aeronautical English (LV122E) and Fridays (08h00–10h00) for General English (LV102E).<br><br>Consult the course calendar for key dates for FE1 (Week 4) and FE2 (Week 8).",
           isAdmin: true,
           adminUrl: "admin.html",
+          sessionNum: sessOffset + 6,
           imageUrl: images.admin
         },
         {
@@ -1207,6 +1230,7 @@
           title: "Student Guide & Objectives",
           description: "Essential student guidance on how to succeed in English this semester, in-class formative evaluation preparation, portfolio requirements, and the official ENAC course syllabus (English & French).",
           isObjectives: true,
+          sessionNum: sessOffset + 7,
           imageUrl: "images/semester_objectives.jpg"
         }
       ];
@@ -1218,6 +1242,7 @@
           description: "At the end of Semester 2, GSEA students participate in an intensive 4-week English immersion program in an English-speaking destination: Cork, Dublin, Manchester, Leeds, Liverpool, or Shoreham.<br><br><em>Academic & cultural goals:</em> Enhance daily conversational fluency and complete intensive TOEIC preparation for Semester 3. Students attend morning and afternoon language school sessions, cultural excursions, and aviation-specific visits.<br><br><em>Accommodation:</em> Homestay with vetted local host families (strictly 1 ENAC student per host family) for 100% linguistic immersion.",
           isImmersion: true,
           immersionUrl: "immersion.html",
+          sessionNum: 9,
           imageUrl: "images/immersion_card.jpg"
         });
       }
@@ -1527,16 +1552,21 @@
             mod = 2;
           }
 
-          // Check if card index is directly in hash (e.g. #ag-module1-card3 or #card-3)
-          const cardMatch = hash.match(/card-?(\d+)/);
-          if (cardMatch) {
-            card = Math.max(0, parseInt(cardMatch[1], 10) - 1);
+          // Noticeboard explicit hash check
+          if (hash.includes('home') || hash.includes('noticeboard') || hash.includes('card-0') || hash.includes('card0')) {
+            card = 0;
           } else {
-            // Restore card memory from sessionStorage
-            const savedMod = sessionStorage.getItem(`gsea_${prog}_last_mod`) || sessionStorage.getItem('gsea_last_mod');
-            const savedCard = sessionStorage.getItem(`gsea_${prog}_last_card`) || sessionStorage.getItem('gsea_last_card');
-            if (savedMod !== null && parseInt(savedMod, 10) === mod && savedCard !== null) {
-              card = parseInt(savedCard, 10);
+            // Check if card index is directly in hash (e.g. #ag-module1-card3 or #card-3)
+            const cardMatch = hash.match(/card-?(\d+)/);
+            if (cardMatch) {
+              card = parseInt(cardMatch[1], 10);
+            } else {
+              // Restore card memory from sessionStorage
+              const savedMod = sessionStorage.getItem(`gsea_${prog}_last_mod`) || sessionStorage.getItem('gsea_last_mod');
+              const savedCard = sessionStorage.getItem(`gsea_${prog}_last_card`) || sessionStorage.getItem('gsea_last_card');
+              if (savedMod !== null && parseInt(savedMod, 10) === mod && savedCard !== null) {
+                card = parseInt(savedCard, 10);
+              }
             }
           }
         } catch (e) {}
@@ -1573,13 +1603,13 @@
       }
       const mainTitle = document.getElementById('deck-main-title');
       if (mainTitle) {
-        mainTitle.textContent = currentProgram === 'aas' ? 'GSEA SEMESTER 1 AT (LV121E)' : 'GSEA SEMESTER 1 AG (LV101E)';
+        mainTitle.textContent = currentProgram === 'aas' ? 'GSEA SEMESTER 2 AT (LV122E)' : 'GSEA SEMESTER 2 AG (LV102E)';
       }
       const footerTrack = document.getElementById('footer-curriculum-track');
       if (footerTrack) {
         footerTrack.textContent = currentProgram === 'aas' 
-          ? 'GSEA Semester 1 Technical English (AT) • ' 
-          : 'GSEA Semester 1 General English (AG) • ';
+          ? 'GSEA Semester 2 Technical English (AT) • ' 
+          : 'GSEA Semester 2 General English (AG) • ';
       } else {
         const footerCurriculum = document.getElementById('footer-curriculum-label');
         if (footerCurriculum && PROGRAMS_CONFIG[currentProgram]) {
@@ -1795,7 +1825,12 @@
         sessionStorage.setItem('gsea_last_mod', String(modIdx));
         sessionStorage.setItem('gsea_last_card', String(cardIdx));
         if (window.history && typeof window.history.replaceState === 'function') {
-          window.history.replaceState(null, '', `#${currentProgram}-module${modIdx + 1}-card${cardIdx + 1}`);
+          const targetPage = modulesData[modIdx] && modulesData[modIdx].pages && modulesData[modIdx].pages[cardIdx];
+          if (targetPage && targetPage.isNoticeboard) {
+            window.history.replaceState(null, '', `#${currentProgram}-module${modIdx + 1}-noticeboard`);
+          } else {
+            window.history.replaceState(null, '', `#${currentProgram}-module${modIdx + 1}-card${cardIdx}`);
+          }
         }
       } catch (err) {
         // Silently swallow SecurityError if embedded in a restricted or cross-origin Moodle iframe
@@ -1819,7 +1854,7 @@
       // Header Main Title & Subheader
       const mainTitle = document.getElementById('deck-main-title');
       if (mainTitle) {
-        mainTitle.textContent = currentProgram === 'aas' ? 'GSEA SEMESTER 1 AT (LV121E)' : 'GSEA SEMESTER 1 AG (LV101E)';
+        mainTitle.textContent = currentProgram === 'aas' ? 'GSEA SEMESTER 2 AT (LV122E)' : 'GSEA SEMESTER 2 AG (LV102E)';
       }
 
       const subtitle = document.getElementById('deck-subtitle');
@@ -1941,7 +1976,20 @@
       const mod = modulesData[currentModuleIndex];
 
       mod.pages.forEach((page, idx) => {
-        if (idx === 5) {
+        // Divider 1: Before Session 1 or Session 5
+        if (page.sessionNum === 1 || page.sessionNum === 5) {
+          const divider = document.createElement('div');
+          divider.className = "pt-2 pb-1 px-1 flex items-center gap-1.5 text-[9px] font-mono font-bold uppercase tracking-widest text-slate-400 select-none";
+          divider.innerHTML = `
+            <span class="h-px bg-slate-200/90 flex-1"></span>
+            <span>Module ${mod.id} Lessons</span>
+            <span class="h-px bg-slate-200/90 flex-1"></span>
+          `;
+          menuEl.appendChild(divider);
+        }
+
+        // Divider 2: Before Admin & Guides
+        if (page.isAdmin) {
           const divider = document.createElement('div');
           divider.className = "pt-2.5 pb-1 px-1 flex items-center gap-1.5 text-[9px] font-mono font-bold uppercase tracking-widest text-slate-400 select-none";
           divider.innerHTML = `
@@ -1956,13 +2004,22 @@
         item.type = 'button';
         item.setAttribute('data-card-idx', idx);
 
+        let badgeNum;
+        if (page.isNoticeboard) {
+          badgeNum = '00';
+        } else if (page.sessionNum !== undefined) {
+          badgeNum = page.sessionNum < 10 ? '0' + page.sessionNum : '' + page.sessionNum;
+        } else {
+          badgeNum = idx < 10 ? '0' + idx : '' + idx;
+        }
+
         if (page.isMuted) {
           item.setAttribute('aria-label', `${page.title} (Muted)`);
           item.setAttribute('disabled', 'true');
           item.className = "flight-strip-card w-full text-left px-2.5 py-2 rounded-lg text-xs font-medium flex items-center justify-between border border-slate-200/60 bg-slate-100/60 text-slate-400 cursor-not-allowed opacity-60 select-none";
           item.innerHTML = `
             <div class="flex items-center gap-2 min-w-0 pr-1 pointer-events-none">
-              <span class="flight-strip-badge font-mono text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-200 text-slate-400 border border-slate-300/50">0${idx + 1}</span>
+              <span class="flight-strip-badge font-mono text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-200 text-slate-400 border border-slate-300/50">${badgeNum}</span>
               <span class="flight-strip-title truncate text-xs text-slate-400 font-medium pointer-events-none">${page.title}</span>
             </div>
             <span class="text-[9px] font-mono uppercase tracking-wider font-semibold px-1.5 py-0.5 rounded bg-slate-200 text-slate-500 border border-slate-300/60 shrink-0">Muted</span>
@@ -1971,9 +2028,14 @@
           item.setAttribute('aria-label', `Navigate to ${page.title}`);
           const rightHtml = `<svg class="flight-strip-chevron w-3.5 h-3.5 shrink-0 opacity-40 transition-all pointer-events-none" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>`;
 
+          const leftIcon = page.isNoticeboard 
+            ? `<svg class="w-3.5 h-3.5 shrink-0 text-slate-400 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>`
+            : '';
+
           item.innerHTML = `
             <div class="flex items-center gap-2 min-w-0 pr-1 pointer-events-none">
-              <span class="flight-strip-badge font-mono text-[10px] font-bold px-1.5 py-0.5 rounded transition-all">0${idx + 1}</span>
+              <span class="flight-strip-badge font-mono text-[10px] font-bold px-1.5 py-0.5 rounded transition-all">${badgeNum}</span>
+              ${leftIcon}
               <span class="flight-strip-title truncate text-xs transition-all pointer-events-none">${page.title}</span>
             </div>
             ${rightHtml}
@@ -1996,13 +2058,14 @@
         if (page && page.isMuted) return;
 
         const isActive = idx === activeIdx;
+        const isCoreUnit = page && (page.isNoticeboard || (!page.isAdmin && !page.isObjectives && !page.isImmersion && !page.isDocsHub));
         const badge = item.querySelector('.flight-strip-badge');
         const title = item.querySelector('.flight-strip-title');
         const chevron = item.querySelector('.flight-strip-chevron');
 
         if (isActive) {
           item.className = "flight-strip-card group w-full text-left px-2.5 py-2 rounded-lg text-xs font-semibold transition-all flex items-center justify-between border cursor-pointer shadow-2xs";
-          if (idx <= 4) {
+          if (isCoreUnit) {
             item.style.backgroundColor = '#ffffff';
             item.style.borderColor = '#cbd5e1';
           } else {
@@ -2017,7 +2080,7 @@
           if (badge) {
             badge.style.backgroundColor = '#ffffff';
             badge.style.color = mod.accent;
-            badge.style.border = idx <= 4 ? '1px solid #cbd5e1' : '1px solid #94a3b8';
+            badge.style.border = isCoreUnit ? '1px solid #cbd5e1' : '1px solid #94a3b8';
             badge.style.fontWeight = '800';
           }
           if (chevron) {
@@ -2027,8 +2090,8 @@
           }
         } else {
           item.style.borderLeft = '';
-          if (idx <= 4) {
-            // Sessions 01 to 05: Core Teaching & FE Units (Clean White / Slate Border)
+          if (isCoreUnit) {
+            // Core Teaching & FE Units (Clean White / Slate Border)
             item.className = "flight-strip-card group w-full text-left px-2.5 py-2 rounded-lg text-xs font-semibold transition-all flex items-center justify-between border border-slate-200/90 bg-white hover:bg-slate-50 hover:border-slate-300 text-slate-800 hover:text-slate-900 hover:shadow-2xs hover:translate-x-[3px] cursor-pointer";
             item.style.backgroundColor = '#ffffff';
             item.style.borderColor = '#e2e8f0';
@@ -2048,7 +2111,7 @@
               chevron.style.transform = 'none';
             }
           } else {
-            // Cards 06 to 08/09: Administrative & Reference Frameworks (Grounded Slate-200 / Touch Darker)
+            // Administrative & Reference Frameworks (Grounded Slate-200 / Touch Darker)
             item.className = "flight-strip-card group w-full text-left px-2.5 py-2 rounded-lg text-xs font-semibold transition-all flex items-center justify-between border border-slate-300/80 bg-slate-200/70 hover:bg-slate-200 hover:border-slate-400/80 text-slate-700 hover:text-slate-900 hover:shadow-2xs hover:translate-x-[3px] cursor-pointer";
             item.style.backgroundColor = '#e2e8f0';
             item.style.borderColor = '#cbd5e1';
@@ -2193,12 +2256,26 @@
       currentIndex = idx;
       const page = pages[currentIndex];
 
-      // Subtle opacity crossfade transition (Option 1)
+      const noticeboardView = document.getElementById('deck-noticeboard-view');
       const cardView = document.getElementById('deck-card-view');
-      if (cardView) {
-        cardView.classList.remove('deck-card-fade');
-        void cardView.offsetWidth; // Force reflow to re-trigger CSS keyframe
-        cardView.classList.add('deck-card-fade');
+
+      if (page.isNoticeboard) {
+        if (cardView) cardView.classList.add('hidden');
+        if (noticeboardView) {
+          noticeboardView.classList.remove('hidden');
+          noticeboardView.classList.remove('deck-card-fade');
+          void noticeboardView.offsetWidth;
+          noticeboardView.classList.add('deck-card-fade');
+          renderNoticeboardContent(mod);
+        }
+      } else {
+        if (noticeboardView) noticeboardView.classList.add('hidden');
+        if (cardView) {
+          cardView.classList.remove('hidden');
+          cardView.classList.remove('deck-card-fade');
+          void cardView.offsetWidth;
+          cardView.classList.add('deck-card-fade');
+        }
       }
 
       // Update card tag pill (Option A Balanced Horizontal Grid)
@@ -2304,12 +2381,17 @@
       const accessiblePages = pages.filter(p => !p.isMuted);
       const isNextDisabled = (currentIndex === pages.length - 1) || (pages[currentIndex + 1] && pages[currentIndex + 1].isMuted);
 
-      document.getElementById('counter-badge').textContent = `${currentIndex + 1} of ${accessiblePages.length}`;
+      if (page.isNoticeboard) {
+        document.getElementById('counter-badge').textContent = `Noticeboard`;
+        document.getElementById('footer-status').textContent = `Active: Student Noticeboard • GSEA 26A`;
+      } else {
+        document.getElementById('counter-badge').textContent = `${currentIndex} of ${accessiblePages.length - 1}`;
+        document.getElementById('footer-status').textContent = `Active: ${mod.name} - ${page.title}`;
+      }
       const deckTitleEl = document.getElementById('deck-title');
       if (deckTitleEl) {
         deckTitleEl.textContent = page.title;
       }
-      document.getElementById('footer-status').textContent = `Active: ${mod.name} - ${page.title}`;
 
       document.getElementById('prev-btn').disabled = (currentIndex === 0);
       document.getElementById('next-btn').disabled = isNextDisabled;
@@ -2322,10 +2404,18 @@
         sessionStorage.setItem('gsea_last_mod', String(currentModuleIndex));
         sessionStorage.setItem('gsea_last_card', String(currentIndex));
         if (window.history && typeof window.history.replaceState === 'function') {
-          window.history.replaceState(null, '', `#${currentProgram}-module${currentModuleIndex + 1}-card${currentIndex + 1}`);
+          if (page.isNoticeboard) {
+            window.history.replaceState(null, '', `#${currentProgram}-module${currentModuleIndex + 1}-noticeboard`);
+          } else {
+            window.history.replaceState(null, '', `#${currentProgram}-module${currentModuleIndex + 1}-card${currentIndex}`);
+          }
         }
       } catch (e) {}
-      ScormAPI.setProgress(`${currentProgram}-mod${currentModuleIndex + 1}-card${currentIndex}`, true);
+      if (page.isNoticeboard) {
+        ScormAPI.setProgress(`${currentProgram}-mod${currentModuleIndex + 1}-noticeboard`, true);
+      } else {
+        ScormAPI.setProgress(`${currentProgram}-mod${currentModuleIndex + 1}-card${currentIndex}`, true);
+      }
     }
 
     function stepDeck(direction) {
@@ -2907,6 +2997,11 @@
       }
     }
     window.toggleDeckFullScreen = toggleDeckFullScreen;
+    window.renderCard = renderCard;
+    window.switchModule = switchModule;
+    window.openModalDrawer = openModalDrawer;
+    window.closeModalDrawer = closeModalDrawer;
+    window.switchModalTab = switchModalTab;
 
     window.syncPortfolioDrawerHeader = function(trackKey) {
       const activeTrack = trackKey || 'ag';
@@ -2927,29 +3022,29 @@
         if (iconBox) iconBox.className = "w-8 h-8 rounded-lg flex items-center justify-center shrink-0 text-white bg-emerald-600 shadow-xs";
         if (iconAg) iconAg.classList.remove("hidden");
         if (iconAas) iconAas.classList.add("hidden");
-        if (titleEl) titleEl.innerText = "GSEA SEMESTER 1 AG";
-        if (subtitleEl) subtitleEl.innerText = "General English (LV101E) • Formative Learning Portfolio & Self-Evaluation Log";
+        if (titleEl) titleEl.innerText = "GSEA SEMESTER 2 AG";
+        if (subtitleEl) subtitleEl.innerText = "General English (LV102E) • Formative Learning Portfolio & Self-Evaluation Log";
         if (drawerBtnAg) drawerBtnAg.className = "px-2 py-1 rounded text-[11px] font-black transition-all cursor-pointer text-white bg-emerald-600 shadow-xs";
         if (drawerBtnAas) drawerBtnAas.className = "px-2 py-1 rounded text-[11px] font-semibold transition-all cursor-pointer text-white/70 hover:text-white hover:bg-white/10";
         if (drawerFooterBadge) {
-          drawerFooterBadge.innerText = "AG • LV101E";
+          drawerFooterBadge.innerText = "AG • LV102E";
           drawerFooterBadge.className = "px-2 py-0.5 rounded text-[10px] font-mono font-bold text-white bg-emerald-600 shadow-xs shrink-0";
         }
-        if (drawerFooterTitle) drawerFooterTitle.innerText = "GSEA Semester 1 General English (AG)";
+        if (drawerFooterTitle) drawerFooterTitle.innerText = "GSEA Semester 2 General English (AG)";
         if (drawerFooterVersion) drawerFooterVersion.className = "font-mono text-emerald-400 font-bold bg-black/40 px-2 py-0.5 rounded border border-white/10 text-[10px] sm:text-xs";
       } else {
         if (iconBox) iconBox.className = "w-8 h-8 rounded-lg flex items-center justify-center shrink-0 text-white bg-blue-600 shadow-xs";
         if (iconAg) iconAg.classList.add("hidden");
         if (iconAas) iconAas.classList.remove("hidden");
-        if (titleEl) titleEl.innerText = "GSEA SEMESTER 1 AT";
-        if (subtitleEl) subtitleEl.innerText = "Technical English (LV121E) • Formative Learning Portfolio & Technical Operations Log";
+        if (titleEl) titleEl.innerText = "GSEA SEMESTER 2 AT";
+        if (subtitleEl) subtitleEl.innerText = "Technical English (LV122E) • Formative Learning Portfolio & Technical Operations Log";
         if (drawerBtnAg) drawerBtnAg.className = "px-2 py-1 rounded text-[11px] font-semibold transition-all cursor-pointer text-white/70 hover:text-white hover:bg-white/10";
         if (drawerBtnAas) drawerBtnAas.className = "px-2 py-1 rounded text-[11px] font-black transition-all cursor-pointer text-white bg-blue-600 shadow-xs";
         if (drawerFooterBadge) {
-          drawerFooterBadge.innerText = "AT • LV121E";
+          drawerFooterBadge.innerText = "AT • LV122E";
           drawerFooterBadge.className = "px-2 py-0.5 rounded text-[10px] font-mono font-bold text-white bg-blue-600 shadow-xs shrink-0";
         }
-        if (drawerFooterTitle) drawerFooterTitle.innerText = "GSEA Semester 1 Technical English (AT)";
+        if (drawerFooterTitle) drawerFooterTitle.innerText = "GSEA Semester 2 Technical English (AT)";
         if (drawerFooterVersion) drawerFooterVersion.className = "font-mono text-blue-400 font-bold bg-black/40 px-2 py-0.5 rounded border border-white/10 text-[10px] sm:text-xs";
       }
     };
@@ -3244,7 +3339,7 @@
       document.body.style.overflow = "";
     };
 
-    window.openArticleReader = function(sessionNum, articleIndex) {
+    window.openArticleReader = function(sessionNum, articleIndex, programOverride) {
       let modal = document.getElementById("gsea-article-reader-modal");
       if (!modal) {
         modal = document.createElement("div");
@@ -3257,7 +3352,7 @@
       }
 
       const rootData = window.COURSE_DATA || {};
-      const progKey = window.currentProgram || "aas";
+      const progKey = programOverride || window.currentProgram || "aas";
       const progData = rootData[progKey] || rootData["1"] || rootData.aas || {};
       const modCourse = progData["1"] || rootData["1"] || {};
       const sessionData = (modCourse.sessions && modCourse.sessions[sessionNum]) || {};
@@ -3352,6 +3447,408 @@
       modal.classList.remove("hidden");
       document.body.style.overflow = "hidden";
     };
+
+    // --- Active Session & Calendar Synchronizer (Semester 2 Noticeboard) ---
+    function getActiveNoticeboardSession(isAg) {
+      const now = new Date();
+      const sessionSchedule = [
+        {
+          modIdx: 0,
+          cardIdx: 1,
+          week: 1,
+          start: new Date('2027-02-08T00:00:00'),
+          agTitle: "Session 1 — Breaking News & Modern Media Landscape",
+          agDesc: "Explore the modern 24-hour news cycle, editorial perspectives, fact verification, and headline analysis in small group discussions.",
+          atTitle: "Session 1 — ATIS Broadcasts & Airport Weather Decoding",
+          atDesc: "Decoding authentic ATIS broadcasts, phonetic designators, METAR/SPECI weather reports, and runway surface conditions in authentic audio."
+        },
+        {
+          modIdx: 0,
+          cardIdx: 2,
+          week: 2,
+          start: new Date('2027-02-15T00:00:00'),
+          agTitle: "Session 2 — Global Economy & Social Issues in the News",
+          agDesc: "Analyze international economic shifts, cost of living, labor market transitions, and interpreting journalistic charts in peer pairs.",
+          atTitle: "Session 2 — Ground Control, Pushback & Taxi Clearances",
+          atDesc: "Apron, taxiway, and holding point operations, pushback clearances, conditional taxi instructions, and identifying taxi conflicts."
+        },
+        {
+          modIdx: 0,
+          cardIdx: 3,
+          week: 3,
+          start: new Date('2027-03-08T00:00:00'),
+          agTitle: "Session 3 — Climate, Science & Environmental Reporting",
+          agDesc: "Examine environmental reporting, climate summits, clean mobility, and structuring evidence-based arguments with polite disagreement.",
+          atTitle: "Session 3 — AFIS & Uncontrolled Aerodrome Traffic Information",
+          atDesc: "Aerodrome Flight Information Service (AFIS) advisories, blind transmissions, circuit join reports, and advisory traffic separation."
+        },
+        {
+          modIdx: 0,
+          cardIdx: 4,
+          week: 4,
+          start: new Date('2027-03-15T00:00:00'),
+          agTitle: "Session 4 — Formative Evaluation 1: Live Press Briefing",
+          agDesc: "Whole-class interactive press conference: teams analyze a breaking news dossier, deliver a 5-minute spoken briefing, and field questions.",
+          atTitle: "Session 4 — Formative Evaluation 1: Aerodrome Listening Evaluation",
+          atDesc: "Comprehensive aerodrome listening evaluation across authentic ATIS, Ground, and AFIS communications, with spoken ICAO readbacks.",
+          isFe: true,
+          feNum: 1
+        },
+        {
+          modIdx: 1,
+          cardIdx: 1,
+          week: 5,
+          start: new Date('2027-03-22T00:00:00'),
+          agTitle: "Session 5 — Geopolitics & International Diplomacy",
+          agDesc: "International treaties, diplomacy, multilateral negotiations, and delivering concise diplomatic spoken briefings.",
+          atTitle: "Session 5 — Tower Control, Line-Up & Departure Clearances",
+          atDesc: "Tower and Departure clearances, line-up authorizations, wake turbulence separation, SID routings, and frequency change handoffs."
+        },
+        {
+          modIdx: 1,
+          cardIdx: 2,
+          week: 6,
+          start: new Date('2027-03-29T00:00:00'),
+          agTitle: "Session 6 — Artificial Intelligence & Tech Ethics in the News",
+          agDesc: "Artificial intelligence governance, autonomous systems, digital privacy, and ethical dilemmas in modern technology.",
+          atTitle: "Session 6 — En Route & Area Control Clearances",
+          atDesc: "Area control (ACC) communications, cruising levels, radar vectoring, flight level step climbs, and pilot weather deviations."
+        },
+        {
+          modIdx: 1,
+          cardIdx: 3,
+          week: 7,
+          start: new Date('2027-04-05T00:00:00'),
+          agTitle: "Session 7 — Culture, Tourism & Global Trends in the News",
+          agDesc: "Global tourism, cultural preservation, digital nomads, overtourism controversies, and comparative debating.",
+          atTitle: "Session 7 — Approach Control, Arrivals & Non-Nominal Emergencies",
+          atDesc: "Approach radar vectors, STAR arrivals, missed approach instructions, and urgent radiotelephony (Pan-Pan / Mayday)."
+        },
+        {
+          modIdx: 1,
+          cardIdx: 4,
+          week: 8,
+          start: new Date('2027-04-26T00:00:00'),
+          agTitle: "Session 8 — Formative Evaluation 2: Editorial Panel & Debate",
+          agDesc: "Whole-class editorial debate defending opposing editorial stances on a major controversy followed by floor discussion.",
+          atTitle: "Session 8 — Formative Evaluation 2: En Route & Approach Listening Evaluation",
+          atDesc: "Tactical en route and terminal listening evaluation, multi-station decoding, and spoken operational debriefing.",
+          isFe: true,
+          feNum: 2
+        }
+      ];
+
+      let current = sessionSchedule[0];
+      for (let i = 0; i < sessionSchedule.length; i++) {
+        const item = sessionSchedule[i];
+        const next = sessionSchedule[i + 1];
+        if (now >= item.start && (!next || now < next.start)) {
+          current = item;
+          break;
+        }
+      }
+      if (now < sessionSchedule[0].start) {
+        current = sessionSchedule[0];
+      }
+
+      return {
+        modIdx: current.modIdx,
+        cardIdx: current.cardIdx,
+        weekNum: current.week,
+        sessionName: isAg ? current.agTitle : current.atTitle,
+        agTitle: current.agTitle,
+        atTitle: current.atTitle,
+        agDesc: current.agDesc,
+        atDesc: current.atDesc,
+        isFe: !!current.isFe,
+        feNum: current.feNum || (current.modIdx + 1),
+        feWeek: current.cardIdx === 4 ? current.week : (current.modIdx === 0 ? 4 : 8)
+      };
+    }
+
+    // --- Student Noticeboard Engine (Card 00) ---
+    function renderNoticeboardContent(theme) {
+      const noticeboardEl = document.getElementById('deck-noticeboard-view');
+      if (!noticeboardEl) return;
+
+      const isAg = (currentProgram === 'ag');
+
+      // Calendar Date Sync: Automatically determines active session and week
+      const activeInfo = getActiveNoticeboardSession(isAg);
+      const activeModIdx = activeInfo.modIdx;
+      const activeCardIdx = activeInfo.cardIdx;
+      const activeSessionName = activeInfo.sessionName;
+
+      // Dynamic teacher names
+      let agTeacherA = "Geri MIDDLETON";
+      let agTeacherB = "Penny WRIGHT";
+      let aasTeacherA = "Tracy NEILL";
+      let aasTeacherB = "Ally HEWETT";
+      try {
+        if (typeof ADMIN_PROMO_CONFIG !== 'undefined' && ADMIN_PROMO_CONFIG.tracks) {
+          if (ADMIN_PROMO_CONFIG.tracks.AG && ADMIN_PROMO_CONFIG.tracks.AG.teachers) {
+            agTeacherA = ADMIN_PROMO_CONFIG.tracks.AG.teachers.A || agTeacherA;
+            agTeacherB = ADMIN_PROMO_CONFIG.tracks.AG.teachers.B || agTeacherB;
+          }
+          if (ADMIN_PROMO_CONFIG.tracks.AAS && ADMIN_PROMO_CONFIG.tracks.AAS.teachers) {
+            aasTeacherA = ADMIN_PROMO_CONFIG.tracks.AAS.teachers.A || aasTeacherA;
+            aasTeacherB = ADMIN_PROMO_CONFIG.tracks.AAS.teachers.B || aasTeacherB;
+          }
+        }
+      } catch (e) {}
+
+      // Dynamic track-specific banner image, badge, and subtitle
+      const heroImage = isAg ? "images/ag_m1card1.jpg" : "images/aas_m1card1.jpg";
+      const heroBadge = isAg 
+        ? "🗣️ GENERAL ENGLISH (LV102E) • SEMESTER 2 NOTICEBOARD" 
+        : "✈️ TECHNICAL ENGLISH (LV122E) • SEMESTER 2 NOTICEBOARD";
+      const heroSubtitle = isAg
+        ? "Welcome to Semester 2 General English! Here is your home bulletin for weekly lessons, current events, spoken practice, study materials, and course announcements."
+        : "Welcome to Semester 2 Technical English! Here is your home bulletin for weekly lessons, operational radiotelephony, listening practice, study materials, and course announcements.";
+
+      noticeboardEl.innerHTML = `
+        <!-- 1. Arrival Banner (Dynamic Cinematic Track Hero Banner) -->
+        <div class="relative overflow-hidden rounded-2xl border border-slate-200/90 bg-slate-900 shadow-sm">
+          <div class="relative w-full h-48 sm:h-60 md:h-64">
+            <img src="${heroImage}" alt="Semester 2 Noticeboard" class="w-full h-full object-cover object-center select-none" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent flex flex-col justify-end p-4 sm:p-6 space-y-1 sm:space-y-1.5">
+              <span class="text-[10.5px] sm:text-[11px] font-mono font-bold ${isAg ? 'text-amber-300' : 'text-sky-300'} uppercase tracking-wider">
+                ${heroBadge}
+              </span>
+              <h2 class="text-xl sm:text-2xl md:text-3xl font-black text-white leading-tight tracking-tight">
+                Student Noticeboard
+              </h2>
+              <p class="text-xs sm:text-sm text-slate-200 font-normal leading-relaxed max-w-2xl">
+                ${heroSubtitle}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Mobile-First Quick Launchers Bar -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between px-1">
+            <span class="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-500">🚀 Quick Launchers</span>
+            <span class="text-[10px] font-mono text-slate-400 hidden sm:inline">1-Click Fast Navigation</span>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
+            <!-- Button 1: Jump to Active Lesson -->
+            <button type="button" onclick="switchModule(${activeModIdx}, ${activeCardIdx})" class="group flex flex-col justify-between p-3.5 sm:p-4 rounded-xl ${isAg ? 'bg-gradient-to-br from-white via-white to-amber-50/50 border-amber-300/80 hover:border-amber-400' : 'bg-gradient-to-br from-white via-white to-sky-50/50 border-sky-300/80 hover:border-sky-400'} text-slate-900 shadow-2xs hover:shadow-xs transition-all duration-150 cursor-pointer text-left border min-h-[52px]">
+              <div class="flex items-center justify-between">
+                <span class="text-[10px] font-mono font-extrabold uppercase tracking-wider ${isAg ? 'bg-amber-100 text-amber-800 border-amber-200' : 'bg-sky-100 text-sky-800 border-sky-200'} border px-2 py-0.5 rounded">Active Class • Week ${activeInfo.weekNum}</span>
+                <span class="text-base group-hover:translate-x-1 transition-transform ${isAg ? 'text-amber-600' : 'text-sky-600'}">➔</span>
+              </div>
+              <div class="mt-2">
+                <div class="text-xs sm:text-sm font-black leading-snug text-slate-900">▶ Jump to Today's Lesson</div>
+                <div class="text-[11px] text-slate-600 truncate font-medium mt-0.5">${activeSessionName}</div>
+              </div>
+            </button>
+
+            <!-- Button 2: Weekly Calendar -->
+            <button type="button" onclick="openModalDrawer('admin_calendar', 1, 6)" class="group flex flex-col justify-between p-3.5 sm:p-4 rounded-xl bg-white hover:bg-slate-50 text-slate-900 shadow-2xs hover:shadow-xs transition-all duration-150 cursor-pointer text-left border border-slate-200/90 min-h-[52px]">
+              <div class="flex items-center justify-between">
+                <span class="text-[10px] font-mono font-extrabold uppercase tracking-wider bg-sky-50 text-sky-800 px-2 py-0.5 rounded border border-sky-200">Course Schedule</span>
+                <span class="text-base group-hover:translate-x-1 transition-transform text-slate-400">➔</span>
+              </div>
+              <div class="mt-2">
+                <div class="text-xs sm:text-sm font-black leading-snug text-slate-900">📅 Weekly Calendar</div>
+                <div class="text-[11px] text-slate-500 font-medium mt-0.5">Session dates, rooms &amp; FE rotas</div>
+              </div>
+            </button>
+
+            <!-- Button 3: Learning Portfolio -->
+            <button type="button" onclick="openPortfolioDrawer()" class="group flex flex-col justify-between p-3.5 sm:p-4 rounded-xl bg-white hover:bg-slate-50 text-slate-900 shadow-2xs hover:shadow-xs transition-all duration-150 cursor-pointer text-left border border-slate-200/90 min-h-[52px]">
+              <div class="flex items-center justify-between">
+                <span class="text-[10px] font-mono font-extrabold uppercase tracking-wider bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded">Continuous Practice</span>
+                <span class="text-base group-hover:translate-x-1 transition-transform text-slate-400">➔</span>
+              </div>
+              <div class="mt-2">
+                <div class="text-xs sm:text-sm font-black leading-snug text-slate-900">▶ Open Learning Portfolio</div>
+                <div class="text-[11px] text-slate-500 font-medium mt-0.5">Spoken reflections &amp; vocabulary log</div>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- 3. Weekly Announcements & Course Focus -->
+        <div class="space-y-2.5">
+          <div class="flex items-center justify-between px-1">
+            <span class="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-500">📢 This Week's Course Announcements</span>
+            <span class="text-[10px] font-mono text-slate-400 hidden sm:inline">Week ${activeInfo.weekNum} • Module ${activeInfo.modIdx + 1} Focus</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <!-- Announcement 1: Active Track Focus -->
+            <div class="p-4 rounded-xl border ${isAg ? 'border-amber-200/90 bg-amber-50/50' : 'border-sky-200/90 bg-sky-50/50'} shadow-2xs space-y-1.5">
+              <div class="flex items-center justify-between">
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${isAg ? 'bg-amber-200/80 text-amber-900' : 'bg-sky-200/80 text-sky-900'}">
+                  ${isAg ? '🗣️ Friday • General English' : '✈️ Wednesday • Technical English'}
+                </span>
+                <span class="text-[10.5px] font-mono ${isAg ? 'text-amber-700' : 'text-sky-700'} font-medium">
+                  ${isAg ? '08:00 – 10:00' : '13:15 – 15:15'}
+                </span>
+              </div>
+              <h3 class="text-xs sm:text-sm font-bold ${isAg ? 'text-amber-950' : 'text-sky-950'}">
+                ${isAg ? activeInfo.agTitle : activeInfo.atTitle}
+              </h3>
+              <p class="text-[11.5px] sm:text-xs ${isAg ? 'text-amber-900' : 'text-sky-900'} leading-relaxed font-normal">
+                ${isAg ? activeInfo.agDesc : activeInfo.atDesc}
+              </p>
+            </div>
+
+            <!-- Announcement 2: Companion Track Focus -->
+            <div class="p-4 rounded-xl border ${!isAg ? 'border-amber-200/90 bg-amber-50/50' : 'border-sky-200/90 bg-sky-50/50'} shadow-2xs space-y-1.5">
+              <div class="flex items-center justify-between">
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${!isAg ? 'bg-amber-200/80 text-amber-900' : 'bg-sky-200/80 text-sky-900'}">
+                  ${!isAg ? '🗣️ Friday • General English' : '✈️ Wednesday • Technical English'}
+                </span>
+                <span class="text-[10.5px] font-mono ${!isAg ? 'text-amber-700' : 'text-sky-700'} font-medium">
+                  ${!isAg ? '08:00 – 10:00' : '13:15 – 15:15'}
+                </span>
+              </div>
+              <h3 class="text-xs sm:text-sm font-bold ${!isAg ? 'text-amber-950' : 'text-sky-950'}">
+                ${!isAg ? activeInfo.agTitle : activeInfo.atTitle}
+              </h3>
+              <p class="text-[11.5px] sm:text-xs ${!isAg ? 'text-amber-900' : 'text-sky-900'} leading-relaxed font-normal">
+                ${!isAg ? activeInfo.agDesc : activeInfo.atDesc}
+              </p>
+            </div>
+
+            <!-- Announcement 3: Portfolio Reminder -->
+            <div class="p-4 rounded-xl border border-emerald-200/90 bg-emerald-50/50 shadow-2xs space-y-1.5">
+              <div class="flex items-center justify-between">
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-emerald-200/80 text-emerald-900">💡 Habit</span>
+                <span class="text-[10.5px] font-mono text-emerald-700 font-medium">Continuous Practice</span>
+              </div>
+              <h3 class="text-xs sm:text-sm font-bold text-emerald-950">
+                Update Your Spoken Portfolio
+              </h3>
+              <p class="text-[11.5px] sm:text-xs text-emerald-900 leading-relaxed font-normal">
+                Add at least 3 new spoken words or phrases and 1 reflection sentence to your portfolio after each session. Regular self-evaluation builds confidence for your Formative Evaluations.
+              </p>
+            </div>
+
+            <!-- Announcement 4: Formative Evaluation Focus -->
+            <div class="p-4 rounded-xl border border-purple-200/90 bg-purple-50/50 shadow-2xs space-y-1.5">
+              <div class="flex items-center justify-between">
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-purple-200/80 text-purple-900">🎯 ${activeInfo.isFe ? "This Week's Evaluation" : "Upcoming Evaluation"}</span>
+                <span class="text-[10.5px] font-mono text-purple-700 font-medium">Week ${activeInfo.feWeek}</span>
+              </div>
+              <h3 class="text-xs sm:text-sm font-bold text-purple-950">
+                ${activeInfo.isFe ? `Formative Evaluation ${activeInfo.feNum} (FE${activeInfo.feNum}) in Progress` : `Formative Evaluation ${activeInfo.feNum} (FE${activeInfo.feNum}) Preparation`}
+              </h3>
+              <p class="text-[11.5px] sm:text-xs text-purple-900 leading-relaxed font-normal">
+                ${activeInfo.isFe 
+                  ? (isAg ? 'Whole-class press briefing or editorial panel evaluation is active this week. Consult the timetable and arrive 5 minutes before class.' : 'Whole-class aerodrome and en route listening evaluation is active this week. Consult the timetable and arrive 5 minutes before class.') 
+                  : (isAg ? `Formative Evaluation ${activeInfo.feNum} takes place in Week ${activeInfo.feWeek}. Prepare your media dossier and practice delivering clear, structured spoken briefings.` : `Formative Evaluation ${activeInfo.feNum} takes place in Week ${activeInfo.feWeek}. Practice decoding authentic radiotelephony and delivering concise spoken readbacks.`)}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Weekly Study & Culture (Reading & Authentic Practice) -->
+        <div class="space-y-2.5">
+          <div class="flex items-center justify-between px-1">
+            <span class="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-500">📰 Weekly Study &amp; Culture</span>
+            <span class="text-[10px] font-mono text-slate-400 hidden sm:inline">Authentic Spoken &amp; Technical Practice</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <!-- Card 1: Technical English (AAS) -->
+            <div class="p-4 rounded-xl border border-slate-200/90 bg-white shadow-2xs flex flex-col justify-between space-y-3">
+              <div class="space-y-2">
+                <div class="flex items-center justify-between">
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-sky-100 text-sky-800 border border-sky-200">✈️ Technical English (AAS)</span>
+                  <span class="text-[10px] font-mono text-slate-400 font-semibold">ICAO Annex 14 • 5 min</span>
+                </div>
+                <h4 class="text-xs sm:text-sm font-bold text-slate-900 leading-snug">
+                  "Movement Area Safety &amp; Aerodrome Operations"
+                </h4>
+                <p class="text-[11.5px] sm:text-xs text-slate-600 leading-relaxed font-normal">
+                  How ground controllers, ramp coordinators, and flight crews maintain separation on movement areas, taxiway surface markings, and holding positions.
+                </p>
+              </div>
+              <button type="button" onclick="window.openArticleReader(2, 1, 'aas')" class="w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs shadow-2xs transition-all cursor-pointer">
+                <span>Read Technical Article</span>
+                <span class="font-bold text-sm leading-none">⇥</span>
+              </button>
+            </div>
+
+            <!-- Card 2: General English & Culture (AG) -->
+            <div class="p-4 rounded-xl border border-slate-200/90 bg-white shadow-2xs flex flex-col justify-between space-y-3">
+              <div class="space-y-2">
+                <div class="flex items-center justify-between">
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-800 border border-amber-200">🗣️ General English &amp; Culture (AG)</span>
+                  <span class="text-[10px] font-mono text-slate-400 font-semibold">Media &amp; Society • 4 min</span>
+                </div>
+                <h4 class="text-xs sm:text-sm font-bold text-slate-900 leading-snug">
+                  "The Art of the Travel Anecdote: Why Personal Journeys Build Spoken Fluency"
+                </h4>
+                <p class="text-[11.5px] sm:text-xs text-slate-600 leading-relaxed font-normal">
+                  How narrative storytelling, engaging adjectives, and descriptive conversational hooks transform personal travel anecdotes into compelling spoken English.
+                </p>
+              </div>
+              <button type="button" onclick="window.openArticleReader(1, 0, 'ag')" class="w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-2xs transition-all cursor-pointer">
+                <span>Explore Cultural Article</span>
+                <span class="font-bold text-sm leading-none">⇥</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. Course Administration & Teaching Team Directory -->
+        <div class="p-4 sm:p-5 rounded-xl border border-slate-200/80 bg-white shadow-2xs space-y-3 text-xs text-slate-700">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200/80 pb-2.5">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+              <span class="font-bold text-slate-900 uppercase tracking-wide text-[11px]">✉️ Teaching Team &amp; Course Administration</span>
+            </div>
+            <span class="text-[10.5px] font-mono text-slate-500">ENAC Département LH/LAN</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-[11.5px] sm:text-xs">
+            <!-- Box 1: Course Coordinator -->
+            <div class="p-3 rounded-lg bg-slate-50 border border-slate-200/70 space-y-1">
+              <div class="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500">Course Coordinator</div>
+              <div class="font-bold text-slate-900 text-sm">Phil PARRIS</div>
+              <div class="text-slate-600 font-mono text-[11px]">philip.parris@enac.fr</div>
+              <div class="text-slate-500 text-[10.5px] pt-0.5">Office: LH/LAN</div>
+            </div>
+
+            <!-- Box 2: General English Teachers -->
+            <div class="p-3 rounded-lg bg-slate-50 border border-slate-200/70 space-y-1">
+              <div class="text-[10px] font-mono font-bold uppercase tracking-wider text-amber-700">🗣️ General English (LV102E)</div>
+              <div class="text-slate-900 font-semibold text-xs pt-0.5">
+                <div><span class="font-mono text-slate-500 text-[10.5px]">Group A:</span> ${agTeacherA}</div>
+                <div class="mt-0.5"><span class="font-mono text-slate-500 text-[10.5px]">Group B:</span> ${agTeacherB}</div>
+              </div>
+              <div class="text-slate-500 text-[10.5px] pt-1">Fridays 08:00 – 10:00</div>
+            </div>
+
+            <!-- Box 3: Technical English Teachers -->
+            <div class="p-3 rounded-lg bg-slate-50 border border-slate-200/70 space-y-1">
+              <div class="text-[10px] font-mono font-bold uppercase tracking-wider text-sky-700">✈️ Technical English (LV122E)</div>
+              <div class="text-slate-900 font-semibold text-xs pt-0.5">
+                <div><span class="font-mono text-slate-500 text-[10.5px]">Group A:</span> ${aasTeacherA}</div>
+                <div class="mt-0.5"><span class="font-mono text-slate-500 text-[10.5px]">Group B:</span> ${aasTeacherB}</div>
+              </div>
+              <div class="text-slate-500 text-[10.5px] pt-1">Wednesdays 13:15 – 15:15</div>
+            </div>
+          </div>
+
+          <!-- Contact Note -->
+          <div class="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-slate-100 text-[11px] text-slate-500">
+            <div>
+              Have a question about your group or oral evaluation? Speak to your teacher at the end of class or contact the coordinator.
+            </div>
+            <div class="font-mono text-[10.5px] text-slate-400">
+              ENAC Département LH/LAN
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
 
     /* ==========================================================================
        VHF RADIO AUDIO & LIVE TRAFFIC LISTENING ENGINE

@@ -89,29 +89,45 @@
       const desc = (isAas ? aasDescriptions[modNumber] : agDescriptions[modNumber]) || (isAas ? aasDescriptions[1] : agDescriptions[1]);
       const sessOffset = modNumber === 1 ? 0 : 4;
 
+      const noticeboardPage = {
+        tag: isAas ? "Technical English • Noticeboard" : "General English • Noticeboard",
+        title: "Student Noticeboard",
+        description: isAas
+          ? "Welcome to Technical English (LV122E)! Here is your home bulletin for weekly lessons, operational radiotelephony, listening practice, study materials, and course announcements."
+          : "Welcome to General English (LV102E)! Here is your home bulletin for weekly lessons, current events, spoken practice, study materials, immersion guidance, and course announcements.",
+        isNoticeboard: true,
+        sessionNum: 0,
+        imageUrl: "images/semester_objectives.jpg"
+      };
+
       const pages = [
+        noticeboardPage,
         {
           tag: `Module ${modNumber} • Session ${sessOffset + 1}`,
           title: titles.s1,
           description: desc.s1,
+          sessionNum: sessOffset + 1,
           imageUrl: images.card1
         },
         {
           tag: `Module ${modNumber} • Session ${sessOffset + 2}`,
           title: titles.s2,
           description: desc.s2,
+          sessionNum: sessOffset + 2,
           imageUrl: images.card2
         },
         {
           tag: `Module ${modNumber} • Session ${sessOffset + 3}`,
           title: titles.s3,
           description: desc.s3,
+          sessionNum: sessOffset + 3,
           imageUrl: images.card3
         },
         {
           tag: `Module ${modNumber} • Formative Evaluation ${modNumber}`,
           title: titles.s4,
           description: desc.s4,
+          sessionNum: sessOffset + 4,
           imageUrl: images.card4,
           isFe: true
         },
@@ -124,6 +140,7 @@
             ? "<strong>Definition:</strong> DDRS (Sustainable Development & Social Responsibility) in aeronautical operations combines flight efficiency, noise abatement, continuous descent approaches, and carbon reduction.<br><br><strong>Key areas covered:</strong> Green taxiing, reduced engine taxi-in, continuous descent operations (CDO), and runway safety.<br><br><strong>Why we discuss DDRS in English:</strong> Communicating operational sustainability in international English prepares aviation professionals for global compliance."
             : "<strong>Definition:</strong> DDRS (Sustainable Development & Social Responsibility) in modern media links factual reporting, social responsibility, and ethical deliberation on global challenges.<br><br><strong>Key areas covered:</strong> Media literacy, climate reporting ethics, sustainable development goals (SDGs), and public interest journalism.<br><br><strong>Why we discuss DDRS in English:</strong> Analyzing global challenges in international English develops the critical thinking and communication skills essential for international careers.",
           imageUrl: images.ddrs,
+          sessionNum: sessOffset + 5,
           isMuted: isAas
         },
         {
@@ -132,6 +149,7 @@
           description: "Welcome to the GSEA26A Course Administration Hub. Access your official class groups (Group A & Group B), teacher assignments, 8-week course calendar, and in-class Formative Evaluation schedules.<br><br><em>Subject overview:</em> Weekly classes run Wednesdays (13h15–15h15) for Aeronautical English (LV122E) and Fridays (08h00–10h00) for General English (LV102E).<br><br>Consult the course calendar for key dates for FE1 (Week 4) and FE2 (Week 8).",
           isAdmin: true,
           adminUrl: "admin.html",
+          sessionNum: sessOffset + 6,
           imageUrl: images.admin
         },
         {
@@ -139,6 +157,7 @@
           title: "Student Guide & Objectives",
           description: "Essential student guidance on how to succeed in English this semester, in-class formative evaluation preparation, portfolio requirements, and the official ENAC course syllabus (English & French).",
           isObjectives: true,
+          sessionNum: sessOffset + 7,
           imageUrl: "images/semester_objectives.jpg"
         }
       ];
@@ -150,6 +169,7 @@
           description: "At the end of Semester 2, GSEA students participate in an intensive 4-week English immersion program in an English-speaking destination: Cork, Dublin, Manchester, Leeds, Liverpool, or Shoreham.<br><br><em>Academic & cultural goals:</em> Enhance daily conversational fluency and complete intensive TOEIC preparation for Semester 3. Students attend morning and afternoon language school sessions, cultural excursions, and aviation-specific visits.<br><br><em>Accommodation:</em> Homestay with vetted local host families (strictly 1 ENAC student per host family) for 100% linguistic immersion.",
           isImmersion: true,
           immersionUrl: "immersion.html",
+          sessionNum: 9,
           imageUrl: "images/immersion_card.jpg"
         });
       }
