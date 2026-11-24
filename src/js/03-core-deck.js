@@ -2287,7 +2287,7 @@
         <!-- 2. Mobile-First Quick Launchers Bar -->
         <div class="space-y-2">
           <div class="flex items-center justify-between px-1">
-            <span class="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-500">🚀 Quick Launchers</span>
+            <span class="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-500">QUICK NAVIGATION</span>
             <span class="text-[10px] font-mono text-slate-400 hidden sm:inline">1-Click Fast Navigation</span>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
@@ -2376,7 +2376,7 @@
             <!-- Announcement 3: Portfolio Reminder -->
             <div class="p-4 rounded-xl border border-emerald-200/90 bg-emerald-50/50 shadow-2xs space-y-1.5">
               <div class="flex items-center justify-between">
-                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-emerald-200/80 text-emerald-900">💡 Habit</span>
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-emerald-200/80 text-emerald-900">HABIT</span>
                 <span class="text-[10.5px] font-mono text-emerald-700 font-medium">Continuous Practice</span>
               </div>
               <h3 class="text-xs sm:text-sm font-bold text-emerald-950">
@@ -2408,7 +2408,7 @@
         <!-- 4. Weekly Study & Culture (Reading & Authentic Practice) -->
         <div class="space-y-2.5">
           <div class="flex items-center justify-between px-1">
-            <span class="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-500">📰 Weekly Study &amp; Culture</span>
+            <span class="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-500">WEEKLY STUDY &amp; CULTURE</span>
             <span class="text-[10px] font-mono text-slate-400 hidden sm:inline">Authentic Spoken &amp; Technical Practice</span>
           </div>
 
