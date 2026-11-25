@@ -232,7 +232,7 @@
           <!-- Student Success Tips -->
           <div class="p-4 rounded-xl border space-y-2.5" style="background-color: ${theme.highlight || '#fef3c7'}; border-color: ${theme.accent}40;">
             <div class="flex items-center gap-1.5 font-bold text-xs" style="color: ${theme.accent};">
-              <span>💡</span>
+              
               <span class="uppercase tracking-wide">B2 Student Success Tips (AT FE 1)</span>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs text-slate-700">
@@ -1583,7 +1583,7 @@
           <!-- Student Success Tips -->
           <div class="p-4 rounded-xl border space-y-2.5" style="background-color: ${theme.highlight || '#fff7ed'}; border-color: ${theme.accent}40;">
             <div class="flex items-center gap-1.5 font-bold text-xs" style="color: ${theme.accent};">
-              <span>💡</span>
+              
               <span class="uppercase tracking-wide">B2 Student Success Tips</span>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs text-slate-700">

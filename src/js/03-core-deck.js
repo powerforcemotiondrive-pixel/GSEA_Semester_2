@@ -2268,7 +2268,7 @@
       // Dynamic track-specific banner image, badge, and subtitle
       const heroImage = isAg ? "images/ag_m1card1.jpg" : "images/aas_m1card1.jpg";
       const heroBadge = isAg 
-        ? "🗣️ GENERAL ENGLISH (LV102E) • SEMESTER 2 NOTICEBOARD" 
+        ? "GENERAL ENGLISH (LV102E) • SEMESTER 2 NOTICEBOARD" 
         : "✈️ TECHNICAL ENGLISH (LV122E) • SEMESTER 2 NOTICEBOARD";
       const heroSubtitle = isAg
         ? "Welcome to Semester 2 General English! Here is your home bulletin for weekly lessons, current events, spoken practice, study materials, and course announcements."
@@ -2319,7 +2319,7 @@
                 <span class="text-base group-hover:translate-x-1 transition-transform text-slate-400">➔</span>
               </div>
               <div class="mt-2">
-                <div class="text-xs sm:text-sm font-black leading-snug text-slate-900">📅 Weekly Calendar</div>
+                <div class="text-xs sm:text-sm font-black leading-snug text-slate-900">Weekly Calendar</div>
                 <div class="text-[11px] text-slate-500 font-medium mt-0.5">Session dates, rooms &amp; FE rotas</div>
               </div>
             </button>
@@ -2350,7 +2350,7 @@
             <div class="p-4 rounded-xl border ${isAg ? 'border-amber-200/90 bg-amber-50/50' : 'border-sky-200/90 bg-sky-50/50'} shadow-2xs space-y-1.5">
               <div class="flex items-center justify-between">
                 <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${isAg ? 'bg-amber-200/80 text-amber-900' : 'bg-sky-200/80 text-sky-900'}">
-                  ${isAg ? '🗣️ Friday • General English' : '✈️ Wednesday • Technical English'}
+                  ${isAg ? 'Friday • General English' : 'Wednesday • Technical English'}
                 </span>
                 <span class="text-[10.5px] font-mono ${isAg ? 'text-amber-700' : 'text-sky-700'} font-medium">
                   ${isAg ? '08:00 – 10:00' : '13:15 – 15:15'}
@@ -2368,7 +2368,7 @@
             <div class="p-4 rounded-xl border ${!isAg ? 'border-amber-200/90 bg-amber-50/50' : 'border-sky-200/90 bg-sky-50/50'} shadow-2xs space-y-1.5">
               <div class="flex items-center justify-between">
                 <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${!isAg ? 'bg-amber-200/80 text-amber-900' : 'bg-sky-200/80 text-sky-900'}">
-                  ${!isAg ? '🗣️ Friday • General English' : '✈️ Wednesday • Technical English'}
+                  ${!isAg ? 'Friday • General English' : 'Wednesday • Technical English'}
                 </span>
                 <span class="text-[10.5px] font-mono ${!isAg ? 'text-amber-700' : 'text-sky-700'} font-medium">
                   ${!isAg ? '08:00 – 10:00' : '13:15 – 15:15'}

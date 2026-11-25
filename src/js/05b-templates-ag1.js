@@ -632,10 +632,10 @@
                     </div>
                     <div class="space-y-2 mt-2.5 text-[11px]">
                       <div class="p-2 bg-emerald-50 border border-emerald-200 rounded text-emerald-950">
-                        <strong class="block text-emerald-800">🚄 Rail:</strong> ${c.train}
+                        <strong class="block text-emerald-800">Rail:</strong> ${c.train}
                       </div>
                       <div class="p-2 bg-sky-50 border border-sky-200 rounded text-sky-950">
-                        <strong class="block text-sky-800">✈️ Flight:</strong> ${c.flight}
+                        <strong class="block text-sky-800">Flight:</strong> ${c.flight}
                       </div>
                     </div>
                   </div>

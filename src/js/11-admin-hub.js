@@ -217,7 +217,7 @@
             sessions: [
               { week: "W01", date: "Fri 12 Feb", title: "Session 1 — Breaking News & Modern Media Landscape", tag: "Teaching Session", isFe: false },
               { week: "W02", date: "Fri 19 Feb", title: "Session 2 — Global Economy & Social Issues in the News", tag: "Teaching Session", isFe: false },
-              { isHoliday: true, text: "❄️ Winter Vacation (No Classes)" },
+              { isHoliday: true, text: "Winter Vacation (No Classes)" },
               { week: "W03", date: "Fri 12 Mar", title: "Session 3 — Climate, Science & Environmental Reporting", tag: "Teaching Session • Prep FE1", isFe: false },
               { week: "W04", date: "Fri 19 Mar", title: "FORMATIVE EVALUATION 1 (FE1) — Live Press Briefing", subtitle: "Fri 19 Mar • 2-Hour Whole-Class Interactive Evaluation (Geri MIDDLETON / Penny WRIGHT)", tag: "Grade /20", isFe: true }
             ]
@@ -231,7 +231,7 @@
               { week: "W05", date: "Fri 26 Mar", title: "Session 5 — Geopolitics & International Diplomacy", tag: "Teaching Session", isFe: false },
               { week: "W06", date: "Fri 02 Apr", title: "Session 6 — Artificial Intelligence & Tech Ethics in the News", tag: "Teaching Session", isFe: false },
               { week: "W07", date: "Fri 09 Apr", title: "Session 7 — Culture, Tourism & Global Trends in the News", tag: "Teaching Session • Prep FE2", isFe: false },
-              { isHoliday: true, text: "🌸 Spring Vacation (No Classes)" },
+              { isHoliday: true, text: "Spring Vacation (No Classes)" },
               { week: "W08", date: "Fri 30 Apr", title: "FORMATIVE EVALUATION 2 (FE2) — Editorial Panel & Debate", subtitle: "Fri 30 Apr • 2-Hour Whole-Class Interactive Evaluation (Geri MIDDLETON / Penny WRIGHT)", tag: "Grade /20", isFe: true }
             ]
           }
@@ -251,7 +251,7 @@
             sessions: [
               { week: "W01", date: "Wed 10 Feb", title: "Session 1 — ATIS Broadcasts & Airport Weather Decoding", tag: "Teaching Session", isFe: false },
               { week: "W02", date: "Wed 17 Feb", title: "Session 2 — Ground Control, Pushback & Taxi Clearances", tag: "Teaching Session", isFe: false },
-              { isHoliday: true, text: "❄️ Winter Vacation (No Classes)" },
+              { isHoliday: true, text: "Winter Vacation (No Classes)" },
               { week: "W03", date: "Wed 10 Mar", title: "Session 3 — AFIS & Uncontrolled Aerodrome Traffic Information", tag: "Teaching Session • Prep FE1", isFe: false },
               { week: "W04", date: "Wed 17 Mar", title: "FORMATIVE EVALUATION 1 (FE1) — Aerodrome Listening Evaluation", subtitle: "Wed 17 Mar • 2-Hour Whole-Class Interactive Evaluation (Tracy NEILL / Ally HEWETT)", tag: "Grade /20", isFe: true }
             ]
@@ -265,7 +265,7 @@
               { week: "W05", date: "Wed 24 Mar", title: "Session 5 — Tower Control, Line-Up & Departure Clearances", tag: "Teaching Session", isFe: false },
               { week: "W06", date: "Wed 31 Mar", title: "Session 6 — En Route & Area Control Clearances", tag: "Teaching Session", isFe: false },
               { week: "W07", date: "Wed 07 Apr", title: "Session 7 — Approach Control, Arrivals & Non-Nominal Emergencies", tag: "Teaching Session • Prep FE2", isFe: false },
-              { isHoliday: true, text: "🌸 Spring Vacation (No Classes)" },
+              { isHoliday: true, text: "Spring Vacation (No Classes)" },
               { week: "W08", date: "Wed 28 Apr", title: "FORMATIVE EVALUATION 2 (FE2) — En Route & Approach Listening Evaluation", subtitle: "Wed 28 Apr • 2-Hour Whole-Class Interactive Evaluation (Tracy NEILL / Ally HEWETT)", tag: "Grade /20", isFe: true }
             ]
           }
@@ -1028,7 +1028,7 @@
               <!-- History -->
               <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1.5">
                 <div class="flex items-center gap-2 text-slate-800 font-bold text-xs uppercase tracking-wider">
-                  <span class="text-base">🏛️</span>
+                  
                   <span>History &amp; Heritage</span>
                 </div>
                 <p class="text-xs text-slate-600 leading-relaxed">${city.history}</p>
@@ -1037,7 +1037,7 @@
               <!-- Culture -->
               <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1.5">
                 <div class="flex items-center gap-2 text-slate-800 font-bold text-xs uppercase tracking-wider">
-                  <span class="text-base">🎭</span>
+                  
                   <span>Culture &amp; Daily Life</span>
                 </div>
                 <p class="text-xs text-slate-600 leading-relaxed">${city.culture}</p>
@@ -1046,7 +1046,7 @@
               <!-- Food -->
               <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1.5">
                 <div class="flex items-center gap-2 text-slate-800 font-bold text-xs uppercase tracking-wider">
-                  <span class="text-base">🍲</span>
+                  
                   <span>Food, Markets &amp; Traditions</span>
                 </div>
                 <p class="text-xs text-slate-600 leading-relaxed">${city.food}</p>
@@ -1055,7 +1055,7 @@
               <!-- Aviation Connection -->
               <div class="p-4 rounded-xl bg-blue-50/70 border border-blue-200/80 space-y-1.5">
                 <div class="flex items-center gap-2 text-blue-950 font-bold text-xs uppercase tracking-wider">
-                  <span class="text-base">✈️</span>
+                  
                   <span>Aviation &amp; Aerospace Connection</span>
                 </div>
                 <p class="text-xs text-blue-900 leading-relaxed">${city.aviation}</p>
@@ -1064,7 +1064,7 @@
 
             <!-- Host Family Homestay Callout -->
             <div class="mx-4 sm:mx-6 mb-4 sm:mb-6 p-4 rounded-xl bg-amber-50 border border-amber-200/90 flex items-start gap-3">
-              <span class="text-xl shrink-0 mt-0.5">🏠</span>
+              
               <div class="text-xs">
                 <strong class="text-amber-950 block font-bold mb-0.5">Homestay &amp; Living with Your Local Host Family:</strong>
                 <p class="text-amber-900 leading-relaxed">${city.hostFamilyTip} Remember: <strong>strictly 1 ENAC student per host family</strong> to ensure genuine linguistic immersion!</p>
@@ -1096,7 +1096,7 @@
           <div class="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200/90 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div class="flex items-center gap-3.5">
               <div class="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 text-white shadow-xs text-2xl" style="background-color: ${theme.primary};">
-                <span>📘</span>
+                
               </div>
               <div>
                 <div class="flex items-center gap-2">
@@ -1116,7 +1116,7 @@
 
           <!-- Key Mindset Alert Box -->
           <div class="p-4 rounded-xl border border-blue-200/80 bg-blue-50/70 shadow-2xs flex items-start gap-3">
-            <span class="text-xl shrink-0 mt-0.5">🎯</span>
+            
             <div class="text-xs text-blue-900 space-y-1">
               <h4 class="font-extrabold text-blue-950 text-sm">${isFr ? 'Notre Priorité : Progression Continue &amp; Régulière' : 'Our Focus: Gradual &amp; Steady Improvement'}</h4>
               <p class="leading-relaxed">
@@ -1136,7 +1136,7 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
               <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/70 space-y-1">
                 <div class="flex items-center gap-2 text-xs font-bold text-slate-800">
-                  <span>📈</span>
+                  
                   <span>${isFr ? 'Progression Continue' : 'Continuous Progress'}</span>
                 </div>
                 <p class="text-[11.5px] text-slate-600 leading-relaxed">
@@ -1147,7 +1147,7 @@
               </div>
               <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/70 space-y-1">
                 <div class="flex items-center gap-2 text-xs font-bold text-slate-800">
-                  <span>🗣️</span>
+                  
                   <span>${isFr ? 'Évaluations Formatives' : 'Formative Evaluations'}</span>
                 </div>
                 <p class="text-[11.5px] text-slate-600 leading-relaxed">
@@ -1158,7 +1158,7 @@
               </div>
               <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/70 space-y-1">
                 <div class="flex items-center gap-2 text-xs font-bold text-slate-800">
-                  <span>📊</span>
+                  
                   <span>${isFr ? 'Auto-évaluation Active' : 'Self-Monitoring'}</span>
                 </div>
                 <p class="text-[11.5px] text-slate-600 leading-relaxed">
@@ -1253,7 +1253,7 @@
             </div>
             <div class="space-y-2.5 text-xs text-slate-700">
               <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 flex items-start gap-3">
-                <span class="text-base shrink-0">👥</span>
+                
                 <div>
                   <strong class="text-slate-900 block font-bold mb-0.5">${isFr ? 'EF 1, EF 2 et EF 3 — Préparées en dehors des cours' : 'FE 1, FE 2, and FE 3 — Prepared Outside of Class'}</strong>
                   <p class="text-[11.5px] text-slate-600 leading-relaxed">
@@ -1264,7 +1264,7 @@
                 </div>
               </div>
               <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 flex items-start gap-3">
-                <span class="text-base shrink-0">🎓</span>
+                
                 <div>
                   <strong class="text-slate-900 block font-bold mb-0.5">${isFr ? 'EF Finale (Séance 17) — Séance de révision dédiée en classe' : 'Final FE (Class 17) — Revision Session in Class'}</strong>
                   <p class="text-[11.5px] text-slate-600 leading-relaxed">
@@ -1289,7 +1289,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
               <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1">
                 <div class="font-bold text-slate-900 flex items-center gap-1.5">
-                  <span>📋</span>
+                  
                   <span>${isFr ? 'Plan de Cours &amp; Objectifs' : 'Lesson Plan &amp; Objectives'}</span>
                 </div>
                 <p class="text-[11.5px] text-slate-600 leading-relaxed">
@@ -1300,7 +1300,7 @@
               </div>
               <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1">
                 <div class="font-bold text-slate-900 flex items-center gap-1.5">
-                  <span>📖</span>
+                  
                   <span>${isFr ? 'Supports &amp; Activités de Cours' : 'Class Content &amp; Worksheets'}</span>
                 </div>
                 <p class="text-[11.5px] text-slate-600 leading-relaxed">
@@ -1311,7 +1311,7 @@
               </div>
               <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1">
                 <div class="font-bold text-slate-900 flex items-center gap-1.5">
-                  <span>🔤</span>
+                  
                   <span>${isFr ? 'Vocabulaire Indispensable' : 'Vocabulary Revision'}</span>
                 </div>
                 <p class="text-[11.5px] text-slate-600 leading-relaxed">
@@ -1322,7 +1322,7 @@
               </div>
               <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1">
                 <div class="font-bold text-slate-900 flex items-center gap-1.5">
-                  <span>🔎</span>
+                  
                   <span>${isFr ? 'Ressources Complémentaires &amp; TOEIC' : 'Additional Materials &amp; TOEIC'}</span>
                 </div>
                 <p class="text-[11.5px] text-slate-600 leading-relaxed">
@@ -1583,7 +1583,7 @@
           <div class="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200/90 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div class="flex items-center gap-3">
               <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 text-white shadow-xs" style="background-color: ${theme.primary};">
-                <span class="text-xl">🎯</span>
+                
               </div>
               <div>
                 <div class="flex items-center gap-2">
@@ -1604,7 +1604,7 @@
 
           <!-- Lead Statement Box -->
           <div class="p-4 rounded-xl border border-blue-200/80 bg-blue-50/70 shadow-2xs flex items-start gap-3">
-            <span class="text-xl shrink-0 mt-0.5">📌</span>
+            
             <div>
               <h4 class="text-xs sm:text-sm font-extrabold text-blue-950">${leadSentence}</h4>
               <p class="text-[11.5px] sm:text-xs text-blue-900/90 leading-relaxed mt-1">
