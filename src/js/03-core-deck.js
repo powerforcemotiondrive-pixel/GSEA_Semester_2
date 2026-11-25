@@ -2086,7 +2086,7 @@
             <h2 class="text-base sm:text-xl font-black text-slate-900 leading-snug">${heading}</h2>
             
             ${snippet ? `
-              <div class="p-3 rounded-xl bg-slate-50 border-l-4 border-sky-600 text-slate-600 text-xs sm:text-[13px] italic leading-relaxed">
+              <div class="p-3 rounded-xl bg-slate-50 text-slate-600 text-xs sm:text-[13px] italic leading-relaxed">
                 ${snippet}
               </div>
             ` : ""}
