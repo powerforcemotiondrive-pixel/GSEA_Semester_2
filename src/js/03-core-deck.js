@@ -789,7 +789,7 @@
           `;
 
           const calloutsHtml = `
-            <div class="p-3.5 bg-white border border-slate-200 border-l-4 border-l-slate-400 rounded-xl flex items-start gap-2.5 shadow-2xs h-full">
+            <div class="p-3.5 bg-white border border-slate-200/90 rounded-xl flex items-start gap-2.5 shadow-2xs h-full">
               <span class="text-[10px] font-mono font-black uppercase tracking-wider px-2 py-0.5 rounded-md bg-slate-200 text-slate-700 shrink-0 mt-0.5">Key Areas</span>
               <p class="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium">
                 ${areasText}
@@ -835,8 +835,8 @@
         if (overviewText) {
           const focusLabel = (page && page.isImmersion) ? 'Academic Goals' : 'Focus';
           calloutsHtml += `
-            <div class="p-3.5 bg-white border border-slate-200 border-l-4 border-l-slate-400 rounded-xl flex items-start gap-2.5 shadow-2xs h-full">
-              <span class="text-[10px] font-mono font-black uppercase tracking-wider px-2 py-0.5 rounded-md bg-slate-200 text-slate-700 shrink-0 mt-0.5">${focusLabel}</span>
+            <div class="p-3.5 bg-white border border-slate-200/90 rounded-xl flex items-start gap-2.5 shadow-2xs h-full">
+              <span class="inline-flex items-center text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-slate-100 border border-slate-200 text-slate-700 shrink-0 mt-0.5">${focusLabel}</span>
               <p class="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium">
                 ${overviewText}
               </p>
@@ -847,9 +847,9 @@
         if (milestoneText) {
           const badgeText = cardIdx === 4 ? 'FE Target' : (cardIdx === 6 || (page && page.isAdmin) ? 'Admin Action' : (page && page.isImmersion ? 'Homestay' : (page && page.isObjectives ? 'Syllabus' : 'FE Tip')));
           calloutsHtml += `
-            <div class="p-3.5 bg-amber-50/60 border border-amber-200/80 rounded-xl flex items-start gap-2.5 shadow-2xs h-full">
-              <span class="inline-flex items-center text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-amber-200/80 text-amber-900 shrink-0 mt-0.5">${badgeText}</span>
-              <p class="text-xs sm:text-sm text-amber-950 leading-relaxed font-normal">
+            <div class="p-3.5 bg-white border border-slate-200/90 rounded-xl flex items-start gap-2.5 shadow-2xs h-full">
+              <span class="inline-flex items-center text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-amber-100 border border-amber-300/60 text-amber-900 shrink-0 mt-0.5">${badgeText}</span>
+              <p class="text-xs sm:text-sm text-slate-700 leading-relaxed font-normal">
                 ${milestoneText}
               </p>
             </div>
